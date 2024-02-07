@@ -12,6 +12,20 @@ dist
 dist-ssr
 *.local
 
+# Zero Install
+.yarn/*
+!.yarn/cache
+!.yarn/patches
+!.yarn/plugins
+!.yarn/releases
+!.yarn/sdks
+!.yarn/versions
+
+# dependencies
+/node_modules
+/.pnp
+.pnp.js
+
 # Editor directories and files
 .vscode/*
 !.vscode/extensions.json
@@ -23,3 +37,7 @@ dist-ssr
 *.sln
 *.sw?
 .env
+.env.local
+.env.development.local
+.env.test.local
+.env.production.local
