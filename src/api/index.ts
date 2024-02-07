@@ -1,5 +1,3 @@
-/* eslint-disable no-param-reassign */
-/* eslint-disable no-underscore-dangle */
 import axios from 'axios';
 import { API_PATH } from 'config/constants';
 
