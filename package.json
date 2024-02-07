@@ -6,8 +6,10 @@
   "scripts": {
     "start": "vite --host --open",
     "build": "tsc && vite build",
-    "lint": "eslint . --ext ts,tsx --report-unused-disable-directives --max-warnings 0",
-    "preview": "vite preview"
+    "lint": "yarn lint:eslint",
+    "lint:eslint": "eslint src/ --ext .tsx,.ts",
+    "preview": "vite preview",
+    "typecheck": "tsc --project tsconfig.json"
   },
   "dependencies": {
     "@emotion/react": "^11.11.3",
