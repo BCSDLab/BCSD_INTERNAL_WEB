@@ -23,6 +23,7 @@ dist-ssr
 
 # dependencies
 /node_modules
+node_modules
 /.pnp
 .pnp.js
 
@@ -41,3 +42,6 @@ dist-ssr
 .env.development.local
 .env.test.local
 .env.production.local
+.history
+/packages/*/bundles
+/packages/*/lib/*
