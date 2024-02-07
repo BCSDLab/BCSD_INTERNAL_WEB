@@ -1506,6 +1506,9 @@ __metadata:
     react-dom: ^18.2.0
     typescript: ^5.2.2
     vite: ^5.0.8
+  peerDependencies:
+    react: ^17.0.0 || ^18.0.0
+    react-dom: ^17.0.0 || ^18.0.0
   languageName: unknown
   linkType: soft
 
