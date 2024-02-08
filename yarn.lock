@@ -1145,6 +1145,15 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@types/node@npm:^20.11.16":
+  version: 20.11.16
+  resolution: "@types/node@npm:20.11.16"
+  dependencies:
+    undici-types: ~5.26.4
+  checksum: 51f0831c1219bf4698e7430aeb9892237bd851deeb25ce23c5bb0ceefcc77c3b114e48f4e98d9fc26def5a87ba9d8079f0281dd37bee691140a93f133812c152
+  languageName: node
+  linkType: hard
+
 "@types/parse-json@npm:^4.0.0":
   version: 4.0.2
   resolution: "@types/parse-json@npm:4.0.2"
@@ -1500,6 +1509,7 @@ __metadata:
     "@emotion/styled": ^11.11.0
     "@mui/material": ^5.15.7
     "@tanstack/react-query": ^5.18.1
+    "@types/node": ^20.11.16
     "@types/react": ^18.2.43
     "@types/react-dom": ^18.2.17
     "@typescript-eslint/eslint-plugin": ^6.14.0
@@ -3626,6 +3636,13 @@ __metadata:
     tsc: bin/tsc
     tsserver: bin/tsserver
   checksum: 4e604a9e107ce0c23b16a2f8d79d0531d4d8fe9ebbb7a8c395c66998c39892f0e0a071ef0b0d4e66420a8ec2b8d6cfd9cdb29ba24f25b37cba072e9282376df9
+  languageName: node
+  linkType: hard
+
+"undici-types@npm:~5.26.4":
+  version: 5.26.5
+  resolution: "undici-types@npm:5.26.5"
+  checksum: 3192ef6f3fd5df652f2dc1cd782b49d6ff14dc98e5dced492aa8a8c65425227da5da6aafe22523c67f035a272c599bb89cfe803c1db6311e44bed3042fc25487
   languageName: node
   linkType: hard
 
