@@ -1,6 +1,5 @@
 import {css} from '@emotion/react';
 
-// 스타일 정의
 export const sideBarStyle = css`
   display: flex;
   flex-direction: column;
