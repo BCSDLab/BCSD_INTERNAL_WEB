@@ -1,5 +1,6 @@
 import { SideBar,TopBar,Content,Container, Logo, SideBarButton } from "./style";
 
+
 export default function DefaultLayout() {
   return (
     <>
