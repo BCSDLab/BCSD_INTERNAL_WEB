@@ -28,6 +28,7 @@ function $$SETUP_STATE(hydrateRuntimeState, basePath) {
         [null, {\
           "packageLocation": "./",\
           "packageDependencies": [\
+            ["@emotion/babel-plugin", "npm:11.11.0"],\
             ["@emotion/react", "virtual:a79afa73eb2e01e38ec8abd8b1edf107d6dd56f9062cceedb11296bcea4327b8544d549bcda7b0453d71764f5c9a14f2806a9337f4acd494c08d057af27781a0#npm:11.11.3"],\
             ["@emotion/styled", "virtual:a79afa73eb2e01e38ec8abd8b1edf107d6dd56f9062cceedb11296bcea4327b8544d549bcda7b0453d71764f5c9a14f2806a9337f4acd494c08d057af27781a0#npm:11.11.0"],\
             ["@mui/material", "virtual:a79afa73eb2e01e38ec8abd8b1edf107d6dd56f9062cceedb11296bcea4327b8544d549bcda7b0453d71764f5c9a14f2806a9337f4acd494c08d057af27781a0#npm:5.15.7"],\
@@ -2054,6 +2055,7 @@ function $$SETUP_STATE(hydrateRuntimeState, basePath) {
           "packageLocation": "./",\
           "packageDependencies": [\
             ["bcsd-internal-web", "workspace:."],\
+            ["@emotion/babel-plugin", "npm:11.11.0"],\
             ["@emotion/react", "virtual:a79afa73eb2e01e38ec8abd8b1edf107d6dd56f9062cceedb11296bcea4327b8544d549bcda7b0453d71764f5c9a14f2806a9337f4acd494c08d057af27781a0#npm:11.11.3"],\
             ["@emotion/styled", "virtual:a79afa73eb2e01e38ec8abd8b1edf107d6dd56f9062cceedb11296bcea4327b8544d549bcda7b0453d71764f5c9a14f2806a9337f4acd494c08d057af27781a0#npm:11.11.0"],\
             ["@mui/material", "virtual:a79afa73eb2e01e38ec8abd8b1edf107d6dd56f9062cceedb11296bcea4327b8544d549bcda7b0453d71764f5c9a14f2806a9337f4acd494c08d057af27781a0#npm:5.15.7"],\
