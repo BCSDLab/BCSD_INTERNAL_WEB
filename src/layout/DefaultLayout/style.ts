@@ -1,7 +1,7 @@
-import styled from '@emotion/styled';
-import {styled as mui} from '@mui/material/styles';
+import {css} from '@emotion/react';
 
-export const SideBar = styled.div`
+// 스타일 정의
+export const sideBarStyle = css`
   display: flex;
   flex-direction: column;
   width: 250px;
@@ -10,33 +10,28 @@ export const SideBar = styled.div`
   border-right: 1px solid #e0e0e0;
 `;
 
-export const TopBar = styled.div`
+export const topBarStyle = css`
   width: 100%;
   height: 100px;
   background-color: #F9FAFB;
   border-bottom: 1px solid #e0e0e0;
 `;
 
-export const Content = styled.div`
+export const contentStyle = css`
   display: flex;
   flex-direction: column;
   width: 100%;
   height: 100%;
 `;
 
-export const Container = styled.div`
+export const containerStyle = css`
   display: flex;
   background-color: #F9FAFB;
   width: 100%;
   height: 100%;
 `;
 
-export const Logo = styled.img`
+export const logoStyle = css`
   width: 100%;
   margin-top: -10px;
-`;
-
-export const SideBarButton = mui('button')`
-  variant: 'outlined',
-  color: 'secondary',
 `;
