@@ -8,4 +8,5 @@ export const attribute = css`
   font-size: 20px;
   font-weight: bold;
   gap: 50px;
+  border-bottom: 1px solid #e0e0e0;
 `;
