@@ -33,6 +33,15 @@ export const content = css`
   flex-direction: column;
   width: 100%;
   height: 100%;
+  margin-top: 20px;
+`;
+
+export const buttonContainer = css`
+  display: flex;
+  justify-content: flex-end;
+  align-items: flex-end;
+  margin-top: 10px;
+  gap: 50px;
 `;
 
 export const layoutButtonContainer = css`
