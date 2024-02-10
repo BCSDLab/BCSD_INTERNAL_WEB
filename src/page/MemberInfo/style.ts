@@ -1,10 +1,56 @@
-import styled from '@emotion/styled';
-import Button from '@mui/material/Button';
+import {css} from '@emotion/react';
 
-export const StyledButton = styled(Button)`
-  background-color: #1976d2;
-  color: #fff;
-  &:hover {
-    background-color: #115293;
-  }
+const color = {
+  gray: '#F9FAFB',
+  borderGray: '#e0e0e0'
+};
+
+export const sideBar = css`
+  display: flex;
+  flex-direction: column;
+  width: 250px;
+  height: 100vh;
+  background-color: ${color.gray};
+  border-right: 1px solid ${color.borderGray};
+`;
+
+export const topBar = css`
+  width: 100%;
+  height: 100px;
+  background-color: ${color.gray};
+  border-bottom: 1px solid ${color.borderGray};
+`;
+
+export const contentContainer = css`
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  height: 100%;
+`;
+
+export const content = css`
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  height: 100%;
+`;
+
+export const layoutButtonContainer = css`
+  display: flex;
+  justify-content: flex-end;
+  margin-top: 10px;
+  margin-right: 30px;
+  gap: 10px;
+`;
+
+export const container = css`
+  display: flex;
+  background-color: ${color.gray};
+  width: 100%;
+  height: 100%;
+`;
+
+export const logo = css`
+  width: 100%;
+  margin-top: -10px;
 `;
