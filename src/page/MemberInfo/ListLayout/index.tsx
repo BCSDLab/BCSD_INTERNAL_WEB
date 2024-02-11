@@ -1,5 +1,7 @@
 import { DataGrid, GridColDef } from '@mui/x-data-grid';
 import { useGetMembers } from 'query/members';
+import { useEffect } from 'react';
+import { useTrackStore } from 'store/trackStore';
 
 const columns: GridColDef[] = [
   { field: 'name', headerName: '이름', width: 100 },
@@ -32,7 +34,8 @@ interface Track {
 }
 
 export default function ListLayout() {
-  const { data } = useGetMembers(0, 10, '');
+  const { id } = useTrackStore();
+  const { data } = useGetMembers(0, 100, id || '');
   const members = data.content.map((member: Member) => ({
     id: member.id,
     name: member.name,
@@ -53,7 +56,6 @@ export default function ListLayout() {
         columns={columns}
         initialState={{
           pagination: {
-
             paginationModel: { page: 0, pageSize: 10 },
           },
         }}

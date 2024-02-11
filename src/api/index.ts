@@ -18,8 +18,16 @@ accessClient.interceptors.request.use(
   },
 );
 
-accessClient.interceptors.response.use(
-  (response) => response.data,
+accessClient.interceptors.request.use(
+  (config) => {
+    const accessToken = sessionStorage.getItem('access_token');
+    if (accessToken) {
+      // eslint-disable-next-line no-param-reassign
+      config.headers.Authorization = `Bearer ${accessToken}`;
+      return config;
+    }
+    return config;
+  },
 );
 
 export { accessClient };

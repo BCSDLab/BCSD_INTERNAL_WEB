@@ -9,7 +9,7 @@ interface TrackStore {
 
 export const useTrackStore = create<TrackStore>((set) => ({
   id: 0,
-  name: '',
+  name: 'ALL',
   setName: (name: string) => set({ name }),
   setTrack: (id:number, name: string) => set({ id, name }),
 }));
