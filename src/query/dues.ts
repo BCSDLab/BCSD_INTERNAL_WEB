@@ -1,10 +1,10 @@
 import { useSuspenseQuery } from "@tanstack/react-query"
 import { getAllDues } from "api/Dues"
 
-export const useDues = (year: number, track?: string) => {
-  const { data: dues } = useSuspenseQuery({
-    queryKey: ["dues", year],
+export const useGetAllDues = (year: number, track?: string) => {
+  const { data: allDues } = useSuspenseQuery({
+    queryKey: ["dues", year, track],
     queryFn: () => getAllDues(year, track),
   });
-  return { dues };
+  return { allDues };
 }
