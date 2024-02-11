@@ -1,3 +1,5 @@
+import { Track } from './track';
+
 interface Member {
   id: number;
   joinedYear: number;
@@ -19,11 +21,6 @@ interface Member {
   isAuthed: boolean;
   isDeleted: boolean;
 
-}
-
-export interface Track {
-  id: number;
-  name: string;
 }
 
 export interface MemberList {
