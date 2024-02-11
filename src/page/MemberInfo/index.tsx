@@ -8,8 +8,6 @@ import GridLayout from './GridLayout';
 import TrackFilter from './TrackFilter';
 
 export default function MemberInfo() {
-  // 임시로 local storage에 access token을 저장
-  localStorage.setItem('access_token', import.meta.env.VITE_REACT_APP_ACCESS_TOKEN);
   const [layout, setLayout] = useState('list');
   return (
     <div css={S.container}>
