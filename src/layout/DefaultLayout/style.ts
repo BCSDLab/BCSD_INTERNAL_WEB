@@ -1,24 +1,20 @@
 import {css} from '@emotion/react';
-
-const color = {
-  gray: '#F9FAFB',
-  borderGray: '#e0e0e0'
-};
+import {colors} from 'const/colors/style'
 
 export const sideBar = css`
   display: flex;
   flex-direction: column;
   width: 250px;
   height: 100vh;
-  background-color: ${color.gray};
-  border-right: 1px solid ${color.borderGray};
+  background-color: ${colors.gray};
+  border-right: 1px solid ${colors.borderGray};
 `;
 
 export const topBar = css`
   width: 100%;
   height: 100px;
-  background-color: ${color.gray};
-  border-bottom: 1px solid ${color.borderGray};
+  background-color: ${colors.gray};
+  border-bottom: 1px solid ${colors.borderGray};
 `;
 
 export const content = css`
@@ -30,7 +26,7 @@ export const content = css`
 
 export const container = css`
   display: flex;
-  background-color: ${color.gray};
+  background-color: ${colors.gray};
   width: 100%;
   height: 100%;
 `;
