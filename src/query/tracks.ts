@@ -3,7 +3,7 @@ import { getTracks } from 'api/tracks';
 
 export const useGetTracks = () => {
   const { data } = useSuspenseQuery({
-    queryKey: [],
+    queryKey: ['tracks'],
     queryFn: () => getTracks(),
   });
   return { data };
