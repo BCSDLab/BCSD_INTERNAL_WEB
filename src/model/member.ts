@@ -1,6 +1,6 @@
 import { Track } from './track';
 
-interface Member {
+export interface Member {
   id: number;
   joinedYear: number;
   joinedMonth: number;
@@ -20,14 +20,4 @@ interface Member {
   updatedAt: string;
   isAuthed: boolean;
   isDeleted: boolean;
-
-}
-
-export interface MemberList {
-  content: Member[];
-  hasNext: boolean;
-  currentPage: number;
-  totalElements: number;
-  totalPage: number;
-  pageSize: number;
 }

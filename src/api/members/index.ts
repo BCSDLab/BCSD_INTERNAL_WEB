@@ -1,5 +1,5 @@
 import { accessClient } from 'api';
-import { MemberList } from 'model/member';
+import { MemberList } from 'model/page';
 
 export const getMembers = (pageIndex: number, pageSize: number, trackId?: number) => {
   if (trackId === undefined) return accessClient.get<MemberList>(`/members?page=${pageIndex}&size=${pageSize}`);
