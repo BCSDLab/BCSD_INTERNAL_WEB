@@ -1,6 +1,7 @@
 import { accessClient } from 'api';
+import { MemberList } from 'model/member';
 
-export const getMembers = async (pageIndex: number, pageSize: number, trackId: number | string) => {
-  const { data } = await accessClient.get(`/members?page=${pageIndex}&size=${pageSize}&trackId=${trackId}`);
-  return data;
+export const getMembers = (pageIndex: number, pageSize: number, trackId?: number) => {
+  if (trackId === undefined) return accessClient.get<MemberList>(`/members?page=${pageIndex}&size=${pageSize}`);
+  return accessClient.get<MemberList>(`/members?page=${pageIndex}&size=${pageSize}&trackId=${trackId}`);
 };

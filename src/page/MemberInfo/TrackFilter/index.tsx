@@ -3,11 +3,6 @@ import { useGetTracks } from 'query/tracks';
 import { useTrackStore } from 'store/trackStore';
 import * as S from './style';
 
-interface Track {
-  id: number;
-  name: string;
-}
-
 export default function TrackFilter() {
   const { name, setTrack, setName } = useTrackStore();
   const handleTrackChange = (
@@ -17,11 +12,7 @@ export default function TrackFilter() {
     setName(newAlignment);
   };
   const { data } = useGetTracks();
-  const trackInit = [{ id: null, name: 'ALL' }, ...data];
-  const tracks = trackInit.map((track: Track) => ({
-    id: track.id,
-    name: track.name,
-  }));
+  const tracks = [{ id: null, name: 'ALL' }, ...data];
 
   return (
     <div css={S.buttonContainer}>
@@ -32,7 +23,7 @@ export default function TrackFilter() {
         onChange={handleTrackChange}
         aria-label="Platform"
       >
-        {tracks.map((track:Track) => (
+        {tracks.map((track) => (
           <ToggleButton
             key={track.id}
             value={track.name}

@@ -1,6 +1,6 @@
 import { accessClient } from 'api';
+import { Track } from 'model/member';
 
-export const getTracks = async () => {
-  const { data } = await accessClient.get('/tracks');
-  return data;
+export const getTracks = () => {
+  return accessClient.get<Track[]>('/tracks');
 };

@@ -14,44 +14,16 @@ const columns: GridColDef[] = [
   { field: 'email', headerName: '이메일', width: 150 },
 ];
 
-interface Member {
-  id: number;
-  name: string;
-  track: Track;
-  memberType: string;
-  status: string;
-  company: string;
-  department: string;
-  studentNumber: string;
-  phoneNumber: string;
-  email: string;
-}
-
-interface Track {
-  id: number;
-  name: string;
-}
-
 export default function ListLayout() {
   const { id } = useTrackStore();
-  const { data } = useGetMembers(0, 100, id || '');
-  const members = data.content.map((member: Member) => ({
-    id: member.id,
-    name: member.name,
-    track: member.track.name,
-    memberType: member.memberType,
-    status: member.status,
-    company: member.company,
-    department: member.department,
-    studentNumber: member.studentNumber,
-    phoneNumber: member.phoneNumber,
-    email: member.email,
-  }));
+  const { data: members } = useGetMembers(0, 100, id);
 
   return (
     <div style={{ height: 650, paddingLeft: 20, paddingRight: 20 }}>
       <DataGrid
-        rows={members}
+        rows={members.content.map((member) => ({
+          ...member, track: member.track.name,
+        }))}
         columns={columns}
         initialState={{
           pagination: {
