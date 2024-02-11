@@ -1,5 +1,5 @@
-import {css} from '@emotion/react';
-import {colors} from 'const/colors/style'
+import { css } from '@emotion/react';
+import { colors } from 'const/colors/style';
 
 export const sideBar = css`
   display: flex;
