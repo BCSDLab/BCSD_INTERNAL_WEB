@@ -10,7 +10,7 @@ export default function MemberInfo() {
   const [layout, setLayout] = useState('list');
   const [track, setTrack] = useState('all');
   const handleTrackChange = (
-    event: React.MouseEvent<HTMLElement>,
+    _event: React.MouseEvent<HTMLElement>,
     newAlignment: string,
   ) => {
     setTrack(newAlignment);
