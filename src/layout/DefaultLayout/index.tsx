@@ -9,7 +9,7 @@ export default function DefaultLayout() {
         <Button variant="outlined" color="secondary" sx={{ marginTop: '20px' }}>회원정보</Button>
       </div>
       <div css={S.content}>
-        <div css={S.topBar}></div>
+        <div css={S.topBar} />
       </div>
     </div>
   );

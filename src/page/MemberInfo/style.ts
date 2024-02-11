@@ -1,8 +1,8 @@
-import {css} from '@emotion/react';
+import { css } from '@emotion/react';
 
 const color = {
   gray: '#F9FAFB',
-  borderGray: '#e0e0e0'
+  borderGray: '#e0e0e0',
 };
 
 export const sideBar = css`

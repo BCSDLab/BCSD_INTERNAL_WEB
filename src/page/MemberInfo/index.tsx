@@ -1,9 +1,8 @@
-import { Button } from '@mui/material';
-import * as S from './style';
+import { Button, ToggleButton, ToggleButtonGroup } from '@mui/material';
 import { useState } from 'react';
-import { ToggleButton, ToggleButtonGroup } from '@mui/material';
 import ViewListIcon from '@mui/icons-material/ViewList';
 import ViewModuleIcon from '@mui/icons-material/ViewModule';
+import * as S from './style';
 import ListLayout from './ListLayout';
 import GridLayout from './GridLayout';
 
@@ -12,7 +11,7 @@ export default function MemberInfo() {
   const [track, setTrack] = useState('all');
   const handleTrackChange = (
     event: React.MouseEvent<HTMLElement>,
-    newAlignment: string
+    newAlignment: string,
   ) => {
     setTrack(newAlignment);
   };
@@ -25,7 +24,7 @@ export default function MemberInfo() {
         </Button>
       </div>
       <div css={S.contentContainer}>
-        <div css={S.topBar}></div>
+        <div css={S.topBar} />
         <div css={S.buttonContainer}>
           <ToggleButtonGroup
             color="primary"
