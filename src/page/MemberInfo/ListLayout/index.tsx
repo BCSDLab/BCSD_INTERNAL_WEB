@@ -1,6 +1,5 @@
 import { DataGrid, GridColDef } from '@mui/x-data-grid';
 import { useGetMembers } from 'query/members';
-import { useEffect } from 'react';
 import { useTrackStore } from 'store/trackStore';
 
 const columns: GridColDef[] = [
