@@ -1,60 +1,63 @@
 import { DataGrid, GridColDef } from '@mui/x-data-grid';
+import { useGetMembers } from 'query/members';
 
 const columns: GridColDef[] = [
-  { field: 'name', headerName: '이름', width: 70 },
-  { field: 'track', headerName: '트랙', width: 100 },
+  { field: 'name', headerName: '이름', width: 100 },
+  { field: 'track', headerName: '트랙', width: 130 },
   { field: 'memberType', headerName: '직책', width: 100 },
   { field: 'status', headerName: '상태', width: 100 },
-  { field: 'company', headerName: '소속', width: 100 },
+  { field: 'company', headerName: '소속', width: 160 },
   { field: 'department', headerName: '학부', width: 130 },
   { field: 'studentNumber', headerName: '학번', width: 130 },
-  { field: 'phoneNumber', headerName: '전화번호', width: 130 },
-  { field: 'email', headerName: '이메일', width: 130 },
+  { field: 'phoneNumber', headerName: '전화번호', width: 150 },
+  { field: 'email', headerName: '이메일', width: 150 },
 ];
 
-const rows = [
-  {
-    id: 1, lastName: 'Snow', firstName: 'Jon', age: 35,
-  },
-  {
-    id: 2, lastName: 'Lannister', firstName: 'Cersei', age: 42,
-  },
-  {
-    id: 3, lastName: 'Lannister', firstName: 'Jaime', age: 45,
-  },
-  {
-    id: 4, lastName: 'Stark', firstName: 'Arya', age: 16,
-  },
-  {
-    id: 5, lastName: 'Targaryen', firstName: 'Daenerys', age: null,
-  },
-  {
-    id: 6, lastName: 'Melisandre', firstName: null, age: 150,
-  },
-  {
-    id: 7, lastName: 'Clifford', firstName: 'Ferrara', age: 44,
-  },
-  {
-    id: 8, lastName: 'Frances', firstName: 'Rossini', age: 36,
-  },
-  {
-    id: 9, lastName: 'Roxie', firstName: 'Harvey', age: 65,
-  },
-];
+interface Member {
+  id: number;
+  name: string;
+  track: Track;
+  memberType: string;
+  status: string;
+  company: string;
+  department: string;
+  studentNumber: string;
+  phoneNumber: string;
+  email: string;
+}
+
+interface Track {
+  id: number;
+  name: string;
+}
 
 export default function ListLayout() {
+  const { data } = useGetMembers(0, 10, '');
+  const members = data.content.map((member: Member) => ({
+    id: member.id,
+    name: member.name,
+    track: member.track.name,
+    memberType: member.memberType,
+    status: member.status,
+    company: member.company,
+    department: member.department,
+    studentNumber: member.studentNumber,
+    phoneNumber: member.phoneNumber,
+    email: member.email,
+  }));
+
   return (
-    <div style={{ height: 400, paddingLeft: 20, paddingRight: 20 }}>
+    <div style={{ height: 650, paddingLeft: 20, paddingRight: 20 }}>
       <DataGrid
-        rows={rows}
+        rows={members}
         columns={columns}
         initialState={{
           pagination: {
 
-            paginationModel: { page: 0, pageSize: 5 },
+            paginationModel: { page: 0, pageSize: 10 },
           },
         }}
-        pageSizeOptions={[5, 10]}
+        pageSizeOptions={[10]}
         checkboxSelection
       />
     </div>

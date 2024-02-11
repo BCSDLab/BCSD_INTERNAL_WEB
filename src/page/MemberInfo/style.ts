@@ -48,7 +48,7 @@ export const layoutButtonContainer = css`
   display: flex;
   justify-content: flex-end;
   margin-top: 10px;
-  margin-right: 30px;
+  margin-right: 20px;
   gap: 10px;
 `;
 
