@@ -1,5 +1,5 @@
 import { Button, ToggleButton } from '@mui/material';
-import { useState } from 'react';
+import { Suspense, useState } from 'react';
 import ViewListIcon from '@mui/icons-material/ViewList';
 import ViewModuleIcon from '@mui/icons-material/ViewModule';
 import * as S from './style';
@@ -22,7 +22,9 @@ export default function MemberInfo() {
       <div css={S.contentContainer}>
         <div css={S.topBar} />
         <div css={S.buttonContainer}>
-          <TrackFilter />
+          <Suspense fallback={<div />}>
+            <TrackFilter />
+          </Suspense>
           <div css={S.layoutButtonContainer}>
             <ToggleButton
               value="list"
@@ -41,7 +43,9 @@ export default function MemberInfo() {
           </div>
         </div>
         <div css={S.content}>
-          {layout === 'list' ? <ListLayout /> : <GridLayout />}
+          <Suspense fallback={<div />}>
+            {layout === 'list' ? <ListLayout /> : <GridLayout />}
+          </Suspense>
         </div>
       </div>
     </div>
