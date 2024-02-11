@@ -19,7 +19,7 @@ export default function MemberInfo() {
   return (
     <div css={S.container}>
       <div css={S.sideBar}>
-        <img src="/BCSD_logo-01.png" alt="logo" css={S.logo} />
+        <img src="https://image.bcsdlab.com/banner.png" alt="logo" css={S.logo} />
         <Button variant="outlined" color="secondary" sx={{ marginTop: '20px' }}>
           회원정보
         </Button>
