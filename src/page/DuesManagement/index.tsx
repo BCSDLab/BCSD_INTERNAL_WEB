@@ -22,8 +22,8 @@ export default function DuesManagement() {
   const location = useLocation();
   const query = new URLSearchParams(location.search);
   const page = parseInt(query.get('page') || '1', 10);
-  const thisYear = new Date().getFullYear();
-  const duesYear = thisYear - page + 1;
+  const currentYear = new Date().getFullYear();
+  const duesYear = currentYear - page + 1;
   const [track, setTrack] = useState([true, true, true, true, true, true]);
   const [name, setName] = useState('');
   const [detail, setDetail] = useState<DuesDetail>({ month: 0, status: null });
