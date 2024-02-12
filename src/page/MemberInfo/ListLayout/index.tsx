@@ -16,9 +16,7 @@ const columns: GridColDef[] = [
 
 export default function ListLayout() {
   const { id } = useTrackStore();
-  const itemIndex = 0;
-  const itemReturn = 1000;
-  const { data: members } = useGetMembers({ pageIndex: itemIndex, pageSize: itemReturn, trackId: id });
+  const { data: members } = useGetMembers({ pageIndex: 0, pageSize: 1000, trackId: id });
 
   return (
     <div style={{ height: 650, paddingLeft: 20, paddingRight: 20 }}>
