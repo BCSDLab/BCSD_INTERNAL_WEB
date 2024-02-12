@@ -1,15 +1,24 @@
-import axios from 'axios';
+import axios, { AxiosInstance, AxiosRequestConfig } from 'axios';
 import { API_PATH } from 'config/constants';
 
-const accessClient = axios.create({
+interface HttpClientType extends AxiosInstance {
+  get<T = any, R = T, D = any>(url: string, config?: AxiosRequestConfig<D>): Promise<R>;
+  delete<T = any, R = T, D = any>(url: string, config?: AxiosRequestConfig<D>): Promise<R>;
+  post<T = any, R = T, D = any>(url: string, data?: D, config?: AxiosRequestConfig<D>): Promise<R>;
+  put<T = any, R = T, D = any>(url: string, data?: D, config?: AxiosRequestConfig<D>): Promise<R>;
+  patch<T = any, R = T, D = any>(url: string, data?: D, config?: AxiosRequestConfig<D>): Promise<R>;
+}
+
+const accessClient: HttpClientType = axios.create({
   baseURL: `${API_PATH}`,
   timeout: 2000,
 });
 
 accessClient.interceptors.request.use(
   (config) => {
-    const accessToken = sessionStorage.getItem('access_token');
+    const accessToken = localStorage.getItem('access_token');
     if (accessToken) {
+      // eslint-disable-next-line no-param-reassign
       config.headers.Authorization = `Bearer ${accessToken}`;
       return config;
     }
@@ -18,8 +27,7 @@ accessClient.interceptors.request.use(
 );
 
 accessClient.interceptors.response.use(
-  (response) => response.data
-)
-
+  (response) => response.data,
+);
 
 export { accessClient };
