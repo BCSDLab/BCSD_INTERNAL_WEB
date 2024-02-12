@@ -139,6 +139,7 @@ export default function DuesManagement() {
                                 {tracks.map((track, index) => {
                                   return (
                                     <FormControlLabel
+                                      key={track.id}
                                       control={
                                         <Checkbox checked={trackFilter[index]} onChange={handleTrackFilterChange} name={track.name} />
                                       }
@@ -165,9 +166,7 @@ export default function DuesManagement() {
               </TableHead>
               <TableBody>
                 {filteredValue.map((row) => (
-                  <TableRow
-                    key={row.memberId}
-                  >
+                  <TableRow key={row.memberId}>
                     <TableCell component="th" scope="row">
                       {row.track.name}
                     </TableCell>
@@ -176,8 +175,8 @@ export default function DuesManagement() {
                     {row.detail.map((dueDetail) => (
                       <TableCell
                         css={S.memoTableCell(dueDetail)}
-                        onClick={(e) => handleMemoClick(e, detail)}
-                        key={detail.month}
+                        onClick={(e) => handleMemoClick(e, dueDetail)}
+                        key={dueDetail.month}
                       >
                         {/* TODO: detail.status에 따른 UI */}
                         {/* 미납 X(빨강), 면제 -(초록), 납부 O(초록), null -(default) */}
