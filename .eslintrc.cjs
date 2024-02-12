@@ -30,5 +30,8 @@ module.exports = {
     "react/react-in-jsx-scope": "off",
     "react/no-unknown-property": ["error", { "ignore": ["css"] }],
     "import/prefer-default-export": "off",
+    "arrow-body-style": "off",
+    "@typescript-eslint/no-explicit-any": "off",
+    "max-len": "off",
   }
 }

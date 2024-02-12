@@ -1,20 +1,14 @@
-import { Button, ToggleButton, ToggleButtonGroup } from '@mui/material';
-import { useState } from 'react';
+import { Button, ToggleButton } from '@mui/material';
+import { Suspense, useState } from 'react';
 import ViewListIcon from '@mui/icons-material/ViewList';
 import ViewModuleIcon from '@mui/icons-material/ViewModule';
 import * as S from './style';
 import ListLayout from './ListLayout';
 import GridLayout from './GridLayout';
+import TrackFilter from './TrackFilter';
 
 export default function MemberInfo() {
   const [layout, setLayout] = useState('list');
-  const [track, setTrack] = useState('all');
-  const handleTrackChange = (
-    _event: React.MouseEvent<HTMLElement>,
-    newAlignment: string,
-  ) => {
-    setTrack(newAlignment);
-  };
   return (
     <div css={S.container}>
       <div css={S.sideBar}>
@@ -26,50 +20,9 @@ export default function MemberInfo() {
       <div css={S.contentContainer}>
         <div css={S.topBar} />
         <div css={S.buttonContainer}>
-          <ToggleButtonGroup
-            color="primary"
-            value={track}
-            exclusive
-            onChange={handleTrackChange}
-            aria-label="Platform"
-          >
-            <ToggleButton value="all" sx={{ width: '85px' }}>
-              ALL
-            </ToggleButton>
-            <ToggleButton
-              value="frontend"
-              sx={{ textTransform: 'none', width: '85px' }}
-            >
-              FrontEnd
-            </ToggleButton>
-            <ToggleButton
-              value="backend"
-              sx={{ textTransform: 'none', width: '85px' }}
-            >
-              BackEnd
-            </ToggleButton>
-            <ToggleButton
-              value="android"
-              sx={{ textTransform: 'none', width: '85px' }}
-            >
-              Android
-            </ToggleButton>
-            <ToggleButton
-              value="ios"
-              sx={{ textTransform: 'none', width: '85px' }}
-            >
-              iOS
-            </ToggleButton>
-            <ToggleButton value="uiux" sx={{ width: '85px' }}>
-              UI/UX
-            </ToggleButton>
-            <ToggleButton
-              value="etc"
-              sx={{ textTransform: 'none', width: '85px' }}
-            >
-              etc
-            </ToggleButton>
-          </ToggleButtonGroup>
+          <Suspense fallback={<div />}>
+            <TrackFilter />
+          </Suspense>
           <div css={S.layoutButtonContainer}>
             <ToggleButton
               value="list"
@@ -88,7 +41,9 @@ export default function MemberInfo() {
           </div>
         </div>
         <div css={S.content}>
-          {layout === 'list' ? <ListLayout /> : <GridLayout />}
+          <Suspense fallback={<div />}>
+            {layout === 'list' ? <ListLayout /> : <GridLayout />}
+          </Suspense>
         </div>
       </div>
     </div>
