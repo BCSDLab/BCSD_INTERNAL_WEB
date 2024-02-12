@@ -1,7 +1,5 @@
-import { Member } from './member';
-
-export interface MemberList {
-  content: Member[];
+export interface Pagination<T> {
+  content: T[];
   hasNext: boolean;
   currentPage: number;
   totalElements: number;
