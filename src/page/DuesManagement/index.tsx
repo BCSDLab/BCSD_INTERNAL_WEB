@@ -16,6 +16,7 @@ import { useGetAllDues } from 'query/dues';
 import useBooleanState from 'util/hooks/useBooleanState.ts';
 import { DuesDetail } from 'model/dues/allDues';
 import { ALL_TRACKS, STATUS_MAPPING } from 'util/constants/alltracks.ts';
+import { useGetTracks } from 'query/tracks';
 import * as S from './style';
 
 export default function DuesManagement() {
@@ -24,7 +25,7 @@ export default function DuesManagement() {
   const page = parseInt(query.get('page') || '1', 10);
   const currentYear = new Date().getFullYear();
   const duesYear = currentYear - page + 1;
-  const [track, setTrack] = useState([true, true, true, true, true, true]);
+  const [trackFilter, setTrackFilter] = useState([true, true, true, true, true, true]);
   const [name, setName] = useState('');
   const [detail, setDetail] = useState<DuesDetail>({ month: 0, status: null });
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
@@ -38,13 +39,15 @@ export default function DuesManagement() {
   const { allDues } = useGetAllDues({ year: duesYear });
   const [filteredValue, setFilteredValue] = useState(allDues.dues);
 
+  const { data: tracks } = useGetTracks();
+
   const handleNameChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const searchName = e.target.value;
     if (searchName === '') {
-      if (track.every((value) => value)) {
+      if (trackFilter.every((value) => value)) {
         setFilteredValue(allDues.dues);
       } else {
-        setFilteredValue(allDues.dues.filter((row) => track[ALL_TRACKS.indexOf(row.track.name)]));
+        setFilteredValue(allDues.dues.filter((row) => trackFilter[ALL_TRACKS.indexOf(row.track.name)]));
       }
     }
     setName(searchName);
@@ -64,8 +67,8 @@ export default function DuesManagement() {
 
   const handleTrackFilterChange = (e: ChangeEvent<HTMLInputElement>) => {
     const selectedTrack = e.target.name;
-    const trackIndex = ALL_TRACKS.indexOf(selectedTrack);
-    setTrack((prevTrack) => {
+    const trackIndex = tracks.filter((track) => track.name === selectedTrack)[0].id - 1;
+    setTrackFilter((prevTrack) => {
       const updatedTrack = [...prevTrack];
       updatedTrack[trackIndex] = !updatedTrack[trackIndex];
       setFilteredValue(allDues.dues.filter(
@@ -133,42 +136,16 @@ export default function DuesManagement() {
                             <FormControl css={S.checkboxFieldset} component="fieldset" variant="standard">
                               <FormLabel component="legend">원하는 트랙을 선택하세요.</FormLabel>
                               <FormGroup>
-                                <FormControlLabel
-                                  control={
-                                    <Checkbox checked={track[0]} onChange={handleTrackFilterChange} name="FRONTEND" />
-                                    }
-                                  label="FRONTEND"
-                                />
-                                <FormControlLabel
-                                  control={
-                                    <Checkbox checked={track[1]} onChange={handleTrackFilterChange} name="BACKEND" />
-                                    }
-                                  label="BACKEND"
-                                />
-                                <FormControlLabel
-                                  control={
-                                    <Checkbox checked={track[2]} onChange={handleTrackFilterChange} name="GAME" />
-                                    }
-                                  label="Game"
-                                />
-                                <FormControlLabel
-                                  control={
-                                    <Checkbox checked={track[3]} onChange={handleTrackFilterChange} name="ANDROID" />
-                                    }
-                                  label="ANDROID"
-                                />
-                                <FormControlLabel
-                                  control={
-                                    <Checkbox checked={track[4]} onChange={handleTrackFilterChange} name="IOS" />
-                                    }
-                                  label="IOS"
-                                />
-                                <FormControlLabel
-                                  control={
-                                    <Checkbox checked={track[5]} onChange={handleTrackFilterChange} name="UI/UX" />
-                                    }
-                                  label="UI/UX"
-                                />
+                                {tracks.map((track, index) => {
+                                  return (
+                                    <FormControlLabel
+                                      control={
+                                        <Checkbox checked={trackFilter[index]} onChange={handleTrackFilterChange} name={track.name} />
+                                      }
+                                      label={track.name}
+                                    />
+                                  );
+                                })}
                               </FormGroup>
                             </FormControl>
                           </div>
