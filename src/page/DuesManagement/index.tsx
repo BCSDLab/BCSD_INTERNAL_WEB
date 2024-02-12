@@ -35,7 +35,7 @@ export default function DuesManagement() {
     setFalse: closeFilterModal,
   } = useBooleanState(false);
 
-  const { allDues } = useGetAllDues(duesYear);
+  const { allDues } = useGetAllDues({ year: duesYear });
   const [filteredValue, setFilteredValue] = useState(allDues.dues);
 
   const handleNameChange = (e: React.ChangeEvent<HTMLInputElement>) => {

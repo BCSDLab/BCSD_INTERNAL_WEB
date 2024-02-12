@@ -1,4 +1,9 @@
 import { accessClient } from 'api';
-import { MemberShipDues } from 'model/dues/allDues';
+import { MembershipDues } from 'model/dues/allDues';
 
-export const getAllDues = async (year: number, track?: string) => accessClient.get<MemberShipDues>(`/dues?year=${year}&track=${track}`);
+export interface DuesOptions {
+  year: number;
+  track?: string;
+}
+
+export const getAllDues = ({ year, track }: DuesOptions) => accessClient.get<MembershipDues>(`/dues?year=${year}&track=${track}`);
