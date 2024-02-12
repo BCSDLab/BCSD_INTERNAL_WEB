@@ -6,7 +6,7 @@ export const sidebar = css`
   display: flex;
   flex-direction: column;
   width: 250px;
-  height: calc(100vh - 10px);
+  min-height: calc(100vh - 10px);
   background-color: ${colors.gray};
   border-right: 1px solid ${colors.borderGray};
 `;
@@ -28,8 +28,13 @@ export const content = css`
   display: flex;
   flex-direction: column;
   align-items: center;
-  justify-content: center;
   width: 100vw;
+`;
+
+export const mainContent = css`
+  position: relative;
+  width: 95%;
+  min-height: calc(100vh - 250px);
 `;
 
 export const container = css`
@@ -71,10 +76,13 @@ export const dues = css`
   height: 100%;
 `;
 
-export const pagination = css`
+export const paginationWrapper = css`
   display: flex;
   justify-content: center;
   align-items: center;
+`;
+
+export const pagination = css`
   margin-bottom: 10px;
 `;
 

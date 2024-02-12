@@ -11,15 +11,16 @@ import {
   Button, Checkbox, FormControl, FormControlLabel, FormGroup, FormLabel, Input, Popover,
 } from '@mui/material';
 import Modal from '@mui/material/Modal';
-import { ChangeEvent, useState } from 'react';
+import { ChangeEvent, Suspense, useState } from 'react';
 import { useGetAllDues } from 'query/dues';
 import useBooleanState from 'util/hooks/useBooleanState.ts';
 import { DuesDetail } from 'model/dues/allDues';
 import { ALL_TRACKS, STATUS_MAPPING } from 'util/constants/alltracks.ts';
 import { useGetTracks } from 'query/tracks';
+import LoadingSpinner from 'layout/LoadingSpinner';
 import * as S from './style';
 
-export default function DuesManagement() {
+function DefaultTable() {
   const location = useLocation();
   const query = new URLSearchParams(location.search);
   const page = parseInt(query.get('page') || '1', 10);
@@ -87,6 +88,142 @@ export default function DuesManagement() {
     }
   };
   return (
+    <>
+      <div css={S.searchName}>
+        <Input
+          value={name}
+          id="memberName"
+          onKeyDown={handleNameSearchKeyDown}
+          onChange={handleNameChange}
+          placeholder="이름을 입력하세요"
+        />
+        <Button onClick={handleNameSearchClick}>검색</Button>
+      </div>
+      <div css={S.dues}>
+        <TableContainer css={S.tableContainer}>
+          <Table stickyHeader>
+            <TableHead>
+              <TableRow>
+                <TableCell css={S.tableHeader}>
+                  <div css={S.trackTableCell}>
+                    <span>트랙</span>
+                    <button
+                      type="button"
+                      onClick={openFilterModal}
+                      css={S.filterModalButton}
+                    >
+                      필터
+                    </button>
+                    <Modal
+                      open={isFilterModalOpen}
+                      onClose={closeFilterModal}
+                    >
+                      <div css={S.filterModalContainer}>
+                        <h2>
+                          트랙 선택
+                        </h2>
+                        <div css={S.filterModalContent}>
+                          <FormControl css={S.checkboxFieldset} component="fieldset" variant="standard">
+                            <FormLabel component="legend">원하는 트랙을 선택하세요.</FormLabel>
+                            <FormGroup>
+                              {tracks.map((track, index) => {
+                                return (
+                                  <FormControlLabel
+                                    key={track.id}
+                                    control={
+                                      <Checkbox checked={trackFilter[index]} onChange={handleTrackFilterChange} name={track.name} />
+                                      }
+                                    label={track.name}
+                                  />
+                                );
+                              })}
+                            </FormGroup>
+                          </FormControl>
+                        </div>
+                      </div>
+                    </Modal>
+                  </div>
+                </TableCell>
+                <TableCell css={S.tableHeader}>미납 횟수</TableCell>
+                <TableCell css={S.tableHeader}>이름</TableCell>
+                {Array.from({ length: 12 }, (_, i) => i + 1).map((month) => (
+                  <TableCell key={month} css={S.tableHeader}>
+                    {month}
+                    월
+                  </TableCell>
+                ))}
+              </TableRow>
+            </TableHead>
+            <TableBody>
+              {filteredValue.map((row) => (
+                <TableRow key={row.memberId}>
+                  <TableCell component="th" scope="row">
+                    {row.track.name}
+                  </TableCell>
+                  <TableCell>{row.unpaidCount}</TableCell>
+                  <TableCell>{row.name}</TableCell>
+                  {row.detail.map((dueDetail) => (
+                    <TableCell
+                      css={S.memoTableCell(dueDetail)}
+                      onClick={(e) => handleMemoClick(e, dueDetail)}
+                      key={dueDetail.month}
+                    >
+                      {/* TODO: detail.status에 따른 UI */}
+                      {/* 미납 X(빨강), 면제 -(초록), 납부 O(초록), null -(default) */}
+                      {dueDetail.status !== null ? STATUS_MAPPING[dueDetail.status] : '-'}
+                    </TableCell>
+                  ))}
+                </TableRow>
+              ))}
+              <Popover
+                id="simple-popover"
+                open={memoPopOverOpen}
+                anchorEl={anchorEl}
+                onClose={() => setAnchorEl(null)}
+                anchorOrigin={{
+                  vertical: 'bottom',
+                  horizontal: 'left',
+                }}
+              >
+                <div css={S.memoPopover}>
+                  {/* TODO: 면제 혹은 미납의 구체적인 사유 */}
+                  <h3>
+                    {detail.status}
+                    {' '}
+                    사유
+                  </h3>
+                  {detail.memo}
+                </div>
+              </Popover>
+            </TableBody>
+          </Table>
+        </TableContainer>
+      </div>
+      <div css={S.paginationWrapper}>
+        <Pagination
+          css={S.pagination}
+          page={page}
+          count={5}
+          renderItem={(item) => (
+            <PaginationItem
+              component={Link}
+              to={`/dues?page=${item.page}`}
+              {...item}
+            />
+          )}
+        />
+      </div>
+    </>
+  );
+}
+
+export default function DuesManagement() {
+  const location = useLocation();
+  const query = new URLSearchParams(location.search);
+  const page = parseInt(query.get('page') || '1', 10);
+  const currentYear = new Date().getFullYear();
+  const duesYear = currentYear - page + 1;
+  return (
     <div css={S.container}>
       <div css={S.sidebar}>
         <img src="https://image.bcsdlab.com/banner.png" alt="logo" css={S.logo} />
@@ -99,128 +236,10 @@ export default function DuesManagement() {
             년 회비 내역
           </h1>
         </div>
-        <div css={S.searchName}>
-          <Input
-            value={name}
-            id="memberName"
-            onKeyDown={handleNameSearchKeyDown}
-            onChange={handleNameChange}
-            placeholder="이름을 입력하세요"
-          />
-          <Button onClick={handleNameSearchClick}>검색</Button>
-        </div>
-        <div css={S.dues}>
-          <TableContainer css={S.tableContainer}>
-            <Table stickyHeader>
-              <TableHead>
-                <TableRow>
-                  <TableCell css={S.tableHeader}>
-                    <div css={S.trackTableCell}>
-                      <span>트랙</span>
-                      <button
-                        type="button"
-                        onClick={openFilterModal}
-                        css={S.filterModalButton}
-                      >
-                        필터
-                      </button>
-                      <Modal
-                        open={isFilterModalOpen}
-                        onClose={closeFilterModal}
-                      >
-                        <div css={S.filterModalContainer}>
-                          <h2>
-                            트랙 선택
-                          </h2>
-                          <div css={S.filterModalContent}>
-                            <FormControl css={S.checkboxFieldset} component="fieldset" variant="standard">
-                              <FormLabel component="legend">원하는 트랙을 선택하세요.</FormLabel>
-                              <FormGroup>
-                                {tracks.map((track, index) => {
-                                  return (
-                                    <FormControlLabel
-                                      key={track.id}
-                                      control={
-                                        <Checkbox checked={trackFilter[index]} onChange={handleTrackFilterChange} name={track.name} />
-                                      }
-                                      label={track.name}
-                                    />
-                                  );
-                                })}
-                              </FormGroup>
-                            </FormControl>
-                          </div>
-                        </div>
-                      </Modal>
-                    </div>
-                  </TableCell>
-                  <TableCell css={S.tableHeader}>미납 횟수</TableCell>
-                  <TableCell css={S.tableHeader}>이름</TableCell>
-                  {Array.from({ length: 12 }, (_, i) => i + 1).map((month) => (
-                    <TableCell key={month} css={S.tableHeader}>
-                      {month}
-                      월
-                    </TableCell>
-                  ))}
-                </TableRow>
-              </TableHead>
-              <TableBody>
-                {filteredValue.map((row) => (
-                  <TableRow key={row.memberId}>
-                    <TableCell component="th" scope="row">
-                      {row.track.name}
-                    </TableCell>
-                    <TableCell>{row.unpaidCount}</TableCell>
-                    <TableCell>{row.name}</TableCell>
-                    {row.detail.map((dueDetail) => (
-                      <TableCell
-                        css={S.memoTableCell(dueDetail)}
-                        onClick={(e) => handleMemoClick(e, dueDetail)}
-                        key={dueDetail.month}
-                      >
-                        {/* TODO: detail.status에 따른 UI */}
-                        {/* 미납 X(빨강), 면제 -(초록), 납부 O(초록), null -(default) */}
-                        {dueDetail.status !== null ? STATUS_MAPPING[dueDetail.status] : '-'}
-                      </TableCell>
-                    ))}
-                  </TableRow>
-                ))}
-                <Popover
-                  id="simple-popover"
-                  open={memoPopOverOpen}
-                  anchorEl={anchorEl}
-                  onClose={() => setAnchorEl(null)}
-                  anchorOrigin={{
-                    vertical: 'bottom',
-                    horizontal: 'left',
-                  }}
-                >
-                  <div css={S.memoPopover}>
-                    {/* TODO: 면제 혹은 미납의 구체적인 사유 */}
-                    <h3>
-                      {detail.status}
-                      {' '}
-                      사유
-                    </h3>
-                    {detail.memo}
-                  </div>
-                </Popover>
-              </TableBody>
-            </Table>
-          </TableContainer>
-        </div>
-        <div css={S.pagination}>
-          <Pagination
-            page={page}
-            count={5}
-            renderItem={(item) => (
-              <PaginationItem
-                component={Link}
-                to={`/dues?page=${item.page}`}
-                {...item}
-              />
-            )}
-          />
+        <div css={S.mainContent}>
+          <Suspense fallback={<LoadingSpinner />}>
+            <DefaultTable />
+          </Suspense>
         </div>
       </div>
     </div>
