@@ -10,7 +10,7 @@ function App() {
       <Routes>
         <Route path="/" element={<MemberInfo />} />
         <Route path="/member-info" element={<DefaultLayout />} />
-        <Route path="dues" element={<DuesManagement />} />
+        <Route path="/dues" element={<DuesManagement />} />
       </Routes>
     </Suspense>
   );
