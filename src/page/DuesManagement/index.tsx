@@ -241,7 +241,7 @@ export default function DuesManagement() {
               <PaginationItem
                 component={Link}
                 to={`/dues?page=${item.page}`}
-                page={item.page}
+                {...item}
               />
             )}
           />

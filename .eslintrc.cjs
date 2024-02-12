@@ -28,6 +28,7 @@ module.exports = {
     "no-unused-vars": "off",
     "@typescript-eslint/no-unused-vars": "warn",
     "@typescript-eslint/quotes": ["error", "single"],
+    "react/jsx-props-no-spreading": "off",
     "react/react-in-jsx-scope": "off",
     "react/no-unknown-property": ["error", { ignore: ["css"] }],
     "import/prefer-default-export": "off",
