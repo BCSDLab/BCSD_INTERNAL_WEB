@@ -1,56 +1,89 @@
 import { css } from '@emotion/react';
+import { colors } from 'const/colors/style';
+
+export const sidebar = css`
+  display: flex;
+  flex-direction: column;
+  width: 250px;
+  height: calc(100vh - 10px);
+  background-color: ${colors.gray};
+  border-right: 1px solid ${colors.borderGray};
+`
+
+export const topBar = css`
+  width: 100%;
+  height: 100px;
+  background-color: ${colors.gray};
+  border-bottom: 1px solid ${colors.borderGray};
+  display: flex;
+  align-items: center;
+`
+
+export const topBarTitle = css`
+  margin-left: 16px;
+`
+
+export const content = css`
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  width: 100vw;
+`;
 
 export const container = css`
-  height: 100vh;
-  width: 100vw;
   display: flex;
-  justify-content: center;
-  align-items: center;
-  flex-direction: column;
+  height: 100%;
+  width: 100%;
+  background-color: ${colors.gray};
 `;
+
+export const logo = css`
+  width: 100%;
+  margin-top: -10px;
+`;
+
+export const tableContainer = css`
+  overflow-x: initial;
+`
+
+export const tableHeader = css`
+  background-color: #1877f2;
+  color: #ffffff;
+`
+
+export const trackTableCell = css`
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+`
 
 export const searchName = css`
   display: flex;
   justify-content: end;
-  width: 90vw;
-  margin-bottom: 8px;
+  width: calc(100% - 90px);
+  margin: 10px 0;
 `
 
 export const dues = css`
-  height: 80vh;
-  width: 90vw;
+  width: calc(100% - 100px);
+  height: 100%;
 `;
 
 export const pagination = css`
   display: flex;
   justify-content: center;
   align-items: center;
-  margin-bottom: 8px;
+  margin-bottom: 10px;
 `;
 
 export const filterModalButton = css`
   padding: 8px 16px;
   border-radius: 8px;
-  transition: all 150ms ease;
   cursor: pointer;
-  background: '#fff';
   border: 1px solid #eeeeee;
   color: #212121;
   box-shadow: 0 1px 2px 0 rgb(0 0 0 / 0.05);
-
-  &:hover {
-    background: #fafafa;
-    border-color: #e0e0e0;
-  }
-
-  &:active {
-    background: #f5f5f5
-  }
-
-  &:focus-visible {
-    box-shadow: 0 0 0 4px #90caf9;
-    outline: none;
-  }
 `
 
 export const filterModal = css`
@@ -80,7 +113,29 @@ export const filterModalContainer = css`
   color: #212121;
 `
 
+export const checkboxFieldset = css`
+  margin: 5px;
+`
+
 export const filterModalContent = css`
   display: flex;
   flex-direction: column;
+`
+
+// 미납 | 납부 | 면제 | null(아직 납부 달이 지나지 않음)
+// popover를 여는 버튼은 미납, 면제일 때만 보이도록 함
+export const memoTableCell = (props: any) => css`
+  cursor: ${props.status === "미납" || props.status === "면제" ? "pointer" : "default"};
+  background-color: ${props.status === "미납"
+  ? "#ff5630"
+    : props.status === "납부"
+    ? "#00a76f"
+      : props.status === "면제"
+        ? "#00a76f"
+        : "default"
+  };
+`
+
+export const memoPopover = css`
+  padding: 16px;
 `
