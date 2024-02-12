@@ -240,8 +240,8 @@ export default function SignUp() {
               error={!!errors.track}
             >
               {track.map((option) => (
-                <MenuItem key={option.value} value={option.value}>
-                  {option.value}
+                <MenuItem key={option.id} value={option.name}>
+                  {option.name}
                 </MenuItem>
               ))}
             </TextField>}
