@@ -1,4 +1,4 @@
-export interface MembershipDues {
+export interface DuesInfo {
   year: number;
   dues: Dues[];
 }

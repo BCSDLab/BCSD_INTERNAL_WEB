@@ -1,9 +1,9 @@
 import { accessClient } from 'api';
-import { MembershipDues } from 'model/dues/allDues';
+import { DuesInfo } from 'model/dues/allDues';
 
 export interface DuesOptions {
   year: number;
   track?: string;
 }
 
-export const getAllDues = ({ year, track }: DuesOptions) => accessClient.get<MembershipDues>(`/dues?year=${year}&track=${track}`);
+export const getAllDues = ({ year, track }: DuesOptions) => accessClient.get<DuesInfo>(`/dues?year=${year}&track=${track}`);
