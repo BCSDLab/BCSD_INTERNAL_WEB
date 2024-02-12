@@ -11,7 +11,7 @@ interface Dues {
   detail: DuesDetail[];
 }
 
-interface DuesDetail {
+export interface DuesDetail {
   month: number;
   status: string;
   memo?: string;
