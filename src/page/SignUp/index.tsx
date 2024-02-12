@@ -2,27 +2,39 @@ import * as S from './styles.ts'
 import { TextField } from '@mui/material'
 import MenuItem from '@mui/material/MenuItem';
 import Button from '@mui/material/Button';
-import { useForm, Controller } from 'react-hook-form';
+import { useForm, Controller, UseFormGetValues } from 'react-hook-form';
+import { accessClient } from 'api/index.ts';
+import { SHA256 } from "crypto-js";
+import { useMutation } from '@tanstack/react-query';
+import Backdrop from '@mui/material/Backdrop';
+import CircularProgress from '@mui/material/CircularProgress';
+import { AxiosError } from 'axios';
 
 const track = [
   {
-    value: 'FRONTEND',
+    id: 1,
+    name: "BACKEND"
   },
   {
-    value: 'BACKEND',
+    id: 2,
+    name: "FRONTEND"
   },
   {
-    value: 'ANDROID',
+    id: 3,
+    name: "IOS"
   },
   {
-    value: 'IOS',
+    id: 4,
+    name: "ANDROID"
   },
   {
-    value: 'GAME',
+    id: 5,
+    name: "UI/UX"
   },
   {
-    value: 'UIUX',
-  },
+    id: 6,
+    name: "GAME"
+  }
 ];
 
 const status = [
@@ -77,9 +89,10 @@ type User = {
   email: string,
   password: string,
   githubName: string,
+  profileImageUrl: string | null
 }
 
-const initialState: User = {
+const initialValue = {
   joinDate: '',
   track: '',
   memberType: '',
@@ -92,18 +105,49 @@ const initialState: User = {
   email: '',
   password: '',
   githubName: '',
+  profileImageUrl: null
+}
+
+{/* eslint-disable */ }
+const emailRegExp = new RegExp(/^[-0-9A-Za-z!#$%&'*+/=?^_`{|}~.]+@[-0-9A-Za-z!#$%&'*+/=?^_`{|}~]+[.]{1}[0-9A-Za-z]/);
+
+
+const register = (user: User) => accessClient.post('/members/register',
+  user)
+
+const regist = async (user: User, getValues: UseFormGetValues<User>) => {
+  const hash = SHA256(getValues('password')).toString();
+  try {
+    console.log(user)
+    await register({ ...user, password: hash, profileImageUrl: null });
+  }
+  catch (e) {
+    const err = e as AxiosError;
+    console.log(err.response?.data)
+  }
 }
 
 export default function SignUp() {
-  const { control, handleSubmit, formState: { errors } } = useForm<User>({
-    mode: 'onChange'
+  const { control, handleSubmit, formState: { errors }, getValues } = useForm<User>({
+    mode: 'onChange',
+    defaultValues: initialValue,
   });
-  const sub = (data: User) => {
-    console.log(data)
-  }
-  console.log(errors)
+
+  const { isPending, mutate } = useMutation({
+    mutationKey: ['signup'],
+    mutationFn: (user: User) => regist(user, getValues)
+  });
+
   return (
-    <form css={S.Template} onSubmit={handleSubmit(sub)}>
+    <form css={S.Template} onSubmit={handleSubmit((data) => mutate(data))}>
+      {isPending &&
+        <Backdrop
+          sx={{ color: '#fff', zIndex: (theme) => theme.zIndex.drawer + 1 }}
+          open={true}
+        >
+          <CircularProgress color="inherit" />
+        </Backdrop>
+      }
       <div css={S.InputSet}>
         <Controller
           name='name'
@@ -239,6 +283,7 @@ export default function SignUp() {
               fullWidth
               {...field}
               error={!!errors.phoneNumber}
+              helperText='ex) 010-1234-5678'
             />
           }
         />
@@ -301,6 +346,10 @@ export default function SignUp() {
           control={control}
           rules={{
             required: true,
+            pattern: {
+              value: emailRegExp,
+              message: '이메일 형식이 맞지 않습니다.'
+            }
           }}
           render={({ field }) =>
             <TextField
@@ -309,6 +358,7 @@ export default function SignUp() {
               fullWidth
               {...field}
               error={!!errors.email}
+              helperText={errors.email?.message}
             />
           }
         />
