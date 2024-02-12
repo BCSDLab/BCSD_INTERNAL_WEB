@@ -8,7 +8,7 @@ import TableRow from '@mui/material/TableRow';
 import Pagination from '@mui/material/Pagination';
 import PaginationItem from '@mui/material/PaginationItem';
 import {
-  Button, Checkbox, FormControl, FormControlLabel, FormGroup, FormLabel, Popover,
+  Button, Checkbox, FormControl, FormControlLabel, FormGroup, FormLabel, Input, Popover,
 } from '@mui/material';
 import Modal from '@mui/material/Modal';
 import { ChangeEvent, useState } from 'react';
@@ -96,8 +96,8 @@ export default function DuesManagement() {
             년 회비 내역
           </h1>
         </div>
-        <label htmlFor="memberName" css={S.searchName}>
-          <input
+        <div css={S.searchName}>
+          <Input
             value={name}
             id="memberName"
             onKeyDown={handleNameSearchKeyDown}
@@ -105,7 +105,7 @@ export default function DuesManagement() {
             placeholder="이름을 입력하세요"
           />
           <Button onClick={handleNameSearchClick}>검색</Button>
-        </label>
+        </div>
         <div css={S.dues}>
           <TableContainer css={S.tableContainer}>
             <Table stickyHeader>
