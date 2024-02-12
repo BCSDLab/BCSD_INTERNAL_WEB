@@ -3,9 +3,9 @@ import { DuesOptions, getAllDues } from 'api/Dues';
 import { DuesInfo } from 'model/dues/allDues';
 
 export const useGetAllDues = ({ year, track }: DuesOptions) => {
-  const { data: allDues }: { data: DuesInfo } = useSuspenseQuery({
+  const { data }: { data: DuesInfo } = useSuspenseQuery({
     queryKey: ['dues', year, track],
     queryFn: () => getAllDues({ year, track }),
   });
-  return { allDues };
+  return { data };
 };

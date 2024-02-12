@@ -36,7 +36,7 @@ export default function DuesManagement() {
     setFalse: closeFilterModal,
   } = useBooleanState(false);
 
-  const { allDues } = useGetAllDues({ year: duesYear });
+  const { data: allDues } = useGetAllDues({ year: duesYear });
   const [filteredValue, setFilteredValue] = useState(allDues.dues);
 
   const { data: tracks } = useGetTracks();
