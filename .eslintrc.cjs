@@ -27,10 +27,10 @@ module.exports = {
   rules: {
     "no-unused-vars": "off",
     "@typescript-eslint/no-unused-vars": "warn",
+    "@typescript-eslint/quotes": ["error", "single"],
     "react/react-in-jsx-scope": "off",
     "react/no-unknown-property": ["error", { ignore: ["css"] }],
     "import/prefer-default-export": "off",
     "linebreak-style": 0,
-    "single-quote": true,
   },
 };

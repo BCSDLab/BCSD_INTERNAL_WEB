@@ -1,4 +1,4 @@
-import { css } from "@emotion/react";
+import { css } from '@emotion/react';
 
 export const loading = css`
   position: fixed;
@@ -10,4 +10,4 @@ export const loading = css`
   justify-content: center;
   align-items: center;
   background-color: rgba(0, 0, 0, 0.1);
-`
+`;

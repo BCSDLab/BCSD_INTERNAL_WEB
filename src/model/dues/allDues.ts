@@ -13,7 +13,7 @@ interface Dues {
 
 export interface DuesDetail {
   month: number;
-  status: string;
+  status: '납부' | '면제' | '미납' | null;
   memo?: string;
 }
 
