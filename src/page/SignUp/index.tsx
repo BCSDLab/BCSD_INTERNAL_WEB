@@ -61,7 +61,7 @@ const member = [
   },
 ] as const;
 
-type User = {
+type Member = {
   joinedYear: number,
   joinedMonth: number,
   trackId: number,
@@ -101,15 +101,15 @@ const emailRegExp = new RegExp(/^[-0-9A-Za-z!#$%&'*+/=?^_`{|}~.]+@[-0-9A-Za-z!#$
 const phoneNumberNegExp = new RegExp(/^\d{3}-\d{3,4}-\d{4}$/);
 
 
-const register = (user: User) => accessClient.post('/members/register', user)
+const register = (user: Member) => accessClient.post('/members/register', user)
 
 export interface AxiosErrorMessage {
   message: string
 }
 
 const regist = async (
-  user: User,
-  getValues: UseFormGetValues<User>,
+  user: Member,
+  getValues: UseFormGetValues<Member>,
   joinedYear: number, joinedMonth:
     number,
   openSnackBar: ({ type, message }: SnackBarParam) => void) => {
@@ -130,7 +130,7 @@ const month = date.getMonth() + 1
 const day = date.getDate()
 
 export default function SignUp() {
-  const { control, handleSubmit, formState: { errors }, getValues, clearErrors } = useForm<User>({
+  const { control, handleSubmit, formState: { errors }, getValues, clearErrors } = useForm<Member>({
     mode: 'onChange',
     defaultValues: initialValue,
   });
@@ -142,7 +142,7 @@ export default function SignUp() {
 
   const { isPending, mutate: signUp } = useMutation({
     mutationKey: ['signup'],
-    mutationFn: ({ data, joinedYear, joinedMonth }: { data: User, joinedYear: number, joinedMonth: number }) => regist(data, getValues, joinedYear, joinedMonth, openSnackBar)
+    mutationFn: ({ data, joinedYear, joinedMonth }: { data: Member, joinedYear: number, joinedMonth: number }) => regist(data, getValues, joinedYear, joinedMonth, openSnackBar)
   });
   return (
     <form css={S.template} onSubmit={handleSubmit((data) => {
