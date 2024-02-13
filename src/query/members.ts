@@ -1,5 +1,5 @@
 import { useMutation, useSuspenseQuery } from '@tanstack/react-query';
-import { getMembers, login } from 'api/members';
+import { getMembers, getNotAuthedMembers, login } from 'api/members';
 import { useNavigate } from 'react-router-dom';
 import { useSnackBar } from 'ts/useSnackBar';
 
@@ -39,4 +39,13 @@ export const useLogin = () => {
   });
 
   return { mutate };
+};
+
+export const useNotAuthedMember = () => {
+  const { data } = useSuspenseQuery({
+    queryKey: ['notAuthed'],
+    queryFn: () => getNotAuthedMembers(),
+  });
+
+  return { data };
 };

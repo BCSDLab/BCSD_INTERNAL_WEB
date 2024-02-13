@@ -25,3 +25,7 @@ export interface Member {
 export type LoginResponse = {
   accessToken: string
 };
+
+export interface MemberResponse {
+  content: Member[];
+}

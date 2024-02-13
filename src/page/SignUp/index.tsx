@@ -103,7 +103,7 @@ const phoneNumberNegExp = new RegExp(/^\d{3}-\d{3,4}-\d{4}$/);
 
 const register = (user: User) => accessClient.post('/members/register', user)
 
-interface AxiosErrorMessage {
+export interface AxiosErrorMessage {
   message: string
 }
 
