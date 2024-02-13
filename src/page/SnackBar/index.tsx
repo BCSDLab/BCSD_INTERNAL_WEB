@@ -12,8 +12,9 @@ export default function SnackBar() {
       {showSnackBar && message}
       <Snackbar
         open={showSnackBar}
-        autoHideDuration={3000}
         anchorOrigin={{ vertical: 'top', horizontal: 'center' }}
+        autoHideDuration={3000}
+        onClose={close}
       >
         <Alert
           onClose={close}

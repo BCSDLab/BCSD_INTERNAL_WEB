@@ -33,10 +33,17 @@ export default function SignIn() {
   };
 
   const { mutate: login } = useLogin();
+
   return (
     <div css={S.template}>
       <DemoPaper variant="elevation">
-        <div css={S.center}>
+        <form
+          css={S.center}
+          onSubmit={(e) => {
+            e.preventDefault();
+            login(account);
+          }}
+        >
           <img src="https://image.bcsdlab.com/banner.png" alt="banner" css={S.image} />
           <FormControl sx={{ width: '25ch' }} variant="outlined">
             <TextField
@@ -67,8 +74,8 @@ export default function SignIn() {
               label="Password"
             />
           </FormControl>
-          <Button variant="contained" onClick={() => login(account)}>로그인</Button>
-        </div>
+          <Button variant="contained" type="submit" onClick={() => login(account)}>로그인</Button>
+        </form>
       </DemoPaper>
     </div>
   );

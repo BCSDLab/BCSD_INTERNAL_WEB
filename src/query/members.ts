@@ -1,5 +1,7 @@
 import { useMutation, useSuspenseQuery } from '@tanstack/react-query';
 import { getMembers, login } from 'api/members';
+import { useNavigate } from 'react-router-dom';
+import { useSnackBar } from 'ts/useSnackBar';
 
 interface GetMember {
   pageIndex: number;
@@ -24,12 +26,17 @@ export const useGetMembers = ({ pageIndex, pageSize, trackId }: GetMember) => {
 };
 
 export const useLogin = () => {
-  const { data, mutate } = useMutation({
-    mutationKey: ['login'],
+  const openSnackBar = useSnackBar();
+  const navigate = useNavigate();
+  const { mutate } = useMutation({
     mutationFn: ({ studentNumber, password }: LoginRequest) => login(studentNumber, password),
+    onSuccess: (response) => {
+      localStorage.setItem('accessToken', response.accessToken);
+      openSnackBar({ type: 'success', message: '로그인에 성공했습니다.' });
+      navigate('/');
+    },
+    onError: (e) => openSnackBar({ type: 'error', message: e.message }),
   });
-
-  if (data) localStorage.setItem('accessToken', data.accessToken);
 
   return { mutate };
 };
