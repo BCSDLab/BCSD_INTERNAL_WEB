@@ -17,6 +17,7 @@ function App() {
         <Route path="/member" element={<MemberInfo />} />
         <Route path="/accept" element={<AcceptMember />} />
       </Route>
+      <Route path="/dues" element={<DuesManagement />} />
     </Routes>
   );
 }
