@@ -1,7 +1,7 @@
 import { TextField } from '@mui/material';
 import MenuItem from '@mui/material/MenuItem';
 import Button from '@mui/material/Button';
-import { useForm, Controller, UseFormGetValues } from 'react-hook-form';
+import { useForm, Controller, UseFormGetValues, UseFormSetError } from 'react-hook-form';
 import { SHA256 } from 'crypto-js';
 import { useMutation } from '@tanstack/react-query';
 import Backdrop from '@mui/material/Backdrop';
@@ -11,11 +11,13 @@ import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
 import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
 import dayjs, { Dayjs } from 'dayjs';
 import { useState } from 'react';
+import Snackbar from '@mui/material/Snackbar';
 
 /* eslint-disable  */
 import { accessClient } from 'api/index.ts';
 import * as S from './styles.ts';
 import { useGetTracks } from 'query/tracks.ts';
+import { AxiosError } from 'axios';
 
 const status = [
   {
@@ -98,13 +100,18 @@ const phoneNumberNegExp = new RegExp(/^\d{3}-\d{3,4}-\d{4}$/);
 
 const register = (user: User) => accessClient.post('/members/register', user)
 
-const regist = async (user: User, getValues: UseFormGetValues<User>, joinedYear: number, joinedMonth: number) => {
+interface AxiosErrorMessage {
+  message: string
+}
+
+const regist = async (user: User, getValues: UseFormGetValues<User>, joinedYear: number, joinedMonth: number, setError: UseFormSetError<User>) => {
   const hash = SHA256(getValues('password')).toString();
   try {
     await register({ ...user, password: hash, joinedYear: joinedYear, joinedMonth: joinedMonth });
   }
   catch (e) {
-    //
+    const err = e as AxiosError
+    setError('root', { type: 'custom', message: (err.response?.data as AxiosErrorMessage).message })
   }
 }
 
@@ -114,19 +121,18 @@ const month = date.getMonth() + 1
 const day = date.getDate()
 
 export default function SignUp() {
-  const { control, handleSubmit, formState: { errors }, getValues } = useForm<User>({
+  const { control, handleSubmit, formState: { errors }, getValues, setError } = useForm<User>({
     mode: 'onChange',
     defaultValues: initialValue,
   });
   const { data: track } = useGetTracks();
-  console.log(track)
 
   // Dayjs 타입을 사용하기에 부적절하다고 판단해서 새로운 state를 만듦
   const [days, setDays] = useState<Dayjs | null>(dayjs(year + '-' + month + '-' + day)); // 날짜 초기값 오늘 날짜로 임의 설정
 
   const { isPending, mutate: signUp } = useMutation({
     mutationKey: ['signup'],
-    mutationFn: ({ data, joinedYear, joinedMonth }: { data: User, joinedYear: number, joinedMonth: number }) => regist(data, getValues, joinedYear, joinedMonth)
+    mutationFn: ({ data, joinedYear, joinedMonth }: { data: User, joinedYear: number, joinedMonth: number }) => regist(data, getValues, joinedYear, joinedMonth, setError)
   });
 
   return (
@@ -140,6 +146,11 @@ export default function SignUp() {
     }
     )
     }>
+      <Snackbar
+        open={!!errors.root}
+        autoHideDuration={5000}
+        message={errors.root?.message}
+      />
       {isPending &&
         <Backdrop
           sx={{ color: '#fff', zIndex: (theme) => theme.zIndex.drawer + 1 }}
