@@ -122,8 +122,7 @@ const emailRegExp = new RegExp(/^[-0-9A-Za-z!#$%&'*+/=?^_`{|}~.]+@[-0-9A-Za-z!#$
 const phoneNumberNegExp = new RegExp(/^\d{3}-\d{3,4}-\d{4}$/);
 
 
-const register = (user: User) => accessClient.post('/members/register',
-  user)
+const register = (user: User) => accessClient.post('/members/register', user)
 
 const regist = async (user: User, getValues: UseFormGetValues<User>, joinedYear: number, joinedMonth: number) => {
   const hash = SHA256(getValues('password')).toString();
@@ -403,7 +402,7 @@ export default function SignUp() {
         />
       </div>
       <div css={S.inputSet}>
-        <Button variant="contained" type='submit'>회원가입</Button>
+        <Button variant="contained" type='submit' disabled={isPending}>회원가입</Button>
       </div>
     </form >
   )
