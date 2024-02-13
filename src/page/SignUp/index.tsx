@@ -231,7 +231,7 @@ export default function SignUp() {
           dateAdapter={AdapterDayjs}
         >
           <DatePicker
-            label="Controlled picker"
+            label="가입 시기"
             value={days}
             onChange={(newDay) => setDays(newDay)}
           />
