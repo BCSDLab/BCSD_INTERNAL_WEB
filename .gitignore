@@ -45,3 +45,6 @@ node_modules
 .history
 /packages/*/bundles
 /packages/*/lib/*
+
+# yarn berry
+.yarn/install-state.gz
