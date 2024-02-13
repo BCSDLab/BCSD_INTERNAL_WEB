@@ -2,6 +2,7 @@ import { Button } from '@mui/material';
 import { DataGrid, GridColDef, GridRenderCellParams } from '@mui/x-data-grid';
 import { useAcceptMember } from 'query/admin';
 import { useNotAuthedMember } from 'query/members';
+import * as S from './style';
 
 export default function AcceptMember() {
   const { data: members } = useNotAuthedMember();
@@ -37,20 +38,27 @@ export default function AcceptMember() {
     },
   ];
   return (
-    <div style={{ height: 650, paddingLeft: 20, paddingRight: 20 }}>
-      <DataGrid
-        rows={members.content.map((member) => ({
-          ...member, track: member.track.name,
-        }))}
-        columns={columns}
-        initialState={{
-          pagination: {
-            paginationModel: { page: 0, pageSize: 10 },
-          },
-        }}
-        pageSizeOptions={[10]}
-        checkboxSelection
-      />
+    <div css={S.container}>
+      <img src="https://image.bcsdlab.com/banner.png" alt="banner" css={S.image} />
+      <div style={{
+        height: '70vh', paddingLeft: 20, paddingRight: 20,
+      }}
+      >
+        <DataGrid
+          rows={members.content.map((member) => ({
+            ...member, track: member.track.name,
+          }))}
+          columns={columns}
+          initialState={{
+            pagination: {
+              paginationModel: { page: 0, pageSize: 10 },
+            },
+          }}
+          pageSizeOptions={[10]}
+          checkboxSelection
+        />
+      </div>
+
     </div>
   );
 }

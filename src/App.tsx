@@ -14,8 +14,10 @@ function App() {
       <Route path="/register" element={<SignUp />} />
       <Route path="/login" element={<SignIn />} />
       <Route element={<AuthRoute needAuth redirectRoute="/login" />}>
-        <Route path="/member" element={<MemberInfo />} />
-        <Route path="/accept" element={<AcceptMember />} />
+        <Route path="/" element={<DefaultLayout />}>
+          <Route path="/member" element={<MemberInfo />} />
+          <Route path="/accept" element={<AcceptMember />} />
+        </Route>
       </Route>
       <Route path="/dues" element={<DuesManagement />} />
     </Routes>
