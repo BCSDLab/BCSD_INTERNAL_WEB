@@ -19,7 +19,8 @@ import Snackbar from '@mui/material/Snackbar';
 import { accessClient } from 'api/index.ts';
 import * as S from './styles.ts';
 import { useGetTracks } from 'query/tracks.ts';
-import { useSnackBar } from 'ts/useSnackBar.tsx';
+import { SnackBarParam, useSnackBar } from 'ts/useSnackBar.tsx';
+import { AxiosError } from 'axios';
 
 const status = [
   {
@@ -102,18 +103,24 @@ const phoneNumberNegExp = new RegExp(/^\d{3}-\d{3,4}-\d{4}$/);
 
 const register = (user: User) => accessClient.post('/members/register', user)
 
+interface AxiosErrorMessage {
+  message: string
+}
+
 const regist = async (
   user: User,
   getValues: UseFormGetValues<User>,
   joinedYear: number, joinedMonth:
     number,
-  onError: (e: unknown) => void) => {
+  openSnackBar: ({ type, message }: SnackBarParam) => void) => {
   const hash = SHA256(getValues('password')).toString();
   try {
     await register({ ...user, password: hash, joinedYear: joinedYear, joinedMonth: joinedMonth });
   }
   catch (e) {
-    onError(e)
+    const err = e as AxiosError;
+    const { message } = (err.response?.data as AxiosErrorMessage);
+    openSnackBar({ type: 'error', message: message })
   }
 }
 
@@ -128,14 +135,14 @@ export default function SignUp() {
     defaultValues: initialValue,
   });
   const { data: track } = useGetTracks();
-  const onError = useSnackBar();
+  const openSnackBar = useSnackBar();
 
   // Dayjs 타입을 사용하기에 부적절하다고 판단해서 새로운 state를 만듦
   const [days, setDays] = useState<Dayjs | null>(dayjs(year + '-' + month + '-' + day)); // 날짜 초기값 오늘 날짜로 임의 설정
 
   const { isPending, mutate: signUp } = useMutation({
     mutationKey: ['signup'],
-    mutationFn: ({ data, joinedYear, joinedMonth }: { data: User, joinedYear: number, joinedMonth: number }) => regist(data, getValues, joinedYear, joinedMonth, onError)
+    mutationFn: ({ data, joinedYear, joinedMonth }: { data: User, joinedYear: number, joinedMonth: number }) => regist(data, getValues, joinedYear, joinedMonth, openSnackBar)
   });
   return (
     <form css={S.template} onSubmit={handleSubmit((data) => {

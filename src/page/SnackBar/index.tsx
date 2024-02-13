@@ -1,8 +1,11 @@
 import { useStore } from 'ts/useSnackBar';
 import Snackbar from '@mui/material/Snackbar';
+import Alert from '@mui/material/Alert';
 
 export default function SnackBar() {
-  const { showSnackBar, message, close } = useStore();
+  const {
+    showSnackBar, message, close, type,
+  } = useStore();
 
   return (
     <div>
@@ -10,10 +13,17 @@ export default function SnackBar() {
       <Snackbar
         open={showSnackBar}
         autoHideDuration={3000}
-        message={message}
-        onClose={close}
         anchorOrigin={{ vertical: 'top', horizontal: 'center' }}
-      />
+      >
+        <Alert
+          onClose={close}
+          severity={type}
+          variant="filled"
+          sx={{ width: '100%' }}
+        >
+          {message}
+        </Alert>
+      </Snackbar>
     </div>
   );
 }
