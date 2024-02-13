@@ -6,4 +6,7 @@ export interface DuesOptions {
   track?: string;
 }
 
-export const getAllDues = ({ year, track }: DuesOptions) => accessClient.get<DuesInfo>(`/dues?year=${year}&track=${track}`);
+export const getAllDues = ({ year, track }: DuesOptions) => {
+  const query = track ? `/dues?year=${year}&track=${track}` : `/dues?year=${year}`;
+  return accessClient.get<DuesInfo>(query);
+};
