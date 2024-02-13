@@ -2,7 +2,7 @@ import { TextField } from '@mui/material';
 import MenuItem from '@mui/material/MenuItem';
 import Button from '@mui/material/Button';
 import {
-  useForm, Controller, UseFormGetValues, UseFormSetError,
+  useForm, Controller, UseFormGetValues,
 } from 'react-hook-form';
 import { SHA256 } from 'crypto-js';
 import { useMutation } from '@tanstack/react-query';
@@ -19,7 +19,7 @@ import Snackbar from '@mui/material/Snackbar';
 import { accessClient } from 'api/index.ts';
 import * as S from './styles.ts';
 import { useGetTracks } from 'query/tracks.ts';
-import { AxiosError } from 'axios';
+import { useSnackBar } from 'ts/useSnackBar.tsx';
 
 const status = [
   {
@@ -102,18 +102,18 @@ const phoneNumberNegExp = new RegExp(/^\d{3}-\d{3,4}-\d{4}$/);
 
 const register = (user: User) => accessClient.post('/members/register', user)
 
-interface AxiosErrorMessage {
-  message: string
-}
-
-const regist = async (user: User, getValues: UseFormGetValues<User>, joinedYear: number, joinedMonth: number, setError: UseFormSetError<User>) => {
+const regist = async (
+  user: User,
+  getValues: UseFormGetValues<User>,
+  joinedYear: number, joinedMonth:
+    number,
+  onError: (e: unknown) => void) => {
   const hash = SHA256(getValues('password')).toString();
   try {
     await register({ ...user, password: hash, joinedYear: joinedYear, joinedMonth: joinedMonth });
   }
   catch (e) {
-    const err = e as AxiosError
-    setError('root', { type: 'custom', message: (err.response?.data as AxiosErrorMessage).message })
+    onError(e)
   }
 }
 
@@ -123,20 +123,20 @@ const month = date.getMonth() + 1
 const day = date.getDate()
 
 export default function SignUp() {
-  const { control, handleSubmit, formState: { errors }, getValues, setError } = useForm<User>({
+  const { control, handleSubmit, formState: { errors }, getValues, clearErrors } = useForm<User>({
     mode: 'onChange',
     defaultValues: initialValue,
   });
   const { data: track } = useGetTracks();
+  const onError = useSnackBar();
 
   // Dayjs 타입을 사용하기에 부적절하다고 판단해서 새로운 state를 만듦
   const [days, setDays] = useState<Dayjs | null>(dayjs(year + '-' + month + '-' + day)); // 날짜 초기값 오늘 날짜로 임의 설정
 
   const { isPending, mutate: signUp } = useMutation({
     mutationKey: ['signup'],
-    mutationFn: ({ data, joinedYear, joinedMonth }: { data: User, joinedYear: number, joinedMonth: number }) => regist(data, getValues, joinedYear, joinedMonth, setError)
+    mutationFn: ({ data, joinedYear, joinedMonth }: { data: User, joinedYear: number, joinedMonth: number }) => regist(data, getValues, joinedYear, joinedMonth, onError)
   });
-
   return (
     <form css={S.template} onSubmit={handleSubmit((data) => {
       if (days) {
@@ -147,11 +147,13 @@ export default function SignUp() {
       }
     }
     )
-    }>
+    }
+    >
       <Snackbar
         open={!!errors.root}
         autoHideDuration={5000}
         message={errors.root?.message}
+        onClose={() => clearErrors('root')}
       />
       {isPending &&
         <Backdrop
