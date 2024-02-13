@@ -1,40 +1,46 @@
-import * as S from './styles.ts'
-import { TextField } from '@mui/material'
+import { TextField } from '@mui/material';
 import MenuItem from '@mui/material/MenuItem';
 import Button from '@mui/material/Button';
 import { useForm, Controller, UseFormGetValues } from 'react-hook-form';
-import { accessClient } from 'api/index.ts';
-import { SHA256 } from "crypto-js";
+import { SHA256 } from 'crypto-js';
 import { useMutation } from '@tanstack/react-query';
 import Backdrop from '@mui/material/Backdrop';
 import CircularProgress from '@mui/material/CircularProgress';
-import { AxiosError } from 'axios';
+import { DatePicker } from '@mui/x-date-pickers/DatePicker';
+import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
+import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
+import dayjs, { Dayjs } from 'dayjs';
+import { useState } from 'react';
+
+/* eslint-disable  */
+import { accessClient } from 'api/index.ts';
+import * as S from './styles.ts';
 
 const track = [
   {
     id: 1,
-    name: "BACKEND"
+    name: 'BACKEND',
   },
   {
     id: 2,
-    name: "FRONTEND"
+    name: 'FRONTEND',
   },
   {
     id: 3,
-    name: "IOS"
+    name: 'IOS',
   },
   {
     id: 4,
-    name: "ANDROID"
+    name: 'ANDROID',
   },
   {
     id: 5,
-    name: "UI/UX"
+    name: 'UI/UX',
   },
   {
     id: 6,
-    name: "GAME"
-  }
+    name: 'GAME',
+  },
 ];
 
 const status = [
@@ -73,12 +79,13 @@ const member = [
   },
   {
     value: 'MENTOR',
-  }
-]
+  },
+];
 
 type User = {
-  joinDate: string,
-  track: string,
+  joinedYear: number,
+  joinedMonth: number,
+  trackId: number,
   memberType: string,
   status: string,
   name: string,
@@ -90,11 +97,12 @@ type User = {
   password: string,
   githubName: string,
   profileImageUrl: string | null
-}
+};
 
 const initialValue = {
-  joinDate: '',
-  track: '',
+  joinedYear: new Date().getFullYear(),
+  joinedMonth: new Date().getMonth(),
+  trackId: 0,
   memberType: '',
   status: '',
   name: '',
@@ -105,27 +113,32 @@ const initialValue = {
   email: '',
   password: '',
   githubName: '',
-  profileImageUrl: null
-}
+  profileImageUrl: null,
+};
 
-{/* eslint-disable */ }
+{ /* eslint-disable */ }
 const emailRegExp = new RegExp(/^[-0-9A-Za-z!#$%&'*+/=?^_`{|}~.]+@[-0-9A-Za-z!#$%&'*+/=?^_`{|}~]+[.]{1}[0-9A-Za-z]/);
+
+const phoneNumberNegExp = new RegExp(/^\d{3}-\d{3,4}-\d{4}$/);
 
 
 const register = (user: User) => accessClient.post('/members/register',
   user)
 
-const regist = async (user: User, getValues: UseFormGetValues<User>) => {
+const regist = async (user: User, getValues: UseFormGetValues<User>, joinedYear: number, joinedMonth: number) => {
   const hash = SHA256(getValues('password')).toString();
   try {
-    console.log(user)
-    await register({ ...user, password: hash, profileImageUrl: null });
+    await register({ ...user, password: hash, joinedYear: joinedYear, joinedMonth: joinedMonth });
   }
   catch (e) {
-    const err = e as AxiosError;
-    console.log(err.response?.data)
+    //
   }
 }
+
+const date = new Date()
+const year = date.getFullYear()
+const month = date.getMonth() + 1
+const day = date.getDate()
 
 export default function SignUp() {
   const { control, handleSubmit, formState: { errors }, getValues } = useForm<User>({
@@ -133,13 +146,25 @@ export default function SignUp() {
     defaultValues: initialValue,
   });
 
-  const { isPending, mutate } = useMutation({
+  // Dayjs 타입을 사용하기에 부적절하다고 판단해서 새로운 state를 만듦
+  const [days, setDays] = useState<Dayjs | null>(dayjs(year + '-' + month + '-' + day)); // 날짜 초기값 오늘 날짜로 임의 설정
+
+  const { isPending, mutate: signUp } = useMutation({
     mutationKey: ['signup'],
-    mutationFn: (user: User) => regist(user, getValues)
+    mutationFn: ({ data, joinedYear, joinedMonth }: { data: User, joinedYear: number, joinedMonth: number }) => regist(data, getValues, joinedYear, joinedMonth)
   });
 
   return (
-    <form css={S.Template} onSubmit={handleSubmit((data) => mutate(data))}>
+    <form css={S.Template} onSubmit={handleSubmit((data) => {
+      if (days) {
+        const format = days?.format('YYYY-MM-DD');
+        const joinedYear = parseInt(format?.slice(0, 4));
+        const joinedMonth = parseInt(format?.slice(5, 7));
+        signUp({ data, joinedYear, joinedMonth })
+      }
+    }
+    )
+    }>
       {isPending &&
         <Backdrop
           sx={{ color: '#fff', zIndex: (theme) => theme.zIndex.drawer + 1 }}
@@ -205,27 +230,21 @@ export default function SignUp() {
               ))}
             </TextField>}
         />
-        <Controller
-          name='joinDate'
-          control={control}
-          rules={{
-            required: true,
-          }}
-          render={({ field }) =>
-            <TextField
-              label="가입 시기"
-              variant="outlined"
-              fullWidth
-              {...field}
-              error={!!errors.joinDate}
-              helperText='ex) yyyy-mm-dd'
-            />
-          }
-        />
+        <LocalizationProvider
+          dateAdapter={AdapterDayjs}
+        >
+          <DatePicker
+            label="Controlled picker"
+            value={days}
+            onChange={(newDay) => setDays(newDay)}
+          />
+        </LocalizationProvider>
+
+
       </div>
       <div css={S.InputSet}>
         <Controller
-          name='track'
+          name='trackId'
           control={control}
           rules={{
             required: true,
@@ -237,10 +256,10 @@ export default function SignUp() {
               variant="outlined"
               fullWidth
               {...field}
-              error={!!errors.track}
+              error={!!errors.trackId}
             >
               {track.map((option) => (
-                <MenuItem key={option.id} value={option.name}>
+                <MenuItem key={option.id} value={option.id}>
                   {option.name}
                 </MenuItem>
               ))}
@@ -275,6 +294,10 @@ export default function SignUp() {
           control={control}
           rules={{
             required: true,
+            pattern: {
+              value: phoneNumberNegExp,
+              message: '전화번호가 올바르지 않습니다.'
+            }
           }}
           render={({ field }) =>
             <TextField
@@ -283,7 +306,7 @@ export default function SignUp() {
               fullWidth
               {...field}
               error={!!errors.phoneNumber}
-              helperText='ex) 010-1234-5678'
+              helperText={errors.phoneNumber ? errors.phoneNumber.message : 'ex) 010-1234-5678'}
             />
           }
         />

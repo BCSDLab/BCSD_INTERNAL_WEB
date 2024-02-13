@@ -1,6 +1,5 @@
 import { Route, Routes } from 'react-router-dom';
 import DefaultLayout from 'layout/DefaultLayout';
-import MemberInfo from 'page/MemberInfo';
 import SignUp from 'page/SignUp';
 
 function App() {
