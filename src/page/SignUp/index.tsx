@@ -123,7 +123,7 @@ const month = date.getMonth() + 1
 const day = date.getDate()
 
 export default function SignUp() {
-  const { control, handleSubmit, formState: { errors }, getValues, setError } = useForm<User>({
+  const { control, handleSubmit, formState: { errors }, getValues, setError, clearErrors } = useForm<User>({
     mode: 'onChange',
     defaultValues: initialValue,
   });
@@ -152,6 +152,7 @@ export default function SignUp() {
         open={!!errors.root}
         autoHideDuration={5000}
         message={errors.root?.message}
+        onClose={() => clearErrors('root')}
       />
       {isPending &&
         <Backdrop
