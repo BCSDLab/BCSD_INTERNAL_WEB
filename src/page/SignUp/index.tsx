@@ -155,7 +155,7 @@ export default function SignUp() {
   });
 
   return (
-    <form css={S.Template} onSubmit={handleSubmit((data) => {
+    <form css={S.template} onSubmit={handleSubmit((data) => {
       if (days) {
         const format = days?.format('YYYY-MM-DD');
         const joinedYear = parseInt(format?.slice(0, 4));
@@ -173,7 +173,7 @@ export default function SignUp() {
           <CircularProgress color="inherit" />
         </Backdrop>
       }
-      <div css={S.InputSet}>
+      <div css={S.inputSet}>
         <Controller
           name='name'
           control={control}
@@ -207,7 +207,7 @@ export default function SignUp() {
           }
         />
       </div>
-      <div css={S.InputSet}>
+      <div css={S.inputSet}>
         <Controller
           name='memberType'
           control={control}
@@ -242,7 +242,7 @@ export default function SignUp() {
 
 
       </div>
-      <div css={S.InputSet}>
+      <div css={S.inputSet}>
         <Controller
           name='trackId'
           control={control}
@@ -288,7 +288,7 @@ export default function SignUp() {
             </TextField>}
         />
       </div>
-      <div css={S.InputSet}>
+      <div css={S.inputSet}>
         <Controller
           name='phoneNumber'
           control={control}
@@ -327,7 +327,7 @@ export default function SignUp() {
             />}
         />
       </div>
-      <div css={S.InputSet}>
+      <div css={S.inputSet}>
         <Controller
           name='company'
           control={control}
@@ -363,7 +363,7 @@ export default function SignUp() {
           }
         />
       </div>
-      <div css={S.InputSet}>
+      <div css={S.inputSet}>
         <Controller
           name='email'
           control={control}
@@ -402,7 +402,7 @@ export default function SignUp() {
           }
         />
       </div>
-      <div css={S.InputSet}>
+      <div css={S.inputSet}>
         <Button variant="contained" type='submit'>회원가입</Button>
       </div>
     </form >

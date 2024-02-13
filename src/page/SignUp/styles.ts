@@ -1,6 +1,6 @@
 import { css } from '@emotion/react';
 
-export const Template = css`
+export const template = css`
   display: flex;
   flex-direction: column;
   justify-content: center;
@@ -10,7 +10,7 @@ export const Template = css`
   gap: 2vh;
 `;
 
-export const InputSet = css`
+export const inputSet = css`
 display: flex;
 gap: 2vw;
 width: 40vw;
