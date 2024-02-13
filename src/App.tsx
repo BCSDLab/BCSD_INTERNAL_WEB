@@ -10,8 +10,8 @@ function App() {
     <Routes>
       <Route path="/" element={<DefaultLayout />} />
       <Route path="/member" element={<MemberInfo />} />
-      <Route path="/sign-up" element={<SignUp />} />
-      <Route path="/sign-in" element={<SignIn />} />
+      <Route path="/register" element={<SignUp />} />
+      <Route path="/login" element={<SignIn />} />
       <Route path="/accept" element={<AcceptMember />} />
     </Routes>
   );

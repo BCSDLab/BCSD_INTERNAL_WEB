@@ -21,6 +21,7 @@ import * as S from './styles.ts';
 import { useGetTracks } from 'query/tracks.ts';
 import { SnackBarParam, useSnackBar } from 'ts/useSnackBar.tsx';
 import { AxiosError } from 'axios';
+import { useNavigate } from 'react-router-dom';
 
 const status = [
   {
@@ -140,10 +141,19 @@ export default function SignUp() {
   // Dayjs 타입을 사용하기에 부적절하다고 판단해서 새로운 state를 만듦
   const [days, setDays] = useState<Dayjs | null>(dayjs(year + '-' + month + '-' + day)); // 날짜 초기값 오늘 날짜로 임의 설정
 
+  const navigate = useNavigate();
+
   const { isPending, mutate: signUp } = useMutation({
     mutationKey: ['signup'],
-    mutationFn: ({ data, joinedYear, joinedMonth }: { data: Member, joinedYear: number, joinedMonth: number }) => regist(data, getValues, joinedYear, joinedMonth, openSnackBar)
+    mutationFn: ({ data, joinedYear, joinedMonth }: { data: Member, joinedYear: number, joinedMonth: number }) =>
+      regist(data, getValues, joinedYear, joinedMonth, openSnackBar),
+    onSuccess: () => {
+      openSnackBar({ type: 'success', message: '회원가입에 성공했습니다.' })
+      navigate('/login')
+    },
+    onError: (e) => openSnackBar({ type: 'error', message: e.message })
   });
+
   return (
     <form css={S.template} onSubmit={handleSubmit((data) => {
       if (days) {
