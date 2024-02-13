@@ -15,7 +15,7 @@ import { ChangeEvent, Suspense, useState } from 'react';
 import { useGetAllDues } from 'query/dues';
 import useBooleanState from 'util/hooks/useBooleanState.ts';
 import { DuesDetail } from 'model/dues/allDues';
-import { ALL_TRACKS, STATUS_MAPPING } from 'util/constants/alltracks.ts';
+import { STATUS_MAPPING } from 'util/constants/status';
 import { useGetTracks } from 'query/tracks';
 import LoadingSpinner from 'layout/LoadingSpinner';
 import * as S from './style';
@@ -48,7 +48,7 @@ function DefaultTable() {
       if (trackFilter.every((value) => value)) {
         setFilteredValue(allDues.dues);
       } else {
-        setFilteredValue(allDues.dues.filter((row) => trackFilter[ALL_TRACKS.indexOf(row.track.name)]));
+        setFilteredValue(allDues.dues.filter((row) => trackFilter[tracks.map((track) => track.name).indexOf(row.track.name)]));
       }
     }
     setName(searchName);
@@ -73,7 +73,7 @@ function DefaultTable() {
       const updatedTrack = [...prevTrack];
       updatedTrack[trackIndex] = !updatedTrack[trackIndex];
       setFilteredValue(allDues.dues.filter(
-        (row) => updatedTrack[ALL_TRACKS.indexOf(row.track.name)],
+        (row) => updatedTrack[tracks.map((track) => track.name).indexOf(row.track.name)],
       ));
       return updatedTrack;
     });
