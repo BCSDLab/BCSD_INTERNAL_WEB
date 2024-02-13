@@ -6,7 +6,6 @@ import DuesManagement from 'page/DuesManagement';
 
 function App() {
   return (
-
     <Routes>
       <Route path="/" element={<DefaultLayout />} />
       <Route path="/" element={<MemberInfo />} />
@@ -14,7 +13,6 @@ function App() {
       <Route path="/member-info" element={<DefaultLayout />} />
       <Route path="/dues" element={<DuesManagement />} />
     </Routes>
-
   );
 }
 
