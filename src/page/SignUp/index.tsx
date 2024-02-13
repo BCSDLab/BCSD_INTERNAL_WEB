@@ -15,33 +15,7 @@ import { useState } from 'react';
 /* eslint-disable  */
 import { accessClient } from 'api/index.ts';
 import * as S from './styles.ts';
-
-const track = [
-  {
-    id: 1,
-    name: 'BACKEND',
-  },
-  {
-    id: 2,
-    name: 'FRONTEND',
-  },
-  {
-    id: 3,
-    name: 'IOS',
-  },
-  {
-    id: 4,
-    name: 'ANDROID',
-  },
-  {
-    id: 5,
-    name: 'UI/UX',
-  },
-  {
-    id: 6,
-    name: 'GAME',
-  },
-];
+import { useGetTracks } from 'query/tracks.ts';
 
 const status = [
   {
@@ -102,7 +76,7 @@ type User = {
 const initialValue = {
   joinedYear: new Date().getFullYear(),
   joinedMonth: new Date().getMonth(),
-  trackId: 0,
+  trackId: 1,
   memberType: '',
   status: '',
   name: '',
@@ -144,6 +118,8 @@ export default function SignUp() {
     mode: 'onChange',
     defaultValues: initialValue,
   });
+  const { data: track } = useGetTracks();
+  console.log(track)
 
   // Dayjs 타입을 사용하기에 부적절하다고 판단해서 새로운 state를 만듦
   const [days, setDays] = useState<Dayjs | null>(dayjs(year + '-' + month + '-' + day)); // 날짜 초기값 오늘 날짜로 임의 설정
@@ -238,8 +214,6 @@ export default function SignUp() {
             onChange={(newDay) => setDays(newDay)}
           />
         </LocalizationProvider>
-
-
       </div>
       <div css={S.inputSet}>
         <Controller
