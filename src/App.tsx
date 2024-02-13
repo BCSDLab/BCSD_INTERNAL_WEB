@@ -5,6 +5,7 @@ import SignUp from 'page/SignUp';
 import SignIn from 'page/SignIn';
 import AcceptMember from 'page/Admin';
 import AuthRoute from 'components/common/AuthRoute';
+import DuesManagement from 'page/DuesManagement';
 
 function App() {
   return (
