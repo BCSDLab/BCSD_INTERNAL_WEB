@@ -11,6 +11,7 @@ import Paper from '@mui/material/Paper';
 import { styled } from '@mui/material/styles';
 import { useState } from 'react';
 import { useLogin } from 'query/members';
+import { SHA256 } from 'crypto-js';
 import * as S from './style';
 
 const DemoPaper = styled(Paper)(({ theme }) => ({
@@ -41,7 +42,7 @@ export default function SignIn() {
           css={S.center}
           onSubmit={(e) => {
             e.preventDefault();
-            login(account);
+            login({ studentNumber: account.studentNumber, password: SHA256(account.password).toString() });
           }}
         >
           <img src="https://image.bcsdlab.com/banner.png" alt="banner" css={S.image} />
@@ -74,7 +75,12 @@ export default function SignIn() {
               label="Password"
             />
           </FormControl>
-          <Button variant="contained" type="submit" onClick={() => login(account)}>로그인</Button>
+          <Button
+            variant="contained"
+            type="submit"
+          >
+            로그인
+          </Button>
         </form>
       </DemoPaper>
     </div>
