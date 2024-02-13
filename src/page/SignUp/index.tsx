@@ -68,7 +68,7 @@ const status = [
     value: 'GRADUATE',
     label: '졸업',
   },
-];
+] as const;
 
 const member = [
   {
@@ -80,7 +80,7 @@ const member = [
   {
     value: 'MENTOR',
   },
-];
+] as const;
 
 type User = {
   joinedYear: number,
