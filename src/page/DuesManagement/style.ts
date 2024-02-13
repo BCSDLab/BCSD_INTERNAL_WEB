@@ -49,6 +49,26 @@ export const logo = css`
   margin-top: -10px;
 `;
 
+export const searchAndPagination = css`
+  position: relative;
+  display: flex;
+  justify-content: end;
+  width: calc(100% - 100px);
+  margin: 10px 0;
+`;
+
+export const pagination = css`
+  position: absolute;
+  right: 44%;
+  display: flex;
+`;
+
+export const paginationTitle = css`
+  font-weight: bold;
+  font-size: 20px;
+  margin-top: 4px;
+`;
+
 export const tableContainer = css`
   overflow-x: initial;
 `;
@@ -64,26 +84,9 @@ export const trackTableCell = css`
   align-items: center;
 `;
 
-export const searchName = css`
-  display: flex;
-  justify-content: end;
-  width: calc(100% - 90px);
-  margin: 10px 0;
-`;
-
 export const dues = css`
   width: calc(100% - 100px);
   height: 100%;
-`;
-
-export const paginationWrapper = css`
-  display: flex;
-  justify-content: center;
-  align-items: center;
-`;
-
-export const pagination = css`
-  margin-bottom: 10px;
 `;
 
 export const filterModalButton = css`

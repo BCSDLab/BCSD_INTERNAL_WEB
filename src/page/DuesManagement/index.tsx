@@ -1,31 +1,32 @@
-import { Link, useLocation } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 import Table from '@mui/material/Table';
 import TableBody from '@mui/material/TableBody';
 import TableCell from '@mui/material/TableCell';
 import TableContainer from '@mui/material/TableContainer';
 import TableHead from '@mui/material/TableHead';
 import TableRow from '@mui/material/TableRow';
-import Pagination from '@mui/material/Pagination';
-import PaginationItem from '@mui/material/PaginationItem';
 import {
   Button, Checkbox, FormControl, FormControlLabel, FormGroup, FormLabel, Input, Popover,
 } from '@mui/material';
 import Modal from '@mui/material/Modal';
-import { ChangeEvent, Suspense, useState } from 'react';
+import {
+  ChangeEvent, Suspense, useEffect, useState,
+} from 'react';
 import { useGetAllDues } from 'query/dues';
 import useBooleanState from 'util/hooks/useBooleanState.ts';
 import { DuesDetail } from 'model/dues/allDues';
 import { STATUS_MAPPING } from 'util/constants/status';
 import { useGetTracks } from 'query/tracks';
 import LoadingSpinner from 'layout/LoadingSpinner';
+import { ArrowBackIosNewOutlined, ArrowForwardIosOutlined } from '@mui/icons-material';
+import useQueryParam from 'util/hooks/useQueryParam';
 import * as S from './style';
 
 function DefaultTable() {
-  const location = useLocation();
-  const query = new URLSearchParams(location.search);
-  const page = parseInt(query.get('page') || '1', 10);
+  const navigate = useNavigate();
+  const page = useQueryParam('page', 'number') as number;
   const currentYear = new Date().getFullYear();
-  const duesYear = currentYear - page + 1;
+  const [duesYear, setDuesYear] = useState(currentYear - page + 1);
   const [trackFilter, setTrackFilter] = useState([true, true, true, true, true, true]);
   const [name, setName] = useState('');
   const [detail, setDetail] = useState<DuesDetail>({ month: 0, status: null });
@@ -87,17 +88,46 @@ function DefaultTable() {
       }
     }
   };
+
+  useEffect(() => {
+    setDuesYear(currentYear - page + 1);
+  }, [currentYear, page]);
+
+  const goToPrevYear = () => {
+    // 재학생 회비 내역이 2021년부터 시작하므로 2021년 이전으로 이동할 수 없음
+    if (page < 4) {
+      const prevYear = page + 1;
+      navigate(`/dues?page=${prevYear}`);
+    }
+  };
+
+  const goToNextYear = () => {
+    if (page > 1) {
+      navigate(`/dues?page=${page - 1}`);
+    }
+  };
   return (
     <>
-      <div css={S.searchName}>
-        <Input
-          value={name}
-          id="memberName"
-          onKeyDown={handleNameSearchKeyDown}
-          onChange={handleNameChange}
-          placeholder="이름을 입력하세요"
-        />
-        <Button onClick={handleNameSearchClick}>검색</Button>
+      <div css={S.searchAndPagination}>
+        <div css={S.pagination}>
+          <Button onClick={goToPrevYear}>
+            <ArrowBackIosNewOutlined />
+          </Button>
+          <span css={S.paginationTitle}>{duesYear}</span>
+          <Button onClick={goToNextYear}>
+            <ArrowForwardIosOutlined />
+          </Button>
+        </div>
+        <div>
+          <Input
+            value={name}
+            id="memberName"
+            onKeyDown={handleNameSearchKeyDown}
+            onChange={handleNameChange}
+            placeholder="이름을 입력하세요"
+          />
+          <Button onClick={handleNameSearchClick}>검색</Button>
+        </div>
       </div>
       <div css={S.dues}>
         <TableContainer css={S.tableContainer}>
@@ -199,28 +229,12 @@ function DefaultTable() {
           </Table>
         </TableContainer>
       </div>
-      <div css={S.paginationWrapper}>
-        <Pagination
-          css={S.pagination}
-          page={page}
-          count={5}
-          renderItem={(item) => (
-            <PaginationItem
-              component={Link}
-              to={`/dues?page=${item.page}`}
-              {...item}
-            />
-          )}
-        />
-      </div>
     </>
   );
 }
 
 export default function DuesManagement() {
-  const location = useLocation();
-  const query = new URLSearchParams(location.search);
-  const page = parseInt(query.get('page') || '1', 10);
+  const page = useQueryParam('page', 'number') as number;
   const currentYear = new Date().getFullYear();
   const duesYear = currentYear - page + 1;
   return (
