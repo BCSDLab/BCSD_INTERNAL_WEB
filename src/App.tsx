@@ -8,7 +8,7 @@ function App() {
   return (
     <Routes>
       <Route path="/" element={<DefaultLayout />} />
-      <Route path="/" element={<MemberInfo />} />
+      <Route path="/member-info" element={<MemberInfo />} />
       <Route path="/sign-up" element={<SignUp />} />
       <Route path="/member-info" element={<DefaultLayout />} />
       <Route path="/dues" element={<DuesManagement />} />
