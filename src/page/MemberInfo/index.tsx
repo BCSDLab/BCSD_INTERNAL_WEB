@@ -8,7 +8,6 @@ import * as S from './style';
 import ListLayout from './ListLayout';
 import GridLayout from './GridLayout';
 import TrackFilter from './TrackFilter';
-import ListLayoutNotDeleted from './ListLayoutNotDeleted';
 
 export default function MemberInfo() {
   const [layout, setLayout] = useState('list');
@@ -52,9 +51,7 @@ export default function MemberInfo() {
         </div>
         <div css={S.content}>
           <Suspense fallback={<div />}>
-            {layout === 'list' && deleteMemberChecked ? <ListLayout /> : null}
-            {layout === 'list' && !deleteMemberChecked ? <ListLayoutNotDeleted /> : null}
-            {layout !== 'list' && <GridLayout />}
+            {layout === 'list' ? <ListLayout deleteMemberChecked={deleteMemberChecked} /> : <GridLayout />}
           </Suspense>
         </div>
       </div>
