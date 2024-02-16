@@ -92,7 +92,7 @@ export default function ListLayout({ deleteMemberChecked }: ListLayoutProps) {
           },
         }}
         pageSizeOptions={[10]}
-        checkboxSelection
+        sx={{ paddingLeft: 2, paddingRight: 2 }}
       />
       <MemberInfoModal
         open={modalOpen}
