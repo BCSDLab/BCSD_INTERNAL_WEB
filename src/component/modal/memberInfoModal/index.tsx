@@ -257,6 +257,9 @@ export default function MemberInfoModal({ open, onClose, member: initialMember }
             />
           </div>
           <div css={S.buttonContainer}>
+            <Button sx={{ mt: 2, mb: 2 }} variant="contained" color="error" onClick={handleDelete}>
+              회원 삭제
+            </Button>
             <div css={S.buttonWrapper}>
               <Button
                 sx={{ mt: 2, mb: 2 }}
@@ -273,9 +276,7 @@ export default function MemberInfoModal({ open, onClose, member: initialMember }
                 닫기
               </Button>
             </div>
-            <Button sx={{ mt: 2, mb: 2 }} variant="contained" color="error" onClick={handleDelete}>
-              회원 삭제
-            </Button>
+
           </div>
         </Box>
       </Box>
