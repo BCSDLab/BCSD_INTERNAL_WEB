@@ -1,4 +1,6 @@
-import { Button, ToggleButton } from '@mui/material';
+import {
+  Button, FormControlLabel, Switch, ToggleButton,
+} from '@mui/material';
 import { Suspense, useState } from 'react';
 import ViewListIcon from '@mui/icons-material/ViewList';
 import ViewModuleIcon from '@mui/icons-material/ViewModule';
@@ -6,9 +8,16 @@ import * as S from './style';
 import ListLayout from './ListLayout';
 import GridLayout from './GridLayout';
 import TrackFilter from './TrackFilter';
+import ListLayoutNotDeleted from './ListLayoutNotDeleted';
 
 export default function MemberInfo() {
   const [layout, setLayout] = useState('list');
+  const [deleteMemberChecked, setDeleteMemberChecked] = useState(false);
+
+  const handleChangedDeleteMember = (event: React.ChangeEvent<HTMLInputElement>) => {
+    setDeleteMemberChecked(event.target.checked);
+  };
+
   return (
     <div css={S.container}>
       <div css={S.sideBar}>
@@ -20,6 +29,7 @@ export default function MemberInfo() {
       <div css={S.contentContainer}>
         <div css={S.topBar} />
         <div css={S.buttonContainer}>
+          <FormControlLabel control={<Switch checked={deleteMemberChecked} onChange={handleChangedDeleteMember} />} label="탈퇴 회원" />
           <Suspense fallback={<div />}>
             <TrackFilter />
           </Suspense>
@@ -42,7 +52,9 @@ export default function MemberInfo() {
         </div>
         <div css={S.content}>
           <Suspense fallback={<div />}>
-            {layout === 'list' ? <ListLayout /> : <GridLayout />}
+            {layout === 'list' && deleteMemberChecked ? <ListLayout /> : null}
+            {layout === 'list' && !deleteMemberChecked ? <ListLayoutNotDeleted /> : null}
+            {layout !== 'list' && <GridLayout />}
           </Suspense>
         </div>
       </div>
