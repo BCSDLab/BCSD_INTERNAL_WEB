@@ -2,13 +2,13 @@ import { useMutation, useQueryClient, useSuspenseQuery } from '@tanstack/react-q
 import { getMember, getMembers, updateMember } from 'api/members';
 import { AdminMemberUpdate } from 'model/member';
 
-interface GetMember {
+interface GetMembers {
   pageIndex: number;
   pageSize: number;
   trackId: number | null;
 }
 
-export const useGetMembers = ({ pageIndex, pageSize, trackId }: GetMember) => {
+export const useGetMembers = ({ pageIndex, pageSize, trackId }: GetMembers) => {
   const { data } = useSuspenseQuery({
     queryKey: ['members', pageIndex, pageSize, trackId],
     queryFn: () => {
