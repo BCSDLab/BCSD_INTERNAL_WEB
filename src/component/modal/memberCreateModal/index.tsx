@@ -4,7 +4,7 @@ import {
 import {
   MemberCreate, toMemberCreate,
 } from 'model/member';
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 import { useCreateMember } from 'query/members';
 import { useGetTracks } from 'query/tracks';
 import * as S from './style';
@@ -80,25 +80,10 @@ export default function MemberCreateModal({ open, onClose }: MemberInfoModalProp
     onClose();
   };
 
-  useEffect(
-    () => {
-      setMember({
-        name: '',
-        trackId: 0,
-        company: '',
-        department: '',
-        studentNumber: '',
-        phoneNumber: '',
-        year: 0,
-        month: 0,
-        email: '',
-        password: '',
-        githubName: '',
-        profileImageUrl: '',
-      });
-    },
-    [open],
-  );
+  const handleClose = () => {
+    onClose();
+    setMember(null);
+  };
 
   return (
     <Modal
@@ -271,7 +256,7 @@ export default function MemberCreateModal({ open, onClose }: MemberInfoModalProp
               <Button
                 sx={{ mt: 2, mb: 2 }}
                 variant="outlined"
-                onClick={onClose}
+                onClick={handleClose}
               >
                 닫기
               </Button>
