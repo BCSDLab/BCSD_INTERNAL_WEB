@@ -58,6 +58,25 @@ export interface AdminMemberUpdate {
   isDeleted: boolean;
 }
 
+export interface MemberCreate {
+  year?: number;
+  month?: number;
+  trackId?: number;
+  memberType?: MemberType;
+  status?: StatusType;
+  name?: string;
+  password?: string;
+  company?: string;
+  department?: string;
+  studentNumber?: string;
+  phoneNumber?: string;
+  email?: string;
+  githubName?: string;
+  profileImageUrl?: string;
+  isAuthed?: boolean;
+  isDeleted?: boolean;
+}
+
 const REVERSE_STATUS_LABEL = Object.entries(STATUS_LABEL).reduce((acc, [key, value]) => {
   acc[value] = key as StatusType;
   return acc;
@@ -86,5 +105,28 @@ export const toAdminMemberUpdate = (member: Member): AdminMemberUpdate => {
     month: member.joinedMonth,
     isAuthed: member.isAuthed,
     isDeleted: member.isDeleted,
+  };
+};
+
+export const toMemberCreate = (member: MemberCreate): MemberCreate => {
+  const reverseStatus = member.status ? geReverseStatus(member.status) : undefined;
+
+  return {
+    name: member.name,
+    trackId: member.trackId,
+    memberType: member.memberType,
+    status: reverseStatus,
+    company: member.company,
+    department: member.department,
+    studentNumber: member.studentNumber,
+    phoneNumber: member.phoneNumber,
+    email: member.email,
+    githubName: member.githubName,
+    profileImageUrl: member.profileImageUrl,
+    year: member.year,
+    month: member.month,
+    password: member.password,
+    isAuthed: true,
+    isDeleted: false,
   };
 };

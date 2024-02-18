@@ -1,8 +1,9 @@
 import { useMutation, useQueryClient, useSuspenseQuery } from '@tanstack/react-query';
 import {
+  createMember,
   deleteMember, getMember, getMembers, getMembersNotDeleted, updateMember,
 } from 'api/members';
-import { AdminMemberUpdate } from 'model/member';
+import { AdminMemberUpdate, MemberCreate } from 'model/member';
 
 interface GetMember {
   pageIndex: number;
@@ -57,6 +58,16 @@ export const useDeleteMember = () => {
   const queryClient = useQueryClient();
   return useMutation({
     mutationFn: (id: number) => deleteMember(id),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['members'] });
+    },
+  });
+};
+
+export const useCreateMember = () => {
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: (member: MemberCreate) => createMember(member),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['members'] });
     },
