@@ -10,6 +10,7 @@ import {
 } from 'api/Dues';
 import { useGetMembers } from 'query/members';
 import { useGetAllDues } from 'query/dues';
+import { useSnackBar } from 'ts/useSnackBar';
 import * as S from './style';
 
 interface TableBodyData {
@@ -36,15 +37,18 @@ export default function DuesSetup() {
   const { data: currentYearDues } = useGetAllDues({ year: currentYear });
   const { data: prevYearDues } = useGetAllDues({ year: currentYear - 1 });
 
+  const onError = useSnackBar();
+
   const postDuesMutation = useMutation({
     mutationKey: ['postDues'],
     mutationFn: (data: NewDuesData) => postDues(data),
-    onSuccess: () => console.log('success'),
+    onError: (error) => onError(error),
   });
 
   const putDuesMutation = useMutation({
     mutationKey: ['putDues'],
     mutationFn: (data: NewDuesData) => putDues(data),
+    onError: (error) => onError(error),
   });
 
   const findUnpaidMonth = (dues: Dues[], name: string) => {
