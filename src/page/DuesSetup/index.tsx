@@ -5,12 +5,14 @@ import { useRef, useState } from 'react';
 import * as Excel from 'exceljs';
 import { Dues } from 'model/dues/allDues';
 import { useMutation } from '@tanstack/react-query';
-import { NewDuesProps, postDues } from 'api/Dues';
+import {
+  NewDuesData, postDues, putDues,
+} from 'api/Dues';
 import { useGetMembers } from 'query/members';
 import { useGetAllDues } from 'query/dues';
 import * as S from './style';
 
-interface NewDuesData {
+interface TableBodyData {
   value: string[];
 }
 
@@ -20,7 +22,7 @@ export default function DuesSetup() {
   const excelFileRef = useRef<HTMLInputElement>(null);
   const workbook = new Excel.Workbook();
   const tableHead = ['거래 일자', '구분', '거래 금액', '거래 후 잔액', '이름', '비고'];
-  const [tableBody, setTableBody] = useState<NewDuesData[]>([
+  const [tableBody, setTableBody] = useState<TableBodyData[]>([
     { value: [] },
     { value: [] },
     { value: [] },
@@ -34,9 +36,15 @@ export default function DuesSetup() {
   const { data: currentYearDues } = useGetAllDues({ year: currentYear });
   const { data: prevYearDues } = useGetAllDues({ year: currentYear - 1 });
 
-  const mutation = useMutation({
+  const postDuesMutation = useMutation({
     mutationKey: ['postDues'],
-    mutationFn: (data: NewDuesProps) => postDues(data),
+    mutationFn: (data: NewDuesData) => postDues(data),
+    onSuccess: () => console.log('success'),
+  });
+
+  const putDuesMutation = useMutation({
+    mutationKey: ['putDues'],
+    mutationFn: (data: NewDuesData) => putDues(data),
   });
 
   const findUnpaidMonth = (dues: Dues[], name: string) => {
@@ -75,17 +83,22 @@ export default function DuesSetup() {
               });
               const currentYearUnpaidMonth = findUnpaidMonth(currentYearDues.dues, cellNumber === tableHead.indexOf('이름') + 1 ? cell.text : '')?.[0];
               const prevYearUnpaidMonth = findUnpaidMonth(prevYearDues.dues, cellNumber === tableHead.indexOf('이름') + 1 ? cell.text : '')?.[0];
-              if (prevYearUnpaidMonth) {
+              if (prevYearUnpaidMonth && currentYearUnpaidMonth) {
                 setTableBody((prev) => {
                   const newTableBody = [...prev];
-                  newTableBody[5].value[rowNumber - 5] = `${currentYear - 1}년 ${prevYearUnpaidMonth.join('월, ')}월`;
+                  newTableBody[5].value[rowNumber - 5] = `${currentYear - 1}년 ${prevYearUnpaidMonth.join('월, ')}월, ${currentYear}년 ${currentYearUnpaidMonth.join('월, ')}월`;
                   return newTableBody;
                 });
-              }
-              if (currentYearUnpaidMonth) {
+              } else if (prevYearUnpaidMonth) {
                 setTableBody((prev) => {
                   const newTableBody = [...prev];
-                  newTableBody[5].value[rowNumber - 5] = `${currentYear}년 ${currentYearUnpaidMonth.join('월, ')}월`;
+                  newTableBody[5].value[rowNumber - 5] = `${currentYear - 1}년 ${prevYearUnpaidMonth.join('월')}월`;
+                  return newTableBody;
+                });
+              } else if (currentYearUnpaidMonth) {
+                setTableBody((prev) => {
+                  const newTableBody = [...prev];
+                  newTableBody[5].value[rowNumber - 5] = `${currentYear}년 ${currentYearUnpaidMonth.join('월')}월`;
                   return newTableBody;
                 });
               }
@@ -112,41 +125,76 @@ export default function DuesSetup() {
     return null;
   };
 
-  const createDuesData = (memberId: number, month: number[], amount: number, year: number): NewDuesProps[] => {
+  const putDuesData = (memberId: number, month: number[], year: number, amount: number): NewDuesData[] => {
     let remainingAmount = amount;
-    return month?.map((m) => {
+    if (amount <= 0) return [];
+    const duesData: NewDuesData[] = month?.map((m) => {
       remainingAmount -= 10000;
       return {
         memberId,
         year,
         month: m,
         status: remainingAmount >= 0 ? 'PAID' : 'NOT_PAID',
+        memo: '',
       };
+    });
+    return duesData;
+  };
+
+  const postDuesData = (memberId: number, month: number, year: number): NewDuesData[] => {
+    return [{
+      memberId,
+      year,
+      month,
+      status: 'NOT_PAID',
+    }];
+  };
+
+  const extractDues = () => {
+    const extractedDues: NewDuesData[] = [];
+
+    tableBody[tableHead.indexOf('이름')].value.forEach((name, index) => {
+      const memberId = findMemberId(name, index);
+      const currentYearUnpaidMonth = findUnpaidMonth(currentYearDues.dues, name)[0];
+      const prevYearUnpaidMonth = findUnpaidMonth(prevYearDues.dues, name)[0];
+      if (memberId) {
+        const amount = Number(tableBody[2].value[index].replace(/,/g, ''));
+        const remainingAmount = amount - 10000 * (prevYearUnpaidMonth?.length || 0);
+        const prevYearDuesData = putDuesData(memberId, prevYearUnpaidMonth, currentYear - 1, amount);
+        const currentYearDuesData = putDuesData(memberId, currentYearUnpaidMonth, currentYear, remainingAmount);
+        if (prevYearDuesData) {
+          extractedDues.push(...prevYearDuesData);
+        }
+        if (currentYearDuesData) {
+          extractedDues.push(...currentYearDuesData);
+        }
+      }
+    });
+    return extractedDues;
+  };
+
+  const changeCurrentDuesToNotPaid = () => {
+    const duesData: NewDuesData[] = [];
+    const currentMonth = new Date().getMonth() + 1;
+    tableBody[tableHead.indexOf('이름')].value.forEach((name, index) => {
+      const memberId = findMemberId(name, index);
+      if (memberId) {
+        const checkCurrentDues = currentYearDues.dues.find((value) => value.memberId === memberId);
+        if (checkCurrentDues?.detail[currentMonth - 1].status === null) {
+          duesData.push(...postDuesData(memberId, currentMonth, currentYear));
+        }
+      }
+    });
+    duesData.forEach((dues) => {
+      postDuesMutation.mutate(dues);
     });
   };
 
-  const handlePostDuesClick = () => {
-    const extractedDues: NewDuesProps[] = [];
-
-    tableBody.forEach((dues) => {
-      dues.value.forEach((cellText, rowIndex) => {
-        const memberId = findMemberId(tableBody[tableHead.indexOf('이름')].value[rowIndex], rowIndex);
-        const currentYearUnpaidMonth = findUnpaidMonth(currentYearDues.dues, tableBody[tableHead.indexOf('이름')].value[rowIndex])[0];
-        const prevYearUnpaidMonth = findUnpaidMonth(prevYearDues.dues, tableBody[tableHead.indexOf('이름')].value[rowIndex])[0];
-        if (memberId) {
-          const currentYearDuesData = createDuesData(memberId, prevYearUnpaidMonth, rowIndex === tableHead.indexOf('거래 금액') ? Number(cellText) : 0, currentYear);
-          const prevYearDuesData = createDuesData(memberId, currentYearUnpaidMonth, rowIndex === tableHead.indexOf('거래 금액') ? Number(cellText) : 0, currentYear - 1);
-          if (currentYearDuesData) {
-            extractedDues.push(...currentYearDuesData);
-          }
-          if (prevYearDuesData) {
-            extractedDues.push(...prevYearDuesData);
-          }
-        }
-      });
-    });
-    extractedDues.forEach((dues) => {
-      mutation.mutate(dues);
+  const handlePutDuesClick = () => {
+    changeCurrentDuesToNotPaid();
+    const duesData = extractDues();
+    duesData.forEach((dues) => {
+      putDuesMutation.mutate(dues);
     });
   };
   return (
@@ -180,7 +228,7 @@ export default function DuesSetup() {
                 />
               </Button>
             </label>
-            <Button variant="contained" color="primary" disabled={buttonDisabled} onClick={handlePostDuesClick}>회비 생성</Button>
+            <Button variant="contained" color="primary" disabled={buttonDisabled} onClick={handlePutDuesClick}>회비 생성</Button>
             <Button variant="contained" color="primary" disabled={buttonDisabled}>엑셀 다운로드</Button>
           </ButtonGroup>
           <Table>
