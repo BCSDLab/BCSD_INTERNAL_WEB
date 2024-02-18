@@ -3,6 +3,7 @@ import DefaultLayout from 'layout/DefaultLayout';
 import MemberInfo from 'page/MemberInfo';
 import SignUp from 'page/SignUp';
 import SignIn from 'page/SignIn';
+import DuesManagement from 'page/DuesManagement';
 
 function App() {
   return (
@@ -11,6 +12,8 @@ function App() {
       <Route path="/member" element={<MemberInfo />} />
       <Route path="/sign-up" element={<SignUp />} />
       <Route path="/sign-in" element={<SignIn />} />
+      <Route path="/member-info" element={<DefaultLayout />} />
+      <Route path="/dues" element={<DuesManagement />} />
     </Routes>
   );
 }
