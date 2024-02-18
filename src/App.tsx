@@ -19,6 +19,10 @@ function App() {
           <Route path="/accept" element={<AcceptMember />} />
         </Route>
       </Route>
+      <Route path="/member" element={<MemberInfo />} />
+      <Route path="/sign-up" element={<SignUp />} />
+      <Route path="/sign-in" element={<SignIn />} />
+      <Route path="/member-info" element={<DefaultLayout />} />
       <Route path="/dues" element={<DuesManagement />} />
     </Routes>
   );
