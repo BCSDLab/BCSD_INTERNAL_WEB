@@ -73,11 +73,19 @@ export default function DuesSetup() {
                 newTableBody[cellNumber - 1].value.push(cell.text);
                 return newTableBody;
               });
-              const month = findUnpaidMonth(currentYearDues.dues, cellNumber === tableHead.indexOf('이름') + 1 ? cell.text : '')?.[0];
-              if (month) {
+              const currentYearUnpaidMonth = findUnpaidMonth(currentYearDues.dues, cellNumber === tableHead.indexOf('이름') + 1 ? cell.text : '')?.[0];
+              const prevYearUnpaidMonth = findUnpaidMonth(prevYearDues.dues, cellNumber === tableHead.indexOf('이름') + 1 ? cell.text : '')?.[0];
+              if (prevYearUnpaidMonth) {
                 setTableBody((prev) => {
                   const newTableBody = [...prev];
-                  newTableBody[5].value[rowNumber - 5] = `${currentYear}년 ${month.join('월, ')}월`;
+                  newTableBody[5].value[rowNumber - 5] = `${currentYear - 1}년 ${prevYearUnpaidMonth.join('월, ')}월`;
+                  return newTableBody;
+                });
+              }
+              if (currentYearUnpaidMonth) {
+                setTableBody((prev) => {
+                  const newTableBody = [...prev];
+                  newTableBody[5].value[rowNumber - 5] = `${currentYear}년 ${currentYearUnpaidMonth.join('월, ')}월`;
                   return newTableBody;
                 });
               }
@@ -104,9 +112,7 @@ export default function DuesSetup() {
     return null;
   };
 
-  const createDuesData = (memberId: number, month: number[], amount: number): NewDuesProps[] => {
-    const year = currentYear;
-
+  const createDuesData = (memberId: number, month: number[], amount: number, year: number): NewDuesProps[] => {
     let remainingAmount = amount;
     return month?.map((m) => {
       remainingAmount -= 10000;
@@ -125,11 +131,16 @@ export default function DuesSetup() {
     tableBody.forEach((dues) => {
       dues.value.forEach((cellText, rowIndex) => {
         const memberId = findMemberId(tableBody[tableHead.indexOf('이름')].value[rowIndex], rowIndex);
-        const month = findUnpaidMonth(currentYearDues.dues, tableBody[tableHead.indexOf('이름')].value[rowIndex])[0];
+        const currentYearUnpaidMonth = findUnpaidMonth(currentYearDues.dues, tableBody[tableHead.indexOf('이름')].value[rowIndex])[0];
+        const prevYearUnpaidMonth = findUnpaidMonth(prevYearDues.dues, tableBody[tableHead.indexOf('이름')].value[rowIndex])[0];
         if (memberId) {
-          const duesData = createDuesData(memberId, month, rowIndex === tableHead.indexOf('거래 금액') ? Number(cellText) : 0);
-          if (duesData) {
-            extractedDues.push(...duesData);
+          const currentYearDuesData = createDuesData(memberId, prevYearUnpaidMonth, rowIndex === tableHead.indexOf('거래 금액') ? Number(cellText) : 0, currentYear);
+          const prevYearDuesData = createDuesData(memberId, currentYearUnpaidMonth, rowIndex === tableHead.indexOf('거래 금액') ? Number(cellText) : 0, currentYear - 1);
+          if (currentYearDuesData) {
+            extractedDues.push(...currentYearDuesData);
+          }
+          if (prevYearDuesData) {
+            extractedDues.push(...prevYearDuesData);
           }
         }
       });
