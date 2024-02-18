@@ -1,5 +1,5 @@
 import { accessClient } from 'api';
-import { AdminMemberUpdate, Member } from 'model/member';
+import { AdminMemberUpdate, Member, LoginResponse } from 'model/member';
 import { Pagination } from 'model/page';
 
 export const getMembers = (pageIndex: number, pageSize: number, trackId?: number) => {
@@ -14,3 +14,5 @@ export const getMember = (id: number) => {
 export const updateMember = (memberId: number, member: AdminMemberUpdate) => {
   return accessClient.put<Member>(`/admin/members/${memberId}`, member);
 };
+
+export const login = (studentNumber: string, password: string) => accessClient.post<LoginResponse>('/members/login', { studentNumber, password });

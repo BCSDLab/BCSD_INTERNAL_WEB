@@ -16,7 +16,7 @@ const accessClient: HttpClientType = axios.create({
 
 accessClient.interceptors.request.use(
   (config) => {
-    const accessToken = localStorage.getItem('access_token');
+    const accessToken = localStorage.getItem('accessToken');
     if (accessToken) {
       // eslint-disable-next-line no-param-reassign
       config.headers.Authorization = `Bearer ${accessToken}`;
