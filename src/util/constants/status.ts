@@ -1,5 +1,5 @@
 export const STATUS_MAPPING = {
-  미납: 'X',
-  면제: '-',
-  납부: 'O',
+  NOT_PAID: 'X',
+  SKIP: '-',
+  PAID: 'O',
 };
