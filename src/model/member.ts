@@ -130,3 +130,7 @@ export const toMemberCreate = (member: MemberCreate): MemberCreate => {
     isDeleted: false,
   };
 };
+
+export type LoginResponse = {
+  accessToken: string
+};

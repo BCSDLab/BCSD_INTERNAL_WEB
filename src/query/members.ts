@@ -1,7 +1,7 @@
 import { useMutation, useQueryClient, useSuspenseQuery } from '@tanstack/react-query';
 import {
   createMember,
-  deleteMember, getMember, getMembers, getMembersNotDeleted, updateMember,
+  deleteMember, getMember, getMembers, getMembersNotDeleted, login, updateMember,
 } from 'api/members';
 import { AdminMemberUpdate, MemberCreate } from 'model/member';
 
@@ -10,6 +10,11 @@ interface GetMember {
   pageSize: number;
   trackId: number | null;
   deleted?: boolean | null;
+}
+
+interface LoginRequest {
+  studentNumber: string,
+  password: string,
 }
 
 export const useGetMembers = ({ pageIndex, pageSize, trackId }: GetMember) => {
@@ -72,4 +77,15 @@ export const useCreateMember = () => {
       queryClient.invalidateQueries({ queryKey: ['members'] });
     },
   });
+};
+
+export const useLogin = () => {
+  const { data, mutate } = useMutation({
+    mutationKey: ['login'],
+    mutationFn: ({ studentNumber, password }: LoginRequest) => login(studentNumber, password),
+  });
+
+  if (data) localStorage.setItem('accessToken', data.accessToken);
+
+  return { mutate };
 };

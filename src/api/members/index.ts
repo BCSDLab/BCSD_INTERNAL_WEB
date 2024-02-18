@@ -1,5 +1,7 @@
 import { accessClient } from 'api';
-import { AdminMemberUpdate, Member, MemberCreate } from 'model/member';
+import {
+  AdminMemberUpdate, LoginResponse, Member, MemberCreate,
+} from 'model/member';
 import { Pagination } from 'model/page';
 
 export const getMembers = (pageIndex: number, pageSize: number, trackId?: number) => {
@@ -27,3 +29,4 @@ export const deleteMember = (memberId: number) => {
 export const createMember = (member: MemberCreate) => {
   return accessClient.post<Member>('/admin/members', member);
 };
+export const login = (studentNumber: string, password: string) => accessClient.post<LoginResponse>('/members/login', { studentNumber, password });
