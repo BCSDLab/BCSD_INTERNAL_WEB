@@ -33,7 +33,7 @@ export const useLogin = () => {
     onSuccess: (response) => {
       localStorage.setItem('accessToken', response.accessToken);
       openSnackBar({ type: 'success', message: '로그인에 성공했습니다.' });
-      navigate('/');
+      navigate('/member');
     },
     onError: (e) => openSnackBar({ type: 'error', message: e.message }),
   });
