@@ -45,6 +45,20 @@ const STATUS_LABEL = {
 
 const statusList = ['ATTEND', 'OFF', 'IPP', 'ARMY', 'COMPLETION', 'GRADUATE'] as const;
 
+const IS_DELETED = {
+  true: '탈퇴 회원',
+  false: '활성 회원',
+} as const;
+
+const isDeletedList = [true, false] as const;
+
+const IS_AUTHED = {
+  true: '인증',
+  false: '미인증',
+} as const;
+
+const isAuthedList = [true, false] as const;
+
 export default function MemberInfoModal({ open, onClose, member: initialMember }: MemberInfoModalProps): React.ReactElement {
   const [member, setMember] = useState<Member | null>(initialMember);
   const { mutate: updateMember } = useUpdateMember();
@@ -253,8 +267,39 @@ export default function MemberInfoModal({ open, onClose, member: initialMember }
               name="profileImageUrl"
               value="추후 파일 업로드 구현"
               fullWidth
-
             />
+          </div>
+          <div css={S.textGap}>
+            <TextField
+              margin="normal"
+              label="인증 여부"
+              name="isAuthed"
+              value={member?.isAuthed.toString() || ''}
+              fullWidth
+              onChange={handleChange}
+              select
+            >
+              {isAuthedList.map((isAuthed) => (
+                <MenuItem key={isAuthed.toString()} value={isAuthed.toString()}>
+                  {isAuthed ? IS_AUTHED.true : IS_AUTHED.false}
+                </MenuItem>
+              ))}
+            </TextField>
+            <TextField
+              margin="normal"
+              label="탈퇴 여부"
+              name="isDeleted"
+              value={member?.isDeleted.toString() || ''}
+              fullWidth
+              onChange={handleChange}
+              select
+            >
+              {isDeletedList.map((isDeleted) => (
+                <MenuItem key={isDeleted.toString()} value={isDeleted.toString()}>
+                  {isDeleted ? IS_DELETED.true : IS_DELETED.false}
+                </MenuItem>
+              ))}
+            </TextField>
           </div>
           <div css={S.buttonContainer}>
             <Button sx={{ mt: 2, mb: 2 }} variant="contained" color="error" onClick={handleDelete}>
