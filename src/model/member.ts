@@ -21,3 +21,7 @@ export interface Member {
   isAuthed: boolean;
   isDeleted: boolean;
 }
+
+export type LoginResponse = {
+  accessToken: string
+};

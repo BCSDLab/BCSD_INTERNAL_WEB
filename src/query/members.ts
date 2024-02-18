@@ -1,10 +1,15 @@
-import { useSuspenseQuery } from '@tanstack/react-query';
-import { getMembers } from 'api/members';
+import { useMutation, useSuspenseQuery } from '@tanstack/react-query';
+import { getMembers, login } from 'api/members';
 
 interface GetMember {
   pageIndex: number;
   pageSize: number;
   trackId: number | null;
+}
+
+interface LoginRequest {
+  studentNumber: string,
+  password: string,
 }
 
 export const useGetMembers = ({ pageIndex, pageSize, trackId }: GetMember) => {
@@ -16,4 +21,15 @@ export const useGetMembers = ({ pageIndex, pageSize, trackId }: GetMember) => {
     },
   });
   return { data };
+};
+
+export const useLogin = () => {
+  const { data, mutate } = useMutation({
+    mutationKey: ['login'],
+    mutationFn: ({ studentNumber, password }: LoginRequest) => login(studentNumber, password),
+  });
+
+  if (data) localStorage.setItem('accessToken', data.accessToken);
+
+  return { mutate };
 };
