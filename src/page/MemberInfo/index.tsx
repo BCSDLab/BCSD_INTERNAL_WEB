@@ -3,7 +3,9 @@ import {
 } from '@mui/material';
 import { Suspense, useState } from 'react';
 import ViewListIcon from '@mui/icons-material/ViewList';
+import AddIcon from '@mui/icons-material/Add';
 import ViewModuleIcon from '@mui/icons-material/ViewModule';
+import MemberCreateModal from 'component/modal/memberCreateModal';
 import * as S from './style';
 import ListLayout from './ListLayout';
 import GridLayout from './GridLayout';
@@ -12,9 +14,14 @@ import TrackFilter from './TrackFilter';
 export default function MemberInfo() {
   const [layout, setLayout] = useState('list');
   const [deleteMemberChecked, setDeleteMemberChecked] = useState(false);
+  const [memberCreateModalOpen, setMemberCreateModalOpen] = useState(false);
 
   const handleChangedDeleteMember = (event: React.ChangeEvent<HTMLInputElement>) => {
     setDeleteMemberChecked(event.target.checked);
+  };
+
+  const handleCloseMemberCreateModal = () => {
+    setMemberCreateModalOpen(false);
   };
 
   return (
@@ -47,6 +54,10 @@ export default function MemberInfo() {
           {layout === 'list' ? <ListLayout deleteMemberChecked={deleteMemberChecked} /> : <GridLayout />}
         </Suspense>
       </div>
+      <MemberCreateModal
+        open={memberCreateModalOpen}
+        onClose={handleCloseMemberCreateModal}
+      />
     </div>
 
   );
