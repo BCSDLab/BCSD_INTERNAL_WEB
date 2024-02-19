@@ -3,7 +3,7 @@ import { Track } from './track';
 export type StatusType = 'ATTEND' | 'OFF' | 'IPP' | 'ARMY' | 'COMPLETION' | 'GRADUATE';
 export type MemberType = 'BEGINNER' | 'REGULAR' | 'MENTOR';
 
-const STATUS_LABEL = {
+export const STATUS_LABEL = {
   ATTEND: '재학',
   OFF: '휴학',
   IPP: '현장실습',
