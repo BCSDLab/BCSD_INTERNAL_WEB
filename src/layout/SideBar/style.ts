@@ -36,3 +36,9 @@ export const logo = css`
   width: 100%;
   margin-top: -10px;
 `;
+
+export const buttonLayout = css`
+  display: flex;
+  flex-direction: column;
+  align-items: center;  
+`;
