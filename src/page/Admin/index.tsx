@@ -18,6 +18,7 @@ export default function AcceptMember() {
     { field: 'studentNumber', headerName: '학번', width: 130 },
     { field: 'phoneNumber', headerName: '전화번호', width: 150 },
     { field: 'email', headerName: '이메일', width: 220 },
+    { field: 'githubName', headerName: '깃허브', width: 220 },
     {
       field: 'accept',
       headerName: '승인',
@@ -39,7 +40,7 @@ export default function AcceptMember() {
   ];
   return (
     <div css={S.container}>
-      <img src="https://image.bcsdlab.com/banner.png" alt="banner" css={S.image} />
+      <h1 css={S.image}>회원가입 승인</h1>
       <div style={{
         height: '70vh', paddingLeft: 20, paddingRight: 20,
       }}
@@ -55,7 +56,9 @@ export default function AcceptMember() {
             },
           }}
           pageSizeOptions={[10]}
-          checkboxSelection
+          sx={{
+            paddingLeft: 2, paddingRight: 2,
+          }}
         />
       </div>
 

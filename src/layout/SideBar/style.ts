@@ -36,8 +36,8 @@ export const logo = css`
   margin-top: -10px;
 `;
 
-export const buttonLayout = css`
+export const logOutButton = css`
   display: flex;
   flex-direction: column;
-  align-items: center;  
+  align-items: center;
 `;
