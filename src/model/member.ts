@@ -63,12 +63,12 @@ const REVERSE_STATUS_LABEL = Object.entries(STATUS_LABEL).reduce((acc, [key, val
   return acc;
 }, {} as Record<string, StatusType>);
 
-const geReverseStatus = (label: string): StatusType => {
+const getReverseStatus = (label: string): StatusType => {
   return REVERSE_STATUS_LABEL[label] as StatusType;
 };
 
 export const toAdminMemberUpdate = (member: Member): AdminMemberUpdate => {
-  const reverseStatus = geReverseStatus(member.status);
+  const reverseStatus = getReverseStatus(member.status);
 
   return {
     name: member.name,
