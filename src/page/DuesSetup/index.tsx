@@ -49,6 +49,7 @@ export default function DuesSetup() {
     mutationKey: ['putDues'],
     mutationFn: (data: NewDuesData) => putDues(data),
     onError: (error) => onError(error),
+    onSuccess: () => setButtonDisabled(true),
   });
 
   const findUnpaidMonth = (dues: Dues[], name: string) => {
@@ -233,7 +234,6 @@ export default function DuesSetup() {
               </Button>
             </label>
             <Button variant="contained" color="primary" disabled={buttonDisabled} onClick={handlePutDuesClick}>회비 생성</Button>
-            <Button variant="contained" color="primary" disabled={buttonDisabled}>엑셀 다운로드</Button>
           </ButtonGroup>
           <Table>
             <TableHead>
