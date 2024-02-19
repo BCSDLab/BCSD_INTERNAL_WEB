@@ -1,9 +1,12 @@
-import { useMutation, useSuspenseQuery } from '@tanstack/react-query';
-import { getMembers, getNotAuthedMembers, login } from 'api/members';
+import { useMutation, useQueryClient, useSuspenseQuery } from '@tanstack/react-query';
+import {
+  getMember, getMembers, login, updateMember, getNotAuthedMembers,
+} from 'api/members';
+import { AdminMemberUpdate } from 'model/member';
 import { useNavigate } from 'react-router-dom';
 import { useSnackBar } from 'ts/useSnackBar';
 
-interface GetMember {
+interface GetMembers {
   pageIndex: number;
   pageSize: number;
   trackId: number | null;
@@ -14,7 +17,7 @@ interface LoginRequest {
   password: string,
 }
 
-export const useGetMembers = ({ pageIndex, pageSize, trackId }: GetMember) => {
+export const useGetMembers = ({ pageIndex, pageSize, trackId }: GetMembers) => {
   const { data } = useSuspenseQuery({
     queryKey: ['members', pageIndex, pageSize, trackId],
     queryFn: () => {
@@ -23,6 +26,24 @@ export const useGetMembers = ({ pageIndex, pageSize, trackId }: GetMember) => {
     },
   });
   return { data };
+};
+
+export const useGetMember = (id: number) => {
+  const { data } = useSuspenseQuery({
+    queryKey: ['member', id],
+    queryFn: () => getMember(id),
+  });
+  return { data };
+};
+
+export const useUpdateMember = () => {
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: (params: { id: number, updatedMember: AdminMemberUpdate }) => updateMember(params.id, params.updatedMember),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['members'] });
+    },
+  });
 };
 
 export const useLogin = () => {
