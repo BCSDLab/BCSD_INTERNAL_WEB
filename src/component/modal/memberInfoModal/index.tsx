@@ -2,7 +2,7 @@ import {
   Modal, Box, Typography, Button, TextField, MenuItem,
 } from '@mui/material';
 import {
-  Member, toAdminMemberUpdate,
+  Member, toAdminMemberUpdate, STATUS_LABEL,
 } from 'model/member';
 import { useEffect, useState } from 'react';
 import { useUpdateMember, useDeleteMember } from 'query/members';
@@ -33,15 +33,6 @@ const MEMBER_TYPE_LABEL = {
 } as const;
 
 const MEMBER_TYPE_LIST = ['BEGINNER', 'REGULAR', 'MENTOR'] as const;
-
-const STATUS_LABEL = {
-  ATTEND: '재학',
-  OFF: '휴학',
-  IPP: '현장실습',
-  ARMY: '군 휴학',
-  COMPLETION: '수료',
-  GRADUATE: '졸업',
-} as const;
 
 const STATUS_LIST = ['ATTEND', 'OFF', 'IPP', 'ARMY', 'COMPLETION', 'GRADUATE'] as const;
 
