@@ -4,3 +4,13 @@ export const textGap = css`
   display: flex;
   gap: 20px;
 `;
+
+export const buttonContainer = css`
+  display: flex;
+  justify-content: space-between;
+`;
+
+export const buttonWrapper = css`
+  display: flex;
+  gap: 20px;
+`;

@@ -1,23 +1,21 @@
 import { useState } from 'react';
 import { DataGrid, GridColDef } from '@mui/x-data-grid';
-import { useGetMembers } from 'query/members';
+import { useGetMembers, useGetMembersNotDeleted } from 'query/members';
 import { useTrackStore } from 'store/trackStore';
 import { Button } from '@mui/material';
 import MemberInfoModal from 'component/modal/memberInfoModal';
-import { Member } from 'model/member';
+import { Member, STATUS_LABEL } from 'model/member';
 
-const STATUS_LABEL: { readonly [key: string]: string } = {
-  ATTEND: '재학',
-  OFF: '휴학',
-  IPP: '현장실습',
-  ARMY: '군 휴학',
-  COMPLETION: '수료',
-  GRADUATE: '졸업',
-} as const;
+interface ListLayoutProps {
+  deleteMemberChecked: boolean;
+}
 
-export default function ListLayout() {
+export default function ListLayout({ deleteMemberChecked }: ListLayoutProps) {
   const { id } = useTrackStore();
   const { data: members } = useGetMembers({ pageIndex: 0, pageSize: 1000, trackId: id });
+  const { data: membersNotDeleted } = useGetMembersNotDeleted({
+    pageIndex: 0, pageSize: 1000, trackId: id, deleted: false,
+  });
   const [modalOpen, setModalOpen] = useState(false);
   const [memberInfo, setMemberInfo] = useState<Member | null>(null);
 
@@ -63,9 +61,21 @@ export default function ListLayout() {
   return (
     <div style={{ height: 650, paddingLeft: 20, paddingRight: 20 }}>
       <DataGrid
-        rows={members.content.map((member) => ({
-          ...member, status: STATUS_LABEL[member.status], trackName: member.track.name, track: member.track,
-        }))}
+        rows={
+            deleteMemberChecked
+              ? members.content.map((member) => ({
+                ...member,
+                status: STATUS_LABEL[member.status],
+                trackName: member.track.name,
+                track: member.track,
+              }))
+              : membersNotDeleted.content.map((member) => ({
+                ...member,
+                status: STATUS_LABEL[member.status],
+                trackName: member.track.name,
+                track: member.track,
+              }))
+          }
         columns={columns}
         initialState={{
           pagination: {
@@ -73,7 +83,7 @@ export default function ListLayout() {
           },
         }}
         pageSizeOptions={[10]}
-        checkboxSelection
+        sx={{ paddingLeft: 2, paddingRight: 2 }}
       />
       <MemberInfoModal
         open={modalOpen}
