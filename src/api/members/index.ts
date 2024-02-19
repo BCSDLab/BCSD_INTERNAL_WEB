@@ -1,6 +1,6 @@
 import { accessClient } from 'api';
 import {
-  AdminMemberUpdate, LoginResponse, Member, MemberCreate,
+  AdminMemberUpdate, LoginResponse, Member, MemberCreate, MemberResponse,
 } from 'model/member';
 import { Pagination } from 'model/page';
 
@@ -30,3 +30,5 @@ export const createMember = (member: MemberCreate) => {
   return accessClient.post<Member>('/admin/members', member);
 };
 export const login = (studentNumber: string, password: string) => accessClient.post<LoginResponse>('/members/login', { studentNumber, password });
+
+export const getNotAuthedMembers = () => accessClient.get<MemberResponse>('/members?authed=false');

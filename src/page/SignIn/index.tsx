@@ -1,16 +1,11 @@
-import TextField from '@mui/material/TextField';
-import Button from '@mui/material/Button';
-import Visibility from '@mui/icons-material/Visibility';
-import VisibilityOff from '@mui/icons-material/VisibilityOff';
-import InputAdornment from '@mui/material/InputAdornment';
-import OutlinedInput from '@mui/material/OutlinedInput';
-import IconButton from '@mui/material/IconButton';
-import FormControl from '@mui/material/FormControl';
-import InputLabel from '@mui/material/InputLabel';
-import Paper from '@mui/material/Paper';
 import { styled } from '@mui/material/styles';
 import { useState } from 'react';
 import { useLogin } from 'query/members';
+import { SHA256 } from 'crypto-js';
+import {
+  TextField, Button, InputAdornment, OutlinedInput, IconButton, FormControl, InputLabel, Paper,
+} from '@mui/material';
+import { Visibility, VisibilityOff } from '@mui/icons-material';
 import * as S from './style';
 
 const DemoPaper = styled(Paper)(({ theme }) => ({
@@ -32,11 +27,18 @@ export default function SignIn() {
     setVisible((prev) => !prev);
   };
 
-  const { mutate: login } = useLogin();
+  const { mutate: login, isPending } = useLogin();
+
   return (
     <div css={S.template}>
       <DemoPaper variant="elevation">
-        <div css={S.center}>
+        <form
+          css={S.center}
+          onSubmit={(e) => {
+            e.preventDefault();
+            login({ studentNumber: account.studentNumber, password: SHA256(account.password).toString() });
+          }}
+        >
           <img src="https://image.bcsdlab.com/banner.png" alt="banner" css={S.image} />
           <FormControl sx={{ width: '25ch' }} variant="outlined">
             <TextField
@@ -67,8 +69,14 @@ export default function SignIn() {
               label="Password"
             />
           </FormControl>
-          <Button variant="contained" onClick={() => login(account)}>로그인</Button>
-        </div>
+          <Button
+            variant="contained"
+            type="submit"
+            disabled={isPending}
+          >
+            로그인
+          </Button>
+        </form>
       </DemoPaper>
     </div>
   );
