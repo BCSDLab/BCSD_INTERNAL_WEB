@@ -4,16 +4,7 @@ import { useGetMembers, useGetMembersNotDeleted } from 'query/members';
 import { useTrackStore } from 'store/trackStore';
 import { Button } from '@mui/material';
 import MemberInfoModal from 'component/modal/memberInfoModal';
-import { Member } from 'model/member';
-
-const STATUS_LABEL: { readonly [key: string]: string } = {
-  ATTEND: '재학',
-  OFF: '휴학',
-  IPP: '현장실습',
-  ARMY: '군 휴학',
-  COMPLETION: '수료',
-  GRADUATE: '졸업',
-} as const;
+import { Member, STATUS_LABEL } from 'model/member';
 
 interface ListLayoutProps {
   deleteMemberChecked: boolean;
