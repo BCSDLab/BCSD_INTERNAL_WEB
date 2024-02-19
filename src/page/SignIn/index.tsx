@@ -27,7 +27,7 @@ export default function SignIn() {
     setVisible((prev) => !prev);
   };
 
-  const { mutate: login } = useLogin();
+  const { mutate: login, isPending } = useLogin();
 
   return (
     <div css={S.template}>
@@ -72,6 +72,7 @@ export default function SignIn() {
           <Button
             variant="contained"
             type="submit"
+            disabled={isPending}
           >
             로그인
           </Button>

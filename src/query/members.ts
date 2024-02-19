@@ -28,7 +28,7 @@ export const useGetMembers = ({ pageIndex, pageSize, trackId }: GetMember) => {
 export const useLogin = () => {
   const openSnackBar = useSnackBar();
   const navigate = useNavigate();
-  const { mutate } = useMutation({
+  const { mutate, isPending } = useMutation({
     mutationFn: ({ studentNumber, password }: LoginRequest) => login(studentNumber, password),
     onSuccess: (response) => {
       localStorage.setItem('accessToken', response.accessToken);
@@ -38,7 +38,7 @@ export const useLogin = () => {
     onError: (e) => openSnackBar({ type: 'error', message: e.message }),
   });
 
-  return { mutate };
+  return { mutate, isPending };
 };
 
 export const useNotAuthedMember = () => {
