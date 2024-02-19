@@ -1,0 +1,15 @@
+import { css } from '@emotion/react';
+import { colors } from 'const/colors/style';
+
+export const container = css`
+  width: calc(100vw - 250px);
+`;
+
+export const image = css`
+  height: 15vh;
+  border-bottom: 1px solid ${colors.borderGray};
+  padding-left: 20px;
+  margin-bottom: 20px;
+  display: flex;
+  align-items: center;
+`;

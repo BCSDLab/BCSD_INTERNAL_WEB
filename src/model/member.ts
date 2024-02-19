@@ -3,7 +3,7 @@ import { Track } from './track';
 export type StatusType = 'ATTEND' | 'OFF' | 'IPP' | 'ARMY' | 'COMPLETION' | 'GRADUATE';
 export type MemberType = 'BEGINNER' | 'REGULAR' | 'MENTOR';
 
-const STATUS_LABEL = {
+export const STATUS_LABEL = {
   ATTEND: '재학',
   OFF: '휴학',
   IPP: '현장실습',
@@ -82,12 +82,12 @@ const REVERSE_STATUS_LABEL = Object.entries(STATUS_LABEL).reduce((acc, [key, val
   return acc;
 }, {} as Record<string, StatusType>);
 
-const geReverseStatus = (label: string): StatusType => {
+const getReverseStatus = (label: string): StatusType => {
   return REVERSE_STATUS_LABEL[label] as StatusType;
 };
 
 export const toAdminMemberUpdate = (member: Member): AdminMemberUpdate => {
-  const reverseStatus = geReverseStatus(member.status);
+  const reverseStatus = getReverseStatus(member.status);
 
   return {
     name: member.name,
@@ -109,7 +109,7 @@ export const toAdminMemberUpdate = (member: Member): AdminMemberUpdate => {
 };
 
 export const toMemberCreate = (member: MemberCreate): MemberCreate => {
-  const reverseStatus = member.status ? geReverseStatus(member.status) : undefined;
+  const reverseStatus = member.status ? getReverseStatus(member.status) : undefined;
 
   return {
     name: member.name,
@@ -134,3 +134,7 @@ export const toMemberCreate = (member: MemberCreate): MemberCreate => {
 export type LoginResponse = {
   accessToken: string
 };
+
+export interface MemberResponse {
+  content: Member[];
+}

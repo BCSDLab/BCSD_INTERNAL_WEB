@@ -1,11 +1,13 @@
 import { useMutation, useQueryClient, useSuspenseQuery } from '@tanstack/react-query';
 import {
   createMember,
-  deleteMember, getMember, getMembers, getMembersNotDeleted, login, updateMember,
+  deleteMember, getMember, getMembers, getMembersNotDeleted, login, updateMember, getNotAuthedMembers,
 } from 'api/members';
 import { AdminMemberUpdate, MemberCreate } from 'model/member';
+import { useNavigate } from 'react-router-dom';
+import { useSnackBar } from 'ts/useSnackBar';
 
-interface GetMember {
+interface GetMembers {
   pageIndex: number;
   pageSize: number;
   trackId: number | null;
@@ -17,7 +19,7 @@ interface LoginRequest {
   password: string,
 }
 
-export const useGetMembers = ({ pageIndex, pageSize, trackId }: GetMember) => {
+export const useGetMembers = ({ pageIndex, pageSize, trackId }: GetMembers) => {
   const { data } = useSuspenseQuery({
     queryKey: ['members', pageIndex, pageSize, trackId],
     queryFn: () => {
@@ -30,7 +32,7 @@ export const useGetMembers = ({ pageIndex, pageSize, trackId }: GetMember) => {
 
 export const useGetMembersNotDeleted = ({
   pageIndex, pageSize, trackId, deleted,
-}: GetMember) => {
+}: GetMembers) => {
   const { data } = useSuspenseQuery({
     queryKey: ['members', pageIndex, pageSize, trackId, deleted],
     queryFn: () => {
@@ -80,12 +82,26 @@ export const useCreateMember = () => {
 };
 
 export const useLogin = () => {
-  const { data, mutate } = useMutation({
-    mutationKey: ['login'],
+  const openSnackBar = useSnackBar();
+  const navigate = useNavigate();
+  const { mutate, isPending } = useMutation({
     mutationFn: ({ studentNumber, password }: LoginRequest) => login(studentNumber, password),
+    onSuccess: (response) => {
+      localStorage.setItem('accessToken', response.accessToken);
+      openSnackBar({ type: 'success', message: '로그인에 성공했습니다.' });
+      navigate('/member');
+    },
+    onError: (e) => openSnackBar({ type: 'error', message: e.message }),
   });
 
-  if (data) localStorage.setItem('accessToken', data.accessToken);
+  return { mutate, isPending };
+};
 
-  return { mutate };
+export const useNotAuthedMember = () => {
+  const { data } = useSuspenseQuery({
+    queryKey: ['notAuthed'],
+    queryFn: () => getNotAuthedMembers(),
+  });
+
+  return { data };
 };

@@ -32,7 +32,7 @@ const MEMBER_TYPE_LABEL = {
   MENTOR: '멘토',
 } as const;
 
-const memberTypeList = ['BEGINNER', 'REGULAR', 'MENTOR'] as const;
+const MEMBER_TYPE_LIST = ['BEGINNER', 'REGULAR', 'MENTOR'] as const;
 
 const STATUS_LABEL = {
   ATTEND: '재학',
@@ -43,7 +43,7 @@ const STATUS_LABEL = {
   GRADUATE: '졸업',
 } as const;
 
-const statusList = ['ATTEND', 'OFF', 'IPP', 'ARMY', 'COMPLETION', 'GRADUATE'] as const;
+const STATUS_LIST = ['ATTEND', 'OFF', 'IPP', 'ARMY', 'COMPLETION', 'GRADUATE'] as const;
 
 const IS_DELETED = {
   true: '탈퇴 회원',
@@ -175,7 +175,7 @@ export default function MemberInfoModal({ open, onClose, member: initialMember }
               onChange={handleChange}
               select
             >
-              {memberTypeList.map((memberType) => (
+              {MEMBER_TYPE_LIST.map((memberType) => (
                 <MenuItem key={memberType} value={memberType}>
                   {MEMBER_TYPE_LABEL[memberType]}
                 </MenuItem>
@@ -190,7 +190,7 @@ export default function MemberInfoModal({ open, onClose, member: initialMember }
               onChange={handleChange}
               select
             >
-              {statusList.map((statusType) => (
+              {STATUS_LIST.map((statusType) => (
                 <MenuItem key={statusType} value={STATUS_LABEL[statusType]}>
                   {STATUS_LABEL[statusType]}
                 </MenuItem>
