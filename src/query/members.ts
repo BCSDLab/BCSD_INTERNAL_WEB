@@ -1,8 +1,10 @@
 import { useMutation, useQueryClient, useSuspenseQuery } from '@tanstack/react-query';
 import {
-  getMember, getMembers, login, updateMember,
+  getMember, getMembers, login, updateMember, getNotAuthedMembers,
 } from 'api/members';
 import { AdminMemberUpdate } from 'model/member';
+import { useNavigate } from 'react-router-dom';
+import { useSnackBar } from 'ts/useSnackBar';
 
 interface GetMembers {
   pageIndex: number;
@@ -45,12 +47,26 @@ export const useUpdateMember = () => {
 };
 
 export const useLogin = () => {
-  const { data, mutate } = useMutation({
-    mutationKey: ['login'],
+  const openSnackBar = useSnackBar();
+  const navigate = useNavigate();
+  const { mutate, isPending } = useMutation({
     mutationFn: ({ studentNumber, password }: LoginRequest) => login(studentNumber, password),
+    onSuccess: (response) => {
+      localStorage.setItem('accessToken', response.accessToken);
+      openSnackBar({ type: 'success', message: '로그인에 성공했습니다.' });
+      navigate('/member');
+    },
+    onError: (e) => openSnackBar({ type: 'error', message: e.message }),
   });
 
-  if (data) localStorage.setItem('accessToken', data.accessToken);
+  return { mutate, isPending };
+};
 
-  return { mutate };
+export const useNotAuthedMember = () => {
+  const { data } = useSuspenseQuery({
+    queryKey: ['notAuthed'],
+    queryFn: () => getNotAuthedMembers(),
+  });
+
+  return { data };
 };

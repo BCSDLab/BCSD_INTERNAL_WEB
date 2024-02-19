@@ -92,3 +92,7 @@ export const toAdminMemberUpdate = (member: Member): AdminMemberUpdate => {
 export type LoginResponse = {
   accessToken: string
 };
+
+export interface MemberResponse {
+  content: Member[];
+}

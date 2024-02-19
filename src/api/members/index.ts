@@ -1,5 +1,7 @@
 import { accessClient } from 'api';
-import { AdminMemberUpdate, Member, LoginResponse } from 'model/member';
+import {
+  AdminMemberUpdate, Member, LoginResponse, MemberResponse,
+} from 'model/member';
 import { Pagination } from 'model/page';
 
 export const getMembers = (pageIndex: number, pageSize: number, trackId?: number) => {
@@ -16,3 +18,5 @@ export const updateMember = (memberId: number, member: AdminMemberUpdate) => {
 };
 
 export const login = (studentNumber: string, password: string) => accessClient.post<LoginResponse>('/members/login', { studentNumber, password });
+
+export const getNotAuthedMembers = () => accessClient.get<MemberResponse>('/members?authed=false');
