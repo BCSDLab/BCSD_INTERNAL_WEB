@@ -88,3 +88,11 @@ export const toAdminMemberUpdate = (member: Member): AdminMemberUpdate => {
     isDeleted: member.isDeleted,
   };
 };
+
+export type LoginResponse = {
+  accessToken: string
+};
+
+export interface MemberResponse {
+  content: Member[];
+}
