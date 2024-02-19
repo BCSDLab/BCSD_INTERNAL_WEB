@@ -3,7 +3,6 @@ import {
 } from '@mui/material';
 import { Suspense, useState } from 'react';
 import ViewListIcon from '@mui/icons-material/ViewList';
-import AddIcon from '@mui/icons-material/Add';
 import ViewModuleIcon from '@mui/icons-material/ViewModule';
 import MemberCreateModal from 'component/modal/memberCreateModal';
 import * as S from './style';
