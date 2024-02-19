@@ -5,7 +5,7 @@ import {
   Member, toAdminMemberUpdate,
 } from 'model/member';
 import { useEffect, useState } from 'react';
-import { useUpdateMember } from 'query/members';
+import { useUpdateMember, useDeleteMember } from 'query/members';
 import { useGetTracks } from 'query/tracks';
 import * as S from './style';
 
@@ -48,6 +48,7 @@ const STATUS_LIST = ['ATTEND', 'OFF', 'IPP', 'ARMY', 'COMPLETION', 'GRADUATE'] a
 export default function MemberInfoModal({ open, onClose, member: initialMember }: MemberInfoModalProps): React.ReactElement {
   const [member, setMember] = useState<Member | null>(initialMember);
   const { mutate: updateMember } = useUpdateMember();
+  const { mutate: deleteMember } = useDeleteMember();
   const { data: tracks } = useGetTracks();
 
   useEffect(
@@ -98,6 +99,19 @@ export default function MemberInfoModal({ open, onClose, member: initialMember }
       });
     }
     onClose();
+  };
+
+  const handleDelete = () => {
+    if (member && member.id) {
+      deleteMember(member.id, {
+        onSuccess: () => {
+          onClose();
+        },
+        onError: () => {
+          // TODO: 에러 처리
+        },
+      });
+    }
   };
 
   return (
@@ -242,20 +256,28 @@ export default function MemberInfoModal({ open, onClose, member: initialMember }
 
             />
           </div>
-          <Button
-            sx={{ mt: 2, mb: 2 }}
-            variant="contained"
-            onClick={handleSave}
-          >
-            저장
-          </Button>
-          <Button
-            sx={{ mt: 2, mb: 2 }}
-            variant="outlined"
-            onClick={onClose}
-          >
-            닫기
-          </Button>
+          <div css={S.buttonContainer}>
+            <Button sx={{ mt: 2, mb: 2 }} variant="contained" color="error" onClick={handleDelete}>
+              회원 삭제
+            </Button>
+            <div css={S.buttonWrapper}>
+              <Button
+                sx={{ mt: 2, mb: 2 }}
+                variant="contained"
+                onClick={handleSave}
+              >
+                저장
+              </Button>
+              <Button
+                sx={{ mt: 2, mb: 2 }}
+                variant="outlined"
+                onClick={onClose}
+              >
+                닫기
+              </Button>
+            </div>
+
+          </div>
         </Box>
       </Box>
     </Modal>
