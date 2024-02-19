@@ -15,7 +15,7 @@ export const sideBar = css`
 `;
 
 export const topBar = css`
-  width: calc(100vw - 250px);
+  width: 100%;
   height: 100px;
   background-color: ${color.gray};
   border-bottom: 1px solid ${color.borderGray};
