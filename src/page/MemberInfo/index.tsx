@@ -19,42 +19,35 @@ export default function MemberInfo() {
 
   return (
     <div css={S.container}>
-      <div css={S.sideBar}>
-        <img src="https://image.bcsdlab.com/banner.png" alt="logo" css={S.logo} />
-        <Button variant="outlined" color="secondary" sx={{ marginTop: '20px' }}>
-          회원정보
-        </Button>
+      <div css={S.topBar} />
+      <div css={S.buttonContainer}>
+        <FormControlLabel control={<Switch checked={deleteMemberChecked} onChange={handleChangedDeleteMember} />} label="탈퇴 회원" />
+        <Suspense fallback={<div />}>
+          <TrackFilter />
+        </Suspense>
+        <div css={S.layoutButtonContainer}>
+          <ToggleButton
+            value="list"
+            selected={layout === 'list'}
+            onChange={() => setLayout('list')}
+          >
+            <ViewListIcon />
+          </ToggleButton>
+          <ToggleButton
+            value="module"
+            selected={layout === 'module'}
+            onChange={() => setLayout('module')}
+          >
+            <ViewModuleIcon />
+          </ToggleButton>
+        </div>
       </div>
-      <div css={S.contentContainer}>
-        <div css={S.topBar} />
-        <div css={S.buttonContainer}>
-          <FormControlLabel control={<Switch checked={deleteMemberChecked} onChange={handleChangedDeleteMember} />} label="탈퇴 회원" />
-          <Suspense fallback={<div />}>
-            <TrackFilter />
-          </Suspense>
-          <div css={S.layoutButtonContainer}>
-            <ToggleButton
-              value="list"
-              selected={layout === 'list'}
-              onChange={() => setLayout('list')}
-            >
-              <ViewListIcon />
-            </ToggleButton>
-            <ToggleButton
-              value="module"
-              selected={layout === 'module'}
-              onChange={() => setLayout('module')}
-            >
-              <ViewModuleIcon />
-            </ToggleButton>
-          </div>
-        </div>
-        <div css={S.content}>
-          <Suspense fallback={<div />}>
-            {layout === 'list' ? <ListLayout deleteMemberChecked={deleteMemberChecked} /> : <GridLayout />}
-          </Suspense>
-        </div>
+      <div css={S.content}>
+        <Suspense fallback={<div />}>
+          {layout === 'list' ? <ListLayout deleteMemberChecked={deleteMemberChecked} /> : <GridLayout />}
+        </Suspense>
       </div>
     </div>
+
   );
 }

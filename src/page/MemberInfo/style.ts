@@ -15,7 +15,7 @@ export const sideBar = css`
 `;
 
 export const topBar = css`
-  width: 100%;
+  width: calc(100vw - 250px);
   height: 100px;
   background-color: ${color.gray};
   border-bottom: 1px solid ${color.borderGray};
@@ -54,9 +54,10 @@ export const layoutButtonContainer = css`
 
 export const container = css`
   display: flex;
+  flex-direction: column;
   background-color: ${color.gray};
   width: 100%;
-  height: 100%;
+  height: 100vh;
 `;
 
 export const logo = css`
