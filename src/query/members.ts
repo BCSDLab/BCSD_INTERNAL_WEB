@@ -11,7 +11,6 @@ interface GetMembers {
   pageIndex: number;
   pageSize: number;
   trackId: number | null;
-  deleted?: boolean | null;
 }
 
 interface LoginRequest {
@@ -25,19 +24,6 @@ export const useGetMembers = ({ pageIndex, pageSize, trackId }: GetMembers) => {
     queryFn: () => {
       if (trackId === null) return getMembers(pageIndex, pageSize);
       return getMembers(pageIndex, pageSize, trackId);
-    },
-  });
-  return { data };
-};
-
-export const useGetMembersNotDeleted = ({
-  pageIndex, pageSize, trackId, deleted,
-}: GetMembers) => {
-  const { data } = useSuspenseQuery({
-    queryKey: ['members', pageIndex, pageSize, trackId, deleted],
-    queryFn: () => {
-      if (trackId === null) return getMembersNotDeleted(pageIndex, pageSize, false);
-      return getMembersNotDeleted(pageIndex, pageSize, false, trackId);
     },
   });
   return { data };
