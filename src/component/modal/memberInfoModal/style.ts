@@ -14,3 +14,25 @@ export const buttonWrapper = css`
   display: flex;
   gap: 20px;
 `;
+
+export const modalStyle = css`
+position: absolute;
+top: 50%;
+left: 50%;
+transform: translate(-50%, -50%);
+width: 600px;
+background-color: 'background.paper';
+box-shadow: 24px;
+padding: 4px;
+`;
+
+export const style = {
+  position: 'absolute' as const,
+  top: '50%',
+  left: '50%',
+  transform: 'translate(-50%, -50%)',
+  width: 600,
+  bgcolor: 'background.paper',
+  boxShadow: 24,
+  p: 4,
+};

@@ -9,17 +9,6 @@ import { useUpdateMember, useDeleteMember } from 'query/members';
 import { useGetTracks } from 'query/tracks';
 import * as S from './style';
 
-const style = {
-  position: 'absolute' as const,
-  top: '50%',
-  left: '50%',
-  transform: 'translate(-50%, -50%)',
-  width: 600,
-  bgcolor: 'background.paper',
-  boxShadow: 24,
-  p: 4,
-};
-
 interface MemberInfoModalProps {
   open: boolean;
   onClose: () => void;
@@ -112,7 +101,7 @@ export default function MemberInfoModal({ open, onClose, member: initialMember }
       aria-labelledby="modal-modal-title"
       aria-describedby="modal-modal-description"
     >
-      <Box sx={style}>
+      <Box sx={S.style}>
         <Typography id="modal-title" variant="h6" component="h2">
           회원 정보 수정
         </Typography>
