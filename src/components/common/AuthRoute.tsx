@@ -8,12 +8,9 @@ interface Props {
 export default function AuthRoute({ needAuth, redirectRoute }: Props) {
   const token = localStorage.getItem('accessToken');
 
-  if (needAuth) {
-    if (token) {
-      return <Outlet />;
-    } return <Navigate to={redirectRoute} replace />;
-  }
-  if (token) {
-    return <Navigate to={redirectRoute} replace />;
-  } return <Outlet />;
+  if (needAuth && token) return <Outlet />;
+
+  if (!needAuth && !token) return <Outlet />;
+
+  return <Navigate to={redirectRoute} replace />;
 }
