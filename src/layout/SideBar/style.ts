@@ -8,6 +8,7 @@ export const sideBar = css`
   height: 100vh;
   background-color: ${colors.gray};
   border-right: 1px solid ${colors.borderGray};
+  box-sizing: border-box;
 `;
 
 export const topBar = css`
