@@ -96,13 +96,13 @@ export default function DuesSetup() {
               } else if (prevYearUnpaidMonth) {
                 setTableBody((prev) => {
                   const newTableBody = [...prev];
-                  newTableBody[5].value[rowNumber - 5] = `${currentYear - 1}년 ${prevYearUnpaidMonth.join('월')}월`;
+                  newTableBody[5].value[rowNumber - 5] = `${currentYear - 1}년 ${prevYearUnpaidMonth.join('월, ')}월`;
                   return newTableBody;
                 });
               } else if (currentYearUnpaidMonth) {
                 setTableBody((prev) => {
                   const newTableBody = [...prev];
-                  newTableBody[5].value[rowNumber - 5] = `${currentYear}년 ${currentYearUnpaidMonth.join('월')}월`;
+                  newTableBody[5].value[rowNumber - 5] = `${currentYear}년 ${currentYearUnpaidMonth.join('월, ')}월`;
                   return newTableBody;
                 });
               }
