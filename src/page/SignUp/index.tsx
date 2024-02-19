@@ -19,7 +19,9 @@ import Snackbar from '@mui/material/Snackbar';
 import { accessClient } from 'api/index.ts';
 import * as S from './styles.ts';
 import { useGetTracks } from 'query/tracks.ts';
-import { useSnackBar } from 'ts/useSnackBar.tsx';
+import { SnackBarParam, useSnackBar } from 'ts/useSnackBar.tsx';
+import { AxiosError } from 'axios';
+import { useNavigate } from 'react-router-dom';
 
 const status = [
   {
@@ -60,7 +62,7 @@ const member = [
   },
 ] as const;
 
-type User = {
+type Member = {
   joinedYear: number,
   joinedMonth: number,
   trackId: number,
@@ -100,20 +102,26 @@ const emailRegExp = new RegExp(/^[-0-9A-Za-z!#$%&'*+/=?^_`{|}~.]+@[-0-9A-Za-z!#$
 const phoneNumberNegExp = new RegExp(/^\d{3}-\d{3,4}-\d{4}$/);
 
 
-const register = (user: User) => accessClient.post('/members/register', user)
+const register = (user: Member) => accessClient.post('/members/register', user)
+
+export interface AxiosErrorMessage {
+  message: string
+}
 
 const regist = async (
-  user: User,
-  getValues: UseFormGetValues<User>,
+  user: Member,
+  getValues: UseFormGetValues<Member>,
   joinedYear: number, joinedMonth:
     number,
-  onError: (e: unknown) => void) => {
+  openSnackBar: ({ type, message }: SnackBarParam) => void) => {
   const hash = SHA256(getValues('password')).toString();
   try {
     await register({ ...user, password: hash, joinedYear: joinedYear, joinedMonth: joinedMonth });
   }
   catch (e) {
-    onError(e)
+    const err = e as AxiosError;
+    const { message } = (err.response?.data as AxiosErrorMessage);
+    openSnackBar({ type: 'error', message: message })
   }
 }
 
@@ -123,20 +131,29 @@ const month = date.getMonth() + 1
 const day = date.getDate()
 
 export default function SignUp() {
-  const { control, handleSubmit, formState: { errors }, getValues, clearErrors } = useForm<User>({
+  const { control, handleSubmit, formState: { errors }, getValues, clearErrors } = useForm<Member>({
     mode: 'onChange',
     defaultValues: initialValue,
   });
   const { data: track } = useGetTracks();
-  const onError = useSnackBar();
+  const openSnackBar = useSnackBar();
 
   // Dayjs 타입을 사용하기에 부적절하다고 판단해서 새로운 state를 만듦
   const [days, setDays] = useState<Dayjs | null>(dayjs(year + '-' + month + '-' + day)); // 날짜 초기값 오늘 날짜로 임의 설정
 
+  const navigate = useNavigate();
+
   const { isPending, mutate: signUp } = useMutation({
     mutationKey: ['signup'],
-    mutationFn: ({ data, joinedYear, joinedMonth }: { data: User, joinedYear: number, joinedMonth: number }) => regist(data, getValues, joinedYear, joinedMonth, onError)
+    mutationFn: ({ data, joinedYear, joinedMonth }: { data: Member, joinedYear: number, joinedMonth: number }) =>
+      regist(data, getValues, joinedYear, joinedMonth, openSnackBar),
+    onSuccess: () => {
+      openSnackBar({ type: 'success', message: '회원가입에 성공했습니다.' })
+      navigate('/login')
+    },
+    onError: (e) => openSnackBar({ type: 'error', message: e.message })
   });
+
   return (
     <form css={S.template} onSubmit={handleSubmit((data) => {
       if (days) {
@@ -224,7 +241,7 @@ export default function SignUp() {
           dateAdapter={AdapterDayjs}
         >
           <DatePicker
-            label="Controlled picker"
+            label="가입 시기"
             value={days}
             onChange={(newDay) => setDays(newDay)}
           />

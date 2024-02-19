@@ -1,5 +1,5 @@
 import { accessClient } from 'api';
-import { LoginResponse, Member } from 'model/member';
+import { LoginResponse, Member, MemberResponse } from 'model/member';
 import { Pagination } from 'model/page';
 
 export const getMembers = (pageIndex: number, pageSize: number, trackId?: number) => {
@@ -8,3 +8,5 @@ export const getMembers = (pageIndex: number, pageSize: number, trackId?: number
 };
 
 export const login = (studentNumber: string, password: string) => accessClient.post<LoginResponse>('/members/login', { studentNumber, password });
+
+export const getNotAuthedMembers = () => accessClient.get<MemberResponse>('/members?authed=false');
