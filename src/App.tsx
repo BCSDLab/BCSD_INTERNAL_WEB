@@ -10,7 +10,9 @@ import DefaultLayout from 'layout/DefaultLayout';
 function App() {
   return (
     <Routes>
-      <Route path="/" element={<SignIn />} />
+      <Route element={<AuthRoute needAuth={false} redirectRoute="/member" />}>
+        <Route path="/" element={<SignIn />} />
+      </Route>
       <Route path="/register" element={<SignUp />} />
       <Route element={<AuthRoute needAuth redirectRoute="/login" />}>
         <Route path="/member" element={<MemberInfo />} />
@@ -18,8 +20,7 @@ function App() {
           <Route path="/accept" element={<AcceptMember />} />
         </Route>
       </Route>
-      <Route path="/member" element={<MemberInfo />} />
-      <Route path="/sign-up" element={<SignUp />} />
+      <Route path="/login" element={<SignIn />} />
       <Route path="/dues" element={<DuesManagement />} />
     </Routes>
   );
