@@ -36,5 +36,6 @@ module.exports = {
     "@typescript-eslint/no-explicit-any": "off",
     "max-len": "off",
     "linebreak-style": 0,
+    "react/jsx-boolean-value": "off",
   },
 };
