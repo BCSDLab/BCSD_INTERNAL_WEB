@@ -5,6 +5,7 @@ import SignUp from 'page/SignUp';
 import SignIn from 'page/SignIn';
 import DuesManagement from 'page/DuesManagement';
 import DuesSetup from 'page/DuesSetup';
+import EditDues from 'page/EditDues';
 
 function App() {
   return (
@@ -16,6 +17,7 @@ function App() {
       <Route path="/member-info" element={<DefaultLayout />} />
       <Route path="/dues" element={<DuesManagement />} />
       <Route path="/dues-setup" element={<DuesSetup />} />
+      <Route path="edit-dues" element={<EditDues />} />
     </Routes>
   );
 }
