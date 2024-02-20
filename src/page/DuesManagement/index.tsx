@@ -15,7 +15,7 @@ import {
 import { useGetAllDues } from 'query/dues';
 import useBooleanState from 'util/hooks/useBooleanState.ts';
 import { DuesDetail } from 'model/dues/allDues';
-import { STATUS_MAPPING } from 'util/constants/status';
+import { STATUS, STATUS_MAPPING } from 'util/constants/status';
 import { useGetTracks } from 'query/tracks';
 import LoadingSpinner from 'layout/LoadingSpinner';
 import { ArrowBackIosNewOutlined, ArrowForwardIosOutlined } from '@mui/icons-material';
@@ -217,13 +217,12 @@ function DefaultTable() {
                 }}
               >
                 <div css={S.memoPopover}>
-                  {/* TODO: 면제 혹은 미납의 구체적인 사유 */}
                   <h3>
-                    {detail.status}
+                    {STATUS[detail.status as 'NOT_PAID' | 'SKIP']}
                     {' '}
                     사유
                   </h3>
-                  {detail.memo}
+                  <span css={S.memoPopoverText}>{detail.memo}</span>
                 </div>
               </Popover>
             </TableBody>

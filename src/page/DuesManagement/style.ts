@@ -168,8 +168,16 @@ export const memoTableCell = (props: DuesDetail) => {
 
 export const memoPopover = css`
   display: flex;
+  flex-direction: column;
   justify-content: center;
+  align-items: center;
   padding: 16px;
-  min-width: 160px;
+  min-width: 150px;
   min-height: 70px;
+`;
+
+export const memoPopoverText = css`
+  margin-top: 15px;
+  color: #212121;
+  text-align: center;
 `;
