@@ -15,11 +15,12 @@ export const container = css`
 
 export const topBar = css`
   width: 100%;
-  height: 15vh;
+  height: 130px;
   display: flex;
   align-items: center;
   background-color: ${colors.gray};
   border-bottom: 1px solid ${colors.borderGray};
+  box-sizing: border-box;
 `;
 
 export const boxStyle = {
@@ -27,7 +28,7 @@ export const boxStyle = {
 };
 
 export const contentStyle = css`
-  height: 85vh;
+  height: calc(100vh - 150px);
   background-color: ${colors.white};
   padding: 20px 70px 20px 70px;
 `;
