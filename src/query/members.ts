@@ -1,10 +1,17 @@
-import { useMutation, useSuspenseQuery } from '@tanstack/react-query';
-import { getMembers, login } from 'api/members';
+import { useMutation, useQueryClient, useSuspenseQuery } from '@tanstack/react-query';
+import {
+  createMember,
+  deleteMember, getMember, getMembers, getMembersNotDeleted, login, updateMember, getNotAuthedMembers,
+} from 'api/members';
+import { AdminMemberUpdate, MemberCreate } from 'model/member';
+import { useNavigate } from 'react-router-dom';
+import { useSnackBar } from 'ts/useSnackBar';
 
-interface GetMember {
+interface GetMembers {
   pageIndex: number;
   pageSize: number;
   trackId: number | null;
+  deleted?: boolean | null;
 }
 
 interface LoginRequest {
@@ -12,7 +19,7 @@ interface LoginRequest {
   password: string,
 }
 
-export const useGetMembers = ({ pageIndex, pageSize, trackId }: GetMember) => {
+export const useGetMembers = ({ pageIndex, pageSize, trackId }: GetMembers) => {
   const { data } = useSuspenseQuery({
     queryKey: ['members', pageIndex, pageSize, trackId],
     queryFn: () => {
@@ -23,13 +30,78 @@ export const useGetMembers = ({ pageIndex, pageSize, trackId }: GetMember) => {
   return { data };
 };
 
+export const useGetMembersNotDeleted = ({
+  pageIndex, pageSize, trackId, deleted,
+}: GetMembers) => {
+  const { data } = useSuspenseQuery({
+    queryKey: ['members', pageIndex, pageSize, trackId, deleted],
+    queryFn: () => {
+      if (trackId === null) return getMembersNotDeleted(pageIndex, pageSize, false);
+      return getMembersNotDeleted(pageIndex, pageSize, false, trackId);
+    },
+  });
+  return { data };
+};
+
+export const useGetMember = (id: number) => {
+  const { data } = useSuspenseQuery({
+    queryKey: ['member', id],
+    queryFn: () => getMember(id),
+  });
+  return { data };
+};
+
+export const useUpdateMember = () => {
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: (params: { id: number, updatedMember: AdminMemberUpdate }) => updateMember(params.id, params.updatedMember),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['members'] });
+    },
+  });
+};
+
+export const useDeleteMember = () => {
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: (id: number) => deleteMember(id),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['members'] });
+    },
+  });
+};
+
+export const useCreateMember = () => {
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: (member: MemberCreate) => createMember(member),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['members'] });
+    },
+  });
+};
+
 export const useLogin = () => {
-  const { data, mutate } = useMutation({
-    mutationKey: ['login'],
+  const openSnackBar = useSnackBar();
+  const navigate = useNavigate();
+  const { mutate, isPending } = useMutation({
     mutationFn: ({ studentNumber, password }: LoginRequest) => login(studentNumber, password),
+    onSuccess: (response) => {
+      localStorage.setItem('accessToken', response.accessToken);
+      openSnackBar({ type: 'success', message: '로그인에 성공했습니다.' });
+      navigate('/member');
+    },
+    onError: (e) => openSnackBar({ type: 'error', message: e.message }),
   });
 
-  if (data) localStorage.setItem('accessToken', data.accessToken);
+  return { mutate, isPending };
+};
 
-  return { mutate };
+export const useNotAuthedMember = () => {
+  const { data } = useSuspenseQuery({
+    queryKey: ['notAuthed'],
+    queryFn: () => getNotAuthedMembers(),
+  });
+
+  return { data };
 };
