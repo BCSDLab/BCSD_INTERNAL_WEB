@@ -1,5 +1,5 @@
 import {
-  Button, FormControlLabel, Switch, ToggleButton,
+  Button, FormControlLabel, Switch, ToggleButton, css,
 } from '@mui/material';
 import { Suspense, useState } from 'react';
 import ViewListIcon from '@mui/icons-material/ViewList';
@@ -30,18 +30,10 @@ export default function MemberInfo() {
 
   return (
     <div css={S.container}>
-      <div css={S.sideBar}>
-        <img src="https://image.bcsdlab.com/banner.png" alt="logo" css={S.logo} />
-        <Button
-          variant="outlined"
-          color="secondary"
-          sx={{ marginTop: '20px' }}
-        >
-          회원정보
-        </Button>
-      </div>
       <div css={S.contentContainer}>
-        <div css={S.topBar} />
+        <div css={S.topBar}>
+          <h1 css={S.topBarTitle}>회원 정보</h1>
+        </div>
         <div css={S.buttonContainer}>
           <Button
             variant="outlined"

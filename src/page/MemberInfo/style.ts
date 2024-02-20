@@ -16,9 +16,15 @@ export const sideBar = css`
 
 export const topBar = css`
   width: 100%;
-  height: 100px;
+  height: 15vh;
+  display: flex;
+  align-items: center;
   background-color: ${color.gray};
   border-bottom: 1px solid ${color.borderGray};
+`;
+
+export const topBarTitle = css`
+  margin-left: 20px;
 `;
 
 export const contentContainer = css`
@@ -56,7 +62,7 @@ export const container = css`
   display: flex;
   background-color: ${color.gray};
   width: 100%;
-  height: 100%;
+  height: 100vh;
 `;
 
 export const logo = css`
