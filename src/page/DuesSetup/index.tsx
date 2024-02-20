@@ -37,7 +37,7 @@ export default function DuesSetup() {
   const { data: currentYearDues } = useGetAllDues({ year: currentYear });
   const { data: prevYearDues } = useGetAllDues({ year: currentYear - 1 });
 
-  const onError = useSnackBar();
+  const { onError } = useSnackBar();
 
   const postDuesMutation = useMutation({
     mutationKey: ['postDues'],

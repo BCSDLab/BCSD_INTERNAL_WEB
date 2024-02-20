@@ -128,7 +128,7 @@ export default function SignUp() {
     defaultValues: initialValue,
   });
   const { data: track } = useGetTracks();
-  const onError = useSnackBar();
+  const { onError } = useSnackBar();
 
   // Dayjs 타입을 사용하기에 부적절하다고 판단해서 새로운 state를 만듦
   const [days, setDays] = useState<Dayjs | null>(dayjs(year + '-' + month + '-' + day)); // 날짜 초기값 오늘 날짜로 임의 설정

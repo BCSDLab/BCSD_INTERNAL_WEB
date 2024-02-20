@@ -1,4 +1,4 @@
-import { AxiosError } from 'axios';
+import { AxiosError, AxiosResponse } from 'axios';
 import { create } from 'zustand';
 
 interface SnackBar {
@@ -30,5 +30,10 @@ export const useSnackBar = () => {
     open();
   };
 
-  return onError;
+  const onInfo = (infoMessage: string) => {
+    setMessage(infoMessage);
+    open();
+  };
+
+  return { onError, onInfo };
 };
