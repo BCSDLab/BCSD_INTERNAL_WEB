@@ -41,8 +41,8 @@ export interface Member {
 }
 
 export interface AdminMemberUpdate {
-  year: number;
-  month: number;
+  joinedYear: number;
+  joinedMonth: number;
   trackId: number;
   memberType: MemberType;
   status: StatusType;
@@ -101,8 +101,8 @@ export const toAdminMemberUpdate = (member: Member): AdminMemberUpdate => {
     email: member.email,
     githubName: member.githubName,
     profileImageUrl: member.profileImageUrl,
-    year: member.joinedYear,
-    month: member.joinedMonth,
+    joinedYear: member.joinedYear,
+    joinedMonth: member.joinedMonth,
     isAuthed: member.isAuthed,
     isDeleted: member.isDeleted,
   };
