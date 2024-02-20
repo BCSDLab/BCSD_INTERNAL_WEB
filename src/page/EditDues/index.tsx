@@ -53,7 +53,7 @@ function DefaultTable() {
   });
   const [status, setStatus] = useState<Status>('PAID');
 
-  const { onError, onInfo } = useSnackBar();
+  const openSnackBar = useSnackBar();
 
   const { data: allDues, refetch } = useGetAllDues({ year: duesYear });
   const [filteredValue, setFilteredValue] = useState(allDues.dues);
@@ -62,15 +62,15 @@ function DefaultTable() {
   const postDuesMutation = useMutation({
     mutationKey: ['postDues'],
     mutationFn: (data: NewDuesData) => postDues(data),
-    onError: (error) => onError(error),
-    onSuccess: () => onInfo('회비 내역이 수정되었습니다.'),
+    onError: (error) => openSnackBar({ type: 'error', message: error.message }),
+    onSuccess: () => openSnackBar({ type: 'success', message: '회비 내역이 수정되었습니다.' }),
   });
 
   const putDuesMutation = useMutation({
     mutationKey: ['putDues'],
     mutationFn: (data: NewDuesData) => putDues(data),
-    onError: (error) => onError(error),
-    onSuccess: () => onInfo('회비 내역이 수정되었습니다.'),
+    onError: (error) => openSnackBar({ type: 'error', message: error.message }),
+    onSuccess: () => openSnackBar({ type: 'success', message: '회비 내역이 수정되었습니다.' }),
   });
 
   const handleNameChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -143,7 +143,7 @@ function DefaultTable() {
       });
     }
     if (prevStatus === status) {
-      onInfo('이전 상태와 같은 상태로 변경할 수 없습니다.');
+      openSnackBar({ type: 'info', message: '이전 상태와 같은 상태로 변경할 수 없습니다.' });
     } else {
       closeEditStatusModal();
     }

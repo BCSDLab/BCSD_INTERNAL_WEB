@@ -25,7 +25,7 @@ function App() {
       <Route path="/login" element={<SignIn />} />
       <Route path="/dues" element={<DuesManagement />} />
       <Route path="/dues-setup" element={<DuesSetup />} />
-      <Route path="edit-dues" element={<EditDues />} />
+      <Route path="/edit-dues" element={<EditDues />} />
     </Routes>
   );
 }
