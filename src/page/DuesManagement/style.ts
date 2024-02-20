@@ -76,6 +76,7 @@ export const tableContainer = css`
 export const tableHeader = css`
   background-color: #1877f2;
   color: #ffffff;
+  text-align: center;
 `;
 
 export const trackTableCell = css`
@@ -134,6 +135,10 @@ export const filterModalContent = css`
   flex-direction: column;
 `;
 
+export const tableBodyCell = css`
+  text-align: center;
+`;
+
 // 미납 | 납부 | 면제 | null(아직 납부 달이 지나지 않음)
 // popover를 여는 버튼은 미납, 면제일 때만 보이도록 함
 export const memoTableCell = (props: DuesDetail) => {
@@ -155,9 +160,16 @@ export const memoTableCell = (props: DuesDetail) => {
   return css`
     cursor: ${props.status === 'NOT_PAID' || props.status === 'SKIP' ? 'pointer' : 'default'};
     background-color: ${backgroundColor};
+    text-align: center;
+    border-right: 1px solid #e0e0e0;
+    min-width: 38px;;
   `;
 };
 
 export const memoPopover = css`
+  display: flex;
+  justify-content: center;
   padding: 16px;
+  min-width: 160px;
+  min-height: 70px;
 `;

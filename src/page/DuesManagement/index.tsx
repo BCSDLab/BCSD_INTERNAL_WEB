@@ -91,7 +91,8 @@ function DefaultTable() {
 
   useEffect(() => {
     setDuesYear(currentYear - page + 1);
-  }, [currentYear, page]);
+    setFilteredValue(allDues.dues);
+  }, [currentYear, page, allDues.dues]);
 
   const goToPrevYear = () => {
     // 재학생 회비 내역이 2021년부터 시작하므로 2021년 이전으로 이동할 수 없음
@@ -187,11 +188,11 @@ function DefaultTable() {
             <TableBody>
               {filteredValue.map((row) => (
                 <TableRow key={row.memberId}>
-                  <TableCell component="th" scope="row">
+                  <TableCell css={S.tableBodyCell}>
                     {row.track.name}
                   </TableCell>
-                  <TableCell>{row.unpaidCount}</TableCell>
-                  <TableCell>{row.name}</TableCell>
+                  <TableCell css={S.tableBodyCell}>{row.unpaidCount}</TableCell>
+                  <TableCell css={S.tableBodyCell}>{row.name}</TableCell>
                   {row.detail.map((dueDetail) => (
                     <TableCell
                       css={S.memoTableCell(dueDetail)}
