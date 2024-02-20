@@ -1,9 +1,9 @@
 import { useMutation, useQueryClient, useSuspenseQuery } from '@tanstack/react-query';
 import {
   createMember,
-  deleteMember, getMember, getMembers, getMembersNotDeleted, login, updateMember, getNotAuthedMembers,
+  deleteMember, getMember, getMembers, getMembersNotDeleted, login, updateMember, getNotAuthedMembers, getMe, updateMe,
 } from 'api/members';
-import { AdminMemberUpdate, MemberCreate } from 'model/member';
+import { AdminMemberUpdate, MemberCreate, MemberUpdate } from 'model/member';
 import { useNavigate } from 'react-router-dom';
 import { useSnackBar } from 'ts/useSnackBar';
 
@@ -104,4 +104,23 @@ export const useNotAuthedMember = () => {
   });
 
   return { data };
+};
+
+export const useGetMe = () => {
+  const { data } = useSuspenseQuery({
+    queryKey: ['me'],
+    queryFn: () => getMe(),
+  });
+
+  return { data };
+};
+
+export const useUpdateMe = () => {
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: (member: MemberUpdate) => updateMe(member),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['me'] });
+    },
+  });
 };
