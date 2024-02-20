@@ -37,19 +37,24 @@ export default function DuesSetup() {
   const { data: currentYearDues } = useGetAllDues({ year: currentYear });
   const { data: prevYearDues } = useGetAllDues({ year: currentYear - 1 });
 
-  const { onError } = useSnackBar();
+  const openSnackBar = useSnackBar();
+
+  const onMutationSuccess = () => {
+    openSnackBar({ type: 'success', message: '회비 생성이 완료되었습니다.' });
+    setButtonDisabled(true);
+  };
 
   const postDuesMutation = useMutation({
     mutationKey: ['postDues'],
     mutationFn: (data: NewDuesData) => postDues(data),
-    onError: (error) => onError(error),
+    onError: (error) => openSnackBar({ type: 'error', message: error.message }),
   });
 
   const putDuesMutation = useMutation({
     mutationKey: ['putDues'],
     mutationFn: (data: NewDuesData) => putDues(data),
-    onError: (error) => onError(error),
-    onSuccess: () => setButtonDisabled(true),
+    onError: (error) => openSnackBar({ type: 'error', message: error.message }),
+    onSuccess: () => onMutationSuccess(),
   });
 
   const findUnpaidMonth = (dues: Dues[], name: string) => {
