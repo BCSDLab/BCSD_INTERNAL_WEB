@@ -2,23 +2,12 @@ import {
   Modal, Box, Typography, Button, TextField, MenuItem,
 } from '@mui/material';
 import {
-  Member, toAdminMemberUpdate,
+  Member, toAdminMemberUpdate, STATUS_LABEL,
 } from 'model/member';
 import { useEffect, useState } from 'react';
 import { useUpdateMember, useDeleteMember } from 'query/members';
 import { useGetTracks } from 'query/tracks';
 import * as S from './style';
-
-const style = {
-  position: 'absolute' as const,
-  top: '50%',
-  left: '50%',
-  transform: 'translate(-50%, -50%)',
-  width: 600,
-  bgcolor: 'background.paper',
-  boxShadow: 24,
-  p: 4,
-};
 
 interface MemberInfoModalProps {
   open: boolean;
@@ -33,15 +22,6 @@ const MEMBER_TYPE_LABEL = {
 } as const;
 
 const MEMBER_TYPE_LIST = ['BEGINNER', 'REGULAR', 'MENTOR'] as const;
-
-const STATUS_LABEL = {
-  ATTEND: '재학',
-  OFF: '휴학',
-  IPP: '현장실습',
-  ARMY: '군 휴학',
-  COMPLETION: '수료',
-  GRADUATE: '졸업',
-} as const;
 
 const STATUS_LIST = ['ATTEND', 'OFF', 'IPP', 'ARMY', 'COMPLETION', 'GRADUATE'] as const;
 
@@ -135,7 +115,7 @@ export default function MemberInfoModal({ open, onClose, member: initialMember }
       aria-labelledby="modal-modal-title"
       aria-describedby="modal-modal-description"
     >
-      <Box sx={style}>
+      <Box sx={S.style}>
         <Typography id="modal-title" variant="h6" component="h2">
           회원 정보 수정
         </Typography>
