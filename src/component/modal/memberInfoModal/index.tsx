@@ -2,23 +2,12 @@ import {
   Modal, Box, Typography, Button, TextField, MenuItem,
 } from '@mui/material';
 import {
-  Member, toAdminMemberUpdate,
+  Member, toAdminMemberUpdate, STATUS_LABEL,
 } from 'model/member';
 import { useEffect, useState } from 'react';
 import { useUpdateMember, useDeleteMember } from 'query/members';
 import { useGetTracks } from 'query/tracks';
 import * as S from './style';
-
-const style = {
-  position: 'absolute' as const,
-  top: '50%',
-  left: '50%',
-  transform: 'translate(-50%, -50%)',
-  width: 600,
-  bgcolor: 'background.paper',
-  boxShadow: 24,
-  p: 4,
-};
 
 interface MemberInfoModalProps {
   open: boolean;
@@ -34,16 +23,21 @@ const MEMBER_TYPE_LABEL = {
 
 const MEMBER_TYPE_LIST = ['BEGINNER', 'REGULAR', 'MENTOR'] as const;
 
-const STATUS_LABEL = {
-  ATTEND: '재학',
-  OFF: '휴학',
-  IPP: '현장실습',
-  ARMY: '군 휴학',
-  COMPLETION: '수료',
-  GRADUATE: '졸업',
+const STATUS_LIST = ['ATTEND', 'OFF', 'IPP', 'ARMY', 'COMPLETION', 'GRADUATE'] as const;
+
+const IS_DELETED = {
+  true: '탈퇴 회원',
+  false: '활성 회원',
 } as const;
 
-const STATUS_LIST = ['ATTEND', 'OFF', 'IPP', 'ARMY', 'COMPLETION', 'GRADUATE'] as const;
+const isDeletedList = [true, false] as const;
+
+const IS_AUTHED = {
+  true: '인증',
+  false: '미인증',
+} as const;
+
+const isAuthedList = [true, false] as const;
 
 export default function MemberInfoModal({ open, onClose, member: initialMember }: MemberInfoModalProps): React.ReactElement {
   const [member, setMember] = useState<Member | null>(initialMember);
@@ -121,7 +115,7 @@ export default function MemberInfoModal({ open, onClose, member: initialMember }
       aria-labelledby="modal-modal-title"
       aria-describedby="modal-modal-description"
     >
-      <Box sx={style}>
+      <Box sx={S.style}>
         <Typography id="modal-title" variant="h6" component="h2">
           회원 정보 수정
         </Typography>
@@ -253,8 +247,39 @@ export default function MemberInfoModal({ open, onClose, member: initialMember }
               name="profileImageUrl"
               value="추후 파일 업로드 구현"
               fullWidth
-
             />
+          </div>
+          <div css={S.textGap}>
+            <TextField
+              margin="normal"
+              label="인증 여부"
+              name="isAuthed"
+              value={member?.isAuthed.toString() || ''}
+              fullWidth
+              onChange={handleChange}
+              select
+            >
+              {isAuthedList.map((isAuthed) => (
+                <MenuItem key={isAuthed.toString()} value={isAuthed.toString()}>
+                  {isAuthed ? IS_AUTHED.true : IS_AUTHED.false}
+                </MenuItem>
+              ))}
+            </TextField>
+            <TextField
+              margin="normal"
+              label="탈퇴 여부"
+              name="isDeleted"
+              value={member?.isDeleted.toString() || ''}
+              fullWidth
+              onChange={handleChange}
+              select
+            >
+              {isDeletedList.map((isDeleted) => (
+                <MenuItem key={isDeleted.toString()} value={isDeleted.toString()}>
+                  {isDeleted ? IS_DELETED.true : IS_DELETED.false}
+                </MenuItem>
+              ))}
+            </TextField>
           </div>
           <div css={S.buttonContainer}>
             <Button sx={{ mt: 2, mb: 2 }} variant="contained" color="error" onClick={handleDelete}>

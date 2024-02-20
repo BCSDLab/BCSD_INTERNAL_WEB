@@ -60,6 +60,7 @@ export const layoutButtonContainer = css`
 
 export const container = css`
   display: flex;
+  flex-direction: column;
   background-color: ${color.gray};
   width: 100%;
   height: 100vh;
