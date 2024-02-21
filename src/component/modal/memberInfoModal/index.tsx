@@ -1,24 +1,15 @@
 import {
-  Modal, Box, Typography, Button, TextField, MenuItem,
+  Modal, Box, Typography, Button, TextField, MenuItem, styled,
 } from '@mui/material';
 import {
-  Member, toAdminMemberUpdate,
+  Member, toAdminMemberUpdate, STATUS_LABEL,
 } from 'model/member';
 import { useEffect, useState } from 'react';
 import { useUpdateMember, useDeleteMember } from 'query/members';
 import { useGetTracks } from 'query/tracks';
+import { FileResponse, getPresignedUrl } from 'api/image';
+import axios from 'axios';
 import * as S from './style';
-
-const style = {
-  position: 'absolute' as const,
-  top: '50%',
-  left: '50%',
-  transform: 'translate(-50%, -50%)',
-  width: 600,
-  bgcolor: 'background.paper',
-  boxShadow: 24,
-  p: 4,
-};
 
 interface MemberInfoModalProps {
   open: boolean;
@@ -34,22 +25,46 @@ const MEMBER_TYPE_LABEL = {
 
 const MEMBER_TYPE_LIST = ['BEGINNER', 'REGULAR', 'MENTOR'] as const;
 
-const STATUS_LABEL = {
-  ATTEND: '재학',
-  OFF: '휴학',
-  IPP: '현장실습',
-  ARMY: '군 휴학',
-  COMPLETION: '수료',
-  GRADUATE: '졸업',
-} as const;
-
 const STATUS_LIST = ['ATTEND', 'OFF', 'IPP', 'ARMY', 'COMPLETION', 'GRADUATE'] as const;
 
+const IS_DELETED = {
+  true: '탈퇴 회원',
+  false: '활성 회원',
+} as const;
+
+const isDeletedList = [true, false] as const;
+
+const IS_AUTHED = {
+  true: '인증',
+  false: '미인증',
+} as const;
+
+const isAuthedList = [true, false] as const;
+
+const DEFAULT_URL = 'https://image.bcsdlab.com/';
+
+const VisuallyHiddenInput = styled('input')({
+  clip: 'rect(0 0 0 0)',
+  clipPath: 'inset(50%)',
+  height: 1,
+  overflow: 'hidden',
+  position: 'absolute',
+  bottom: 0,
+  left: 0,
+  whiteSpace: 'nowrap',
+  width: 1,
+});
+
+interface FileInfo {
+  file: File;
+  presignedUrl: FileResponse;
+}
 export default function MemberInfoModal({ open, onClose, member: initialMember }: MemberInfoModalProps): React.ReactElement {
   const [member, setMember] = useState<Member | null>(initialMember);
   const { mutate: updateMember } = useUpdateMember();
   const { mutate: deleteMember } = useDeleteMember();
   const { data: tracks } = useGetTracks();
+  const [imageInfo, setImageInfo] = useState<FileInfo>();
 
   useEffect(
     () => {
@@ -91,12 +106,28 @@ export default function MemberInfoModal({ open, onClose, member: initialMember }
     if (member) setMember({ ...member, [name]: formatPhoneNumber(value) });
   };
 
+  const uploadImage = async ({ presignedUrl, file }: { presignedUrl: string, file: File }) => {
+    await axios.put(presignedUrl, file, {
+      headers: {
+        'Content-Type': 'image/jpeg, image/png, image/svg+xml, image/webp',
+      },
+    }); // 헤더에 authrization을 담으면 안된다
+  };
+
   const handleSave = () => {
     if (member && member.id) {
-      updateMember({
-        id: member.id,
-        updatedMember: toAdminMemberUpdate(member),
-      });
+      if (imageInfo?.presignedUrl) {
+        uploadImage({ presignedUrl: imageInfo.presignedUrl.presignedUrl, file: imageInfo.file });
+        updateMember({
+          id: member.id,
+          updatedMember: toAdminMemberUpdate({ ...member, profileImageUrl: DEFAULT_URL + imageInfo.presignedUrl.fileName }),
+        });
+      } else {
+        updateMember({
+          id: member.id,
+          updatedMember: toAdminMemberUpdate(member),
+        });
+      }
     }
     onClose();
   };
@@ -114,6 +145,18 @@ export default function MemberInfoModal({ open, onClose, member: initialMember }
     }
   };
 
+  const handleImage = async (event: React.ChangeEvent<HTMLInputElement>) => {
+    const file = event.target.files?.[0];
+
+    if (file) {
+      const presigned = await getPresignedUrl({
+        fileName: file?.name as string,
+      });
+
+      setImageInfo({ file, presignedUrl: presigned });
+    }
+  };
+
   return (
     <Modal
       open={open}
@@ -121,7 +164,7 @@ export default function MemberInfoModal({ open, onClose, member: initialMember }
       aria-labelledby="modal-modal-title"
       aria-describedby="modal-modal-description"
     >
-      <Box sx={style}>
+      <Box sx={S.style}>
         <Typography id="modal-title" variant="h6" component="h2">
           회원 정보 수정
         </Typography>
@@ -247,14 +290,47 @@ export default function MemberInfoModal({ open, onClose, member: initialMember }
               fullWidth
               onChange={handleChange}
             />
+            <Button
+              component="label"
+              fullWidth
+              variant="outlined"
+              sx={{ height: '60px', marginTop: '15px' }}
+            >
+              프로필 이미지
+              <VisuallyHiddenInput type="file" accept="image/jpeg, image/png" onChange={(e) => handleImage(e)} />
+            </Button>
+          </div>
+          <div css={S.textGap}>
             <TextField
               margin="normal"
-              label="프로필 이미지"
-              name="profileImageUrl"
-              value="추후 파일 업로드 구현"
+              label="인증 여부"
+              name="isAuthed"
+              value={member?.isAuthed.toString() || ''}
               fullWidth
-
-            />
+              onChange={handleChange}
+              select
+            >
+              {isAuthedList.map((isAuthed) => (
+                <MenuItem key={isAuthed.toString()} value={isAuthed.toString()}>
+                  {isAuthed ? IS_AUTHED.true : IS_AUTHED.false}
+                </MenuItem>
+              ))}
+            </TextField>
+            <TextField
+              margin="normal"
+              label="탈퇴 여부"
+              name="isDeleted"
+              value={member?.isDeleted.toString() || ''}
+              fullWidth
+              onChange={handleChange}
+              select
+            >
+              {isDeletedList.map((isDeleted) => (
+                <MenuItem key={isDeleted.toString()} value={isDeleted.toString()}>
+                  {isDeleted ? IS_DELETED.true : IS_DELETED.false}
+                </MenuItem>
+              ))}
+            </TextField>
           </div>
           <div css={S.buttonContainer}>
             <Button sx={{ mt: 2, mb: 2 }} variant="contained" color="error" onClick={handleDelete}>

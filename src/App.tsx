@@ -17,9 +17,9 @@ function App() {
       </Route>
       <Route path="/register" element={<SignUp />} />
       <Route element={<AuthRoute needAuth redirectRoute="/login" />}>
-        <Route path="/member" element={<MemberInfo />} />
         <Route element={<DefaultLayout />}>
           <Route path="/accept" element={<AcceptMember />} />
+          <Route path="/member" element={<MemberInfo />} />
         </Route>
       </Route>
       <Route path="/login" element={<SignIn />} />
