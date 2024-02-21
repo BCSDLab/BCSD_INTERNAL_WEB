@@ -42,6 +42,10 @@ export const topBarTitle = css`
   margin-left: 16px;
 `;
 
+export const tableCell = css`
+  width: 100px;
+`;
+
 export const mainContent = css`
   position: relative;
   width: 95%;
