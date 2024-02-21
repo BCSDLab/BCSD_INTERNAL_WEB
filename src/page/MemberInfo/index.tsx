@@ -1,10 +1,12 @@
 import {
+  Button,
   FormControlLabel, Switch, ToggleButton,
 } from '@mui/material';
 import { Suspense, useState } from 'react';
 import ViewListIcon from '@mui/icons-material/ViewList';
 import ViewModuleIcon from '@mui/icons-material/ViewModule';
 import MemberCreateModal from 'component/modal/memberCreateModal';
+import AddIcon from '@mui/icons-material/Add';
 import * as S from './style';
 import ListLayout from './ListLayout';
 import GridLayout from './GridLayout';
@@ -19,6 +21,10 @@ export default function MemberInfo() {
     setDeleteMemberChecked(event.target.checked);
   };
 
+  const handleOpenMemberCreateModal = () => {
+    setMemberCreateModalOpen(true);
+  };
+
   const handleCloseMemberCreateModal = () => {
     setMemberCreateModalOpen(false);
   };
@@ -30,6 +36,14 @@ export default function MemberInfo() {
       </div>
       <div>
         <div css={S.buttonContainer}>
+          <Button
+            variant="outlined"
+            color="primary"
+            startIcon={<AddIcon />}
+            onClick={handleOpenMemberCreateModal}
+          >
+            생성
+          </Button>
           <FormControlLabel control={<Switch checked={deleteMemberChecked} onChange={handleChangedDeleteMember} />} label="탈퇴 회원" />
           <Suspense fallback={<div />}>
             <TrackFilter />

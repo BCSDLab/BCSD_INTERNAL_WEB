@@ -74,20 +74,32 @@ export const useUpdateMember = () => {
 
 export const useDeleteMember = () => {
   const queryClient = useQueryClient();
+  const openSnackBar = useSnackBar();
   return useMutation({
     mutationFn: (id: number) => deleteMember(id),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['members'] });
+      openSnackBar({ type: 'success', message: '회원 삭제에 성공했습니다.' });
+    },
+    onError: (e) => {
+      const err = e as AxiosError;
+      openSnackBar({ type: 'error', message: (err.response?.data as ErrorResponse).message });
     },
   });
 };
 
 export const useCreateMember = () => {
   const queryClient = useQueryClient();
+  const openSnackBar = useSnackBar();
   return useMutation({
     mutationFn: (member: MemberCreate) => createMember(member),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['members'] });
+      openSnackBar({ type: 'success', message: '회원 추가에 성공했습니다.' });
+    },
+    onError: (e) => {
+      const err = e as AxiosError;
+      openSnackBar({ type: 'error', message: (err.response?.data as ErrorResponse).message });
     },
   });
 };

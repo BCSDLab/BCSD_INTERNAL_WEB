@@ -75,8 +75,8 @@ export interface MemberUpdate {
 }
 
 export interface MemberCreate {
-  year?: number;
-  month?: number;
+  joinedYear?: number;
+  joinedMonth?: number;
   trackId?: number;
   memberType?: MemberType;
   status?: StatusType;
@@ -139,8 +139,8 @@ export const toMemberCreate = (member: MemberCreate): MemberCreate => {
     email: member.email,
     githubName: member.githubName,
     profileImageUrl: member.profileImageUrl,
-    year: member.year,
-    month: member.month,
+    joinedYear: member.joinedYear,
+    joinedMonth: member.joinedMonth,
     password: member.password,
     isAuthed: true,
     isDeleted: false,
