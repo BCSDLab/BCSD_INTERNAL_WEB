@@ -1,10 +1,12 @@
 import {
-  Box, Button, MenuItem, TextField, Typography,
+  Box, Button, MenuItem, TextField, Typography, styled,
 } from '@mui/material';
 import { useEffect, useState } from 'react';
 import { Member, STATUS_LABEL } from 'model/member';
 import { useGetTracks } from 'query/tracks';
 import { useGetMe, useUpdateMe } from 'query/members';
+import { FileResponse, getPresignedUrl } from 'api/image';
+import axios from 'axios';
 import * as S from './style';
 
 const MEMBER_TYPE_LABEL = {
@@ -13,15 +15,34 @@ const MEMBER_TYPE_LABEL = {
   MENTOR: '멘토',
 } as const;
 
+const VisuallyHiddenInput = styled('input')({
+  clip: 'rect(0 0 0 0)',
+  clipPath: 'inset(50%)',
+  height: 1,
+  overflow: 'hidden',
+  position: 'absolute',
+  bottom: 0,
+  left: 0,
+  whiteSpace: 'nowrap',
+  width: 1,
+});
+
 const MEMBER_TYPE_LIST = ['BEGINNER', 'REGULAR', 'MENTOR'] as const;
 
 const STATUS_LIST = ['ATTEND', 'OFF', 'IPP', 'ARMY', 'COMPLETION', 'GRADUATE'] as const;
 
 export default function MyPage() {
   const [member, setMember] = useState<Member | null>();
+  const [imageInfo, setImageInfo] = useState<FileInfo>();
   const { data: tracks } = useGetTracks();
   const { mutate: updateMe } = useUpdateMe();
   const { data: getMe } = useGetMe();
+  const DEFAULT_URL = 'https://image.bcsdlab.com/';
+
+  interface FileInfo {
+    file: File;
+    presignedUrl: FileResponse;
+  }
 
   useEffect(
     () => {
@@ -60,12 +81,41 @@ export default function MyPage() {
     }
   };
 
+  const handleImage = async (event: React.ChangeEvent<HTMLInputElement>) => {
+    const file = event.target.files?.[0];
+
+    if (file) {
+      const presigned = await getPresignedUrl({
+        fileName: file?.name as string,
+      });
+
+      setImageInfo({ file, presignedUrl: presigned });
+    }
+  };
+
+  const uploadImage = async ({ presignedUrl, file }: { presignedUrl: string, file: File }) => {
+    await axios.put(presignedUrl, file, {
+      headers: {
+        'Content-Type': 'image/jpeg, image/png, image/svg+xml, image/webp',
+      },
+    }); // 헤더에 authrization을 담으면 안된다
+  };
+
   const handleSave = () => {
     if (member) {
-      updateMe({
-        ...member,
-        trackId: member.track?.id,
-      });
+      if (imageInfo?.presignedUrl) {
+        uploadImage({ presignedUrl: imageInfo.presignedUrl.presignedUrl, file: imageInfo.file });
+        updateMe({
+          ...member,
+          trackId: member.track?.id,
+          profileImageUrl: DEFAULT_URL + imageInfo.presignedUrl.fileName,
+        });
+      } else {
+        updateMe({
+          ...member,
+          trackId: member.track?.id,
+        });
+      }
     }
   };
 
@@ -225,13 +275,15 @@ export default function MyPage() {
                 fullWidth
                 onChange={handleChange}
               />
-              <TextField
-                margin="normal"
-                label="프로필 이미지"
-                name="profileImageUrl"
-                value="추후 파일 업로드 구현"
+              <Button
+                component="label"
                 fullWidth
-              />
+                variant="outlined"
+                sx={{ height: '60px', marginTop: '15px' }}
+              >
+                프로필 이미지
+                <VisuallyHiddenInput type="file" accept="image/jpeg, image/png" onChange={(e) => handleImage(e)} />
+              </Button>
             </div>
             <div css={S.buttonContainer}>
               <Button

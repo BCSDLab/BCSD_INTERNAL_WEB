@@ -47,3 +47,14 @@ export const buttonContainer = css`
   display: flex;
   justify-content: flex-end;
 `;
+
+export const style = {
+  position: 'absolute' as const,
+  top: '50%',
+  left: '50%',
+  transform: 'translate(-50%, -50%)',
+  width: 600,
+  bgcolor: 'background.paper',
+  boxShadow: 24,
+  p: 4,
+};

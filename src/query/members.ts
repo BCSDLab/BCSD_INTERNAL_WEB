@@ -128,10 +128,16 @@ export const useGetMe = () => {
 
 export const useUpdateMe = () => {
   const queryClient = useQueryClient();
+  const openSnackBar = useSnackBar();
   return useMutation({
     mutationFn: (member: MemberUpdate) => updateMe(member),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['me'] });
+      openSnackBar({ type: 'success', message: '회원정보 수정에 성공했습니다.' });
+    },
+    onError: (e) => {
+      const err = e as AxiosError;
+      openSnackBar({ type: 'error', message: (err.response?.data as ErrorResponse).message });
     },
   });
 };
