@@ -4,6 +4,7 @@ import {
   deleteMember, getMember, getMembers, getMembersNotDeleted, login, updateMember, getNotAuthedMembers, getMe, updateMe,
 } from 'api/members';
 import { AdminMemberUpdate, MemberCreate, MemberUpdate } from 'model/member';
+import { AxiosError } from 'axios';
 import { useNavigate } from 'react-router-dom';
 import { useSnackBar } from 'ts/useSnackBar';
 
@@ -51,12 +52,22 @@ export const useGetMember = (id: number) => {
   return { data };
 };
 
+interface ErrorResponse {
+  message: string;
+}
+
 export const useUpdateMember = () => {
   const queryClient = useQueryClient();
+  const openSnackBar = useSnackBar();
   return useMutation({
     mutationFn: (params: { id: number, updatedMember: AdminMemberUpdate }) => updateMember(params.id, params.updatedMember),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['members'] });
+      openSnackBar({ type: 'success', message: '회원정보 수정에 성공했습니다.' });
+    },
+    onError: (e) => {
+      const err = e as AxiosError;
+      openSnackBar({ type: 'error', message: (err.response?.data as ErrorResponse).message });
     },
   });
 };
