@@ -17,6 +17,10 @@ export const sidebar = css`
   border-right: 1px solid ${colors.borderGray};
 `;
 
+export const tableCell = css`
+  width: 100px;
+`;
+
 export const logo = css`
   width: 100%;
   margin-top: -10px;
