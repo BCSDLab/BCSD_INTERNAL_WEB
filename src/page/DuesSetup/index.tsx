@@ -135,76 +135,71 @@ export default function DuesSetup() {
     return null;
   };
 
-  const putDuesData = (memberId: number, month: number[], year: number, amount: number): NewDuesData[] => {
-    let remainingAmount = amount;
-    if (amount <= 0) return [];
-    const duesData: NewDuesData[] = month?.map((m) => {
-      remainingAmount -= 10000;
-      return {
-        memberId,
-        year,
-        month: m,
-        status: remainingAmount >= 0 ? 'PAID' : 'NOT_PAID',
-        memo: '',
-      };
-    });
-    return duesData;
+  const findStatus = (memberId: number, month: number, dues: Dues[]) => {
+    const memberDuesInfo = dues.find((member) => member.memberId === memberId);
+    return memberDuesInfo?.detail[month].status;
   };
 
-  const postDuesData = (memberId: number, month: number, year: number): NewDuesData[] => {
-    return [{
-      memberId,
-      year,
-      month,
-      status: 'NOT_PAID',
-    }];
-  };
-
-  const extractDues = () => {
-    const extractedDues: NewDuesData[] = [];
-
-    tableBody[tableHead.indexOf('이름')].value.forEach((name, index) => {
-      const memberId = findMemberId(name, index);
-      const currentYearUnpaidMonth = findUnpaidMonth(currentYearDues.dues, name)[0];
-      const prevYearUnpaidMonth = findUnpaidMonth(prevYearDues.dues, name)[0];
-      if (memberId) {
-        const amount = Number(tableBody[2].value[index].replace(/,/g, ''));
-        const remainingAmount = amount - 10000 * (prevYearUnpaidMonth?.length || 0);
-        const prevYearDuesData = putDuesData(memberId, prevYearUnpaidMonth, currentYear - 1, amount);
-        const currentYearDuesData = putDuesData(memberId, currentYearUnpaidMonth, currentYear, remainingAmount);
-        if (prevYearDuesData) {
-          extractedDues.push(...prevYearDuesData);
-        }
-        if (currentYearDuesData) {
-          extractedDues.push(...currentYearDuesData);
-        }
+  // status가 NOT_PAID인 월을 찾아서 PAID로 변경 (PUT /dues)
+  // status가 없는 경우 PAID로 변경 (POST /dues)
+  const updateUnpaidtoPaid = (memberId: number, name: string, dues: Dues[], year: number, transactionAmount: number) => {
+    const unpaidMonths = findUnpaidMonth(dues, name)?.[0];
+    let count = 0;
+    Array.from({ length: transactionAmount % 10000 }).forEach((_, index) => {
+      const prevMonthStatus = findStatus(memberId, prevMonth, dues);
+      if (unpaidMonths[index]) {
+        const data: NewDuesData = {
+          memberId,
+          year,
+          month: unpaidMonths[index],
+          status: 'PAID',
+        };
+        putDuesMutation.mutate(data);
+        count += 1;
+      } else if (unpaidMonths[index] === undefined && prevMonthStatus === null && year === currentYear) {
+        const data: NewDuesData = {
+          memberId,
+          year,
+          month: prevMonth,
+          status: 'PAID',
+        };
+        postDuesMutation.mutate(data);
+        count += 1;
       }
     });
-    return extractedDues;
+    return count;
   };
 
-  const changeCurrentDuesToNotPaid = () => {
-    const duesData: NewDuesData[] = [];
-    const currentMonth = new Date().getMonth() + 1;
+  // 회비 면제인 경우 null -> SKIP (POST /dues)
+  // authority가 manger, admin인 경우 적용
+  const applyForDuesWaiver = () => {
+    const waiverMember = members?.content.filter((value) => value.authority === 'MANAGER' || value.authority === 'ADMIN');
+    if (waiverMember) {
+      const waiverMembersData: NewDuesData[] = waiverMember.map((value) => {
+        return {
+          memberId: value.id,
+          year: currentYear,
+          month: prevMonth,
+          status: 'SKIP',
+        };
+      });
+      waiverMembersData.forEach((data) => {
+        postDuesMutation.mutate(data);
+      });
+    }
+  };
+
+  const handleCreateDuesClick = () => {
+    applyForDuesWaiver();
     tableBody[tableHead.indexOf('이름')].value.forEach((name, index) => {
       const memberId = findMemberId(name, index);
+      const transactionAmount = Number(tableBody[2].value[index].replace(/,/g, ''));
       if (memberId) {
-        const checkCurrentDues = currentYearDues.dues.find((value) => value.memberId === memberId);
-        if (checkCurrentDues?.detail[currentMonth - 1].status === null) {
-          duesData.push(...postDuesData(memberId, currentMonth, currentYear));
+        const updatedTransactionCount = updateUnpaidtoPaid(memberId, name, prevYearDues.dues, currentYear - 1, transactionAmount);
+        if (updatedTransactionCount !== transactionAmount % 10000) {
+          updateUnpaidtoPaid(memberId, name, currentYearDues.dues, currentYear, updatedTransactionCount * 10000 - transactionAmount);
         }
       }
-    });
-    duesData.forEach((dues) => {
-      postDuesMutation.mutate(dues);
-    });
-  };
-
-  const handlePutDuesClick = () => {
-    changeCurrentDuesToNotPaid();
-    const duesData = extractDues();
-    duesData.forEach((dues) => {
-      putDuesMutation.mutate(dues);
     });
   };
   return (
@@ -238,20 +233,20 @@ export default function DuesSetup() {
                 />
               </Button>
             </label>
-            <Button variant="contained" color="primary" disabled={buttonDisabled} onClick={handlePutDuesClick}>회비 생성</Button>
+            <Button variant="contained" color="primary" disabled={buttonDisabled} onClick={handleCreateDuesClick}>회비 생성</Button>
           </ButtonGroup>
           <Table>
             <TableHead>
               <TableRow>
                 {tableHead.map((head) => {
                   return (
-                    <TableCell key={head}>{head}</TableCell>
+                    <TableCell css={S.tableCell} key={head}>{head}</TableCell>
                   );
                 })}
               </TableRow>
             </TableHead>
             <TableBody>
-              {tableBody[0].value.map((date, index) => {
+              {tableBody[4].value.map((date, index) => {
                 return (
                   <TableRow key={date}>
                     {tableBody.map((dues) => {
