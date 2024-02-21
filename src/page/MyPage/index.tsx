@@ -6,6 +6,7 @@ import { Member, STATUS_LABEL } from 'model/member';
 import { useGetTracks } from 'query/tracks';
 import { useGetMe, useUpdateMe } from 'query/members';
 import { FileResponse, getPresignedUrl } from 'api/image';
+import CloudUploadIcon from '@mui/icons-material/CloudUpload';
 import axios from 'axios';
 import * as S from './style';
 
@@ -279,7 +280,8 @@ export default function MyPage() {
                 component="label"
                 fullWidth
                 variant="outlined"
-                sx={{ height: '60px', marginTop: '15px' }}
+                startIcon={<CloudUploadIcon />}
+                sx={{ height: '60px', marginTop: '15px', padding: '0px' }}
               >
                 프로필 이미지
                 <VisuallyHiddenInput type="file" accept="image/jpeg, image/png" onChange={(e) => handleImage(e)} />
