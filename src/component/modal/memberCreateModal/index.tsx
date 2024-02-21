@@ -47,8 +47,6 @@ const STATUS_LABEL = {
 
 const statusList = ['ATTEND', 'OFF', 'IPP', 'ARMY', 'COMPLETION', 'GRADUATE'] as const;
 
-const DEFAULT_URL = 'https://image.bcsdlab.com/';
-
 const VisuallyHiddenInput = styled('input')({
   clip: 'rect(0 0 0 0)',
   clipPath: 'inset(50%)',
