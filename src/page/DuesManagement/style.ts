@@ -140,11 +140,11 @@ export const memoTableCell = (props: DuesDetail) => {
   let backgroundColor = 'default';
 
   switch (props.status) {
-    case '미납':
+    case 'NOT_PAID':
       backgroundColor = '#ff5630';
       break;
-    case '면제':
-    case '납부':
+    case 'SKIP':
+    case 'PAID':
       backgroundColor = '#00a76f';
       break;
     default:
@@ -153,7 +153,7 @@ export const memoTableCell = (props: DuesDetail) => {
   }
 
   return css`
-    cursor: ${props.status === '미납' || props.status === '면제' ? 'pointer' : 'default'};
+    cursor: ${props.status === 'NOT_PAID' || props.status === 'SKIP' ? 'pointer' : 'default'};
     background-color: ${backgroundColor};
   `;
 };

@@ -81,7 +81,7 @@ function DefaultTable() {
   };
 
   const handleMemoClick = (e: React.MouseEvent<HTMLTableCellElement>, dueDetail: DuesDetail) => {
-    if (dueDetail.status === '미납' || dueDetail.status === '면제') {
+    if (dueDetail.status === 'NOT_PAID' || dueDetail.status === 'SKIP') {
       setAnchorEl(e.currentTarget);
       if (dueDetail.memo) {
         setDetail(dueDetail);

@@ -3,7 +3,7 @@ export interface DuesInfo {
   dues: Dues[];
 }
 
-interface Dues {
+export interface Dues {
   memberId: number;
   name: string;
   track: TrackInfo;
@@ -13,8 +13,8 @@ interface Dues {
 
 export interface DuesDetail {
   month: number;
-  status: '납부' | '면제' | '미납' | null;
-  memo?: string;
+  status: 'PAID' | 'SKIP' | 'NOT_PAID' | null;
+  memo?: string | null;
 }
 
 interface TrackInfo {
