@@ -10,7 +10,7 @@ export default function SideBar() {
   };
 
   const toDues = () => {
-    navigate('dues');
+    navigate('dues?page=1');
   };
 
   const toAccept = () => {
@@ -21,6 +21,14 @@ export default function SideBar() {
     navigate('member');
   };
 
+  const toDuesSetup = () => {
+    navigate('dues-setup');
+  };
+
+  const toEditDues = () => {
+    navigate('edit-dues?page=1');
+  };
+
   return (
     <div css={S.container}>
       <div css={S.sideBar}>
@@ -28,6 +36,8 @@ export default function SideBar() {
         <Button color="secondary" sx={{ marginTop: '20px' }} size="large" onClick={toMember}>회원정보</Button>
         <Button color="secondary" sx={{ marginTop: '20px' }} onClick={toAccept}>회원승인</Button>
         <Button color="secondary" sx={{ marginTop: '20px' }} onClick={toDues}>회비납부</Button>
+        <Button color="secondary" sx={{ marginTop: '20px' }} onClick={toDuesSetup}>회비생성</Button>
+        <Button color="secondary" sx={{ marginTop: '20px' }} onClick={toEditDues}>회비수정</Button>
         <div css={S.logOutButton}>
           <Button variant="contained" color="secondary" sx={{ marginTop: '40vh', width: '100px' }} onClick={logOut}>로그아웃</Button>
         </div>

@@ -20,12 +20,12 @@ function App() {
         <Route element={<DefaultLayout />}>
           <Route path="/accept" element={<AcceptMember />} />
           <Route path="/member" element={<MemberInfo />} />
+          <Route path="/dues" element={<DuesManagement />} />
+          <Route path="/dues-setup" element={<DuesSetup />} />
+          <Route path="/edit-dues" element={<EditDues />} />
         </Route>
       </Route>
       <Route path="/login" element={<SignIn />} />
-      <Route path="/dues" element={<DuesManagement />} />
-      <Route path="/dues-setup" element={<DuesSetup />} />
-      <Route path="/edit-dues" element={<EditDues />} />
     </Routes>
   );
 }

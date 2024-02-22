@@ -3,30 +3,15 @@ import { colors } from 'const/colors/style';
 
 export const container = css`
   display: flex;
-  height: 100%;
-  width: 100%;
-  background-color: ${colors.gray};
-`;
-
-export const sidebar = css`
-  display: flex;
   flex-direction: column;
-  width: 250px;
-  min-height: calc(100vh - 10px);
+  height: 100%;
+  width: 100vw;
   background-color: ${colors.gray};
-  border-right: 1px solid ${colors.borderGray};
 `;
 
 export const logo = css`
   width: 100%;
   margin-top: -10px;
-`;
-
-export const content = css`
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  width: 100vw;
 `;
 
 export const topBar = css`
@@ -48,7 +33,10 @@ export const tableCell = css`
 
 export const mainContent = css`
   position: relative;
-  width: 95%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: calc(100vw - 250px);
   min-height: calc(100vh - 250px);
 `;
 

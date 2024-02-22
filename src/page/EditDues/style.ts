@@ -33,14 +33,18 @@ export const content = css`
 
 export const mainContent = css`
   position: relative;
-  width: 95%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: (100vw - 250px);
   min-height: calc(100vh - 250px);
 `;
 
 export const container = css`
   display: flex;
+  flex-direction: column;
   height: 100%;
-  width: 100%;
+  width: 100vw;
   background-color: ${colors.gray};
 `;
 
@@ -66,7 +70,7 @@ export const pagination = css`
 export const paginationTitle = css`
   font-weight: bold;
   font-size: 20px;
-  margin-top: 4px;
+  margin-top: 7px;
 `;
 
 export const tableContainer = css`

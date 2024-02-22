@@ -326,22 +326,16 @@ export default function EditDues() {
   const duesYear = currentYear - page + 1;
   return (
     <div css={S.container}>
-      <div css={S.sidebar}>
-        <img src="https://image.bcsdlab.com/banner.png" alt="logo" css={S.logo} />
-        <Button variant="outlined" color="secondary" sx={{ marginTop: '20px' }}>회원정보</Button>
+      <div css={S.topBar}>
+        <h1 css={S.topBarTitle}>
+          {duesYear}
+          년 회비 내역 수정
+        </h1>
       </div>
-      <div css={S.content}>
-        <div css={S.topBar}>
-          <h1 css={S.topBarTitle}>
-            {duesYear}
-            년 회비 내역 수정
-          </h1>
-        </div>
-        <div css={S.mainContent}>
-          <Suspense fallback={<LoadingSpinner />}>
-            <DefaultTable />
-          </Suspense>
-        </div>
+      <div css={S.mainContent}>
+        <Suspense fallback={<LoadingSpinner />}>
+          <DefaultTable />
+        </Suspense>
       </div>
     </div>
   );
