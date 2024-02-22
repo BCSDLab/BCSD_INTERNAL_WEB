@@ -28,7 +28,6 @@ interface DatesDuesApply {
 export default function DuesSetup() {
   const currentYear = new Date().getFullYear();
   const prevMonth = new Date().getMonth();
-  const currentMonth = new Date().getMonth() + 1;
   const excelFileRef = useRef<HTMLInputElement>(null);
   const workbook = new Excel.Workbook();
   const tableHead = ['거래 일자', '구분', '거래 금액', '거래 후 잔액', '이름', '비고', '회비가 적용되는 날짜'];
@@ -74,8 +73,19 @@ export default function DuesSetup() {
   };
 
   const findStatus = (memberId: number, month: number, dues: Dues[]) => {
-    const memberDuesInfo = dues.find((member) => member.memberId === memberId);
-    return memberDuesInfo?.detail[month].status;
+    const memberDuesInfo = dues.filter((value) => value.memberId === memberId)[0];
+    return memberDuesInfo?.detail[month - 1].status;
+  };
+
+  const findNullStatusMonth = (memberId: number, dues: Dues[]) => {
+    const memberDuesInfo = dues.filter((value) => value.memberId === memberId)[0];
+    const result = Array.from({ length: 12 }).map((_, index) => {
+      if (memberDuesInfo.detail[index].status === null) {
+        return index + 1;
+      }
+      return null;
+    });
+    return result.filter((value): value is number => value !== null);
   };
 
   const findMemberId = (name: string, index: number) => {
@@ -96,16 +106,14 @@ export default function DuesSetup() {
 
   // 회비가 적용될 달을 찾아서 테이블에 추가
   const findDuesMonths = () => {
-    const prevYearDuesData = prevYearDues?.dues;
-    const currentYearDuesData = currentYearDues?.dues;
     tableBody[4].value.forEach((name, index) => {
       const prevResult: number[] = [];
       const currentResult: number[] = [];
       const memberId = findMemberId(name, index);
       const transactionAmount = Number(tableBody[2].value[index].replace(/,/g, ''));
       const count = transactionAmount / 10000;
-      const unpaidMonthsInPrevYear = findUnpaidMonth(prevYearDuesData, name)?.[0];
-      const unpaidMonthsInCurrentYear = findUnpaidMonth(currentYearDuesData, name)?.[0];
+      const unpaidMonthsInPrevYear = findUnpaidMonth(prevYearDues.dues, name)?.[0];
+      const unpaidMonthsInCurrentYear = findUnpaidMonth(currentYearDues.dues, name)?.[0];
       // 작년에 미납된 회비가 있을 경우
       if (unpaidMonthsInPrevYear && count > 0) {
         const updatedMonths = unpaidMonthsInPrevYear.slice(0, count);
@@ -115,12 +123,12 @@ export default function DuesSetup() {
       if (prevResult.length < count) {
         const inAdvanceMonths = Array.from({ length: count - prevResult.length }).map((_, monthIndex) => {
           if (memberId) {
-            const prevYearDuesStatus = findStatus(memberId, prevMonth, prevYearDuesData);
+            const prevYearDuesStatus = findStatus(memberId, prevMonth, prevYearDues.dues);
             if (prevYearDuesStatus === null) {
-              if (currentMonth + monthIndex > 12) {
+              if (prevMonth + 1 + monthIndex > 12) {
                 return null;
               }
-              return currentMonth + monthIndex;
+              return prevMonth + 1 + monthIndex;
             }
           }
           return null;
@@ -132,17 +140,13 @@ export default function DuesSetup() {
         const updatedMonths = unpaidMonthsInCurrentYear.slice(0, count - prevResult.length);
         currentResult.push(...updatedMonths);
       }
-      // 이번 해에 미리 납부할 회비가 있을 경우
+      // 이번 해에 미리 납부할 회비가 있을 경우 (반복해서 null인 값을 찾아야 함)
       if (currentResult.length < count) {
         const inAdvanceMonths = Array.from({ length: count - prevResult.length - currentResult.length }).map((_, monthIndex) => {
           if (memberId) {
-            const currentYearDuesStatus = findStatus(memberId, currentMonth + monthIndex, currentYearDuesData);
-            if (currentYearDuesStatus === null) {
-              if (currentMonth + monthIndex > 12) {
-                return null;
-              }
-              return currentMonth + monthIndex;
-            }
+            // 반복해서 null인 값을 찾아야 함 (month를 더해가면서 하면 되지 않을까?)
+            const nullStatusMonths = findNullStatusMonth(memberId, currentYearDues.dues);
+            return nullStatusMonths[monthIndex];
           }
           return null;
         });
@@ -221,9 +225,9 @@ export default function DuesSetup() {
 
   // status가 NOT_PAID인 월을 찾아서 PAID로 변경 (PUT /dues)
   // status가 없는 경우 PAID로 변경 (POST /dues)
-  const updateUnpaidtoPaid = (memberId: number, year: number, months: number[]) => {
+  const updateUnpaidtoPaid = (memberId: number, year: number, months: number[], dues: Dues[]) => {
     months.forEach((month) => {
-      const monthStatus = findStatus(memberId, month, prevYearDues.dues);
+      const monthStatus = findStatus(memberId, month, dues);
       if (monthStatus === 'NOT_PAID') {
         const data: NewDuesData = {
           memberId,
@@ -279,13 +283,13 @@ export default function DuesSetup() {
       const prevYearDuesApplyMonth = datesDuesApply[index]?.prevYearMonth;
       const currentYearDuesApplyMonth = datesDuesApply[index]?.currentYearMonth;
       if (memberId && unpaidYear.length === 2) {
-        updateUnpaidtoPaid(memberId, currentYear - 1, prevYearDuesApplyMonth);
-        updateUnpaidtoPaid(memberId, currentYear, currentYearDuesApplyMonth);
+        updateUnpaidtoPaid(memberId, currentYear - 1, prevYearDuesApplyMonth, prevYearDues.dues);
+        updateUnpaidtoPaid(memberId, currentYear, currentYearDuesApplyMonth, currentYearDues.dues);
       } else if (memberId && unpaidYear.length === 1) {
         if (unpaidYear[0] === currentYear) {
-          updateUnpaidtoPaid(memberId, currentYear, currentYearDuesApplyMonth);
+          updateUnpaidtoPaid(memberId, currentYear, currentYearDuesApplyMonth, currentYearDues.dues);
         } else {
-          updateUnpaidtoPaid(memberId, currentYear - 1, prevYearDuesApplyMonth);
+          updateUnpaidtoPaid(memberId, currentYear - 1, prevYearDuesApplyMonth, prevYearDues.dues);
         }
       }
     });
