@@ -24,9 +24,9 @@ import * as S from './style';
 
 function DefaultTable() {
   const navigate = useNavigate();
-  const page = useQueryParam('page', 'number') as number;
+  const page = useQueryParam('page', 'number') as number | null;
   const currentYear = new Date().getFullYear();
-  const [duesYear, setDuesYear] = useState(currentYear - page + 1);
+  const [duesYear, setDuesYear] = useState(page ? currentYear - page + 1 : currentYear);
   const [trackFilter, setTrackFilter] = useState([true, true, true, true, true, true]);
   const [name, setName] = useState('');
   const [detail, setDetail] = useState<DuesDetail>({ month: 0, status: null });
@@ -90,20 +90,20 @@ function DefaultTable() {
   };
 
   useEffect(() => {
-    setDuesYear(currentYear - page + 1);
+    setDuesYear(page ? currentYear - page + 1 : currentYear);
     setFilteredValue(allDues.dues);
   }, [currentYear, page, allDues.dues]);
 
   const goToPrevYear = () => {
     // 재학생 회비 내역이 2021년부터 시작하므로 2021년 이전으로 이동할 수 없음
-    if (page < 4) {
-      const prevYear = page + 1;
+    const prevYear = page ? page + 1 : 2;
+    if (prevYear <= currentYear - 2020) {
       navigate(`/dues?page=${prevYear}`);
     }
   };
 
   const goToNextYear = () => {
-    if (page > 1) {
+    if (page && page > 1) {
       navigate(`/dues?page=${page - 1}`);
     }
   };
@@ -234,9 +234,9 @@ function DefaultTable() {
 }
 
 export default function DuesManagement() {
-  const page = useQueryParam('page', 'number') as number;
+  const page = useQueryParam('page', 'number') as number | null;
   const currentYear = new Date().getFullYear();
-  const duesYear = currentYear - page + 1;
+  const duesYear = page ? currentYear - page + 1 : currentYear;
   return (
     <div css={S.container}>
       <div css={S.topBar}>
