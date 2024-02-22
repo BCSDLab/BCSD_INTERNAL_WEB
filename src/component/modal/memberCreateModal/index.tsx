@@ -69,6 +69,7 @@ export default function MemberCreateModal({ open, onClose }: MemberInfoModalProp
   const { mutate: createMember } = useCreateMember();
   const { data: tracks } = useGetTracks();
   const [imageInfo, setImageInfo] = useState<FileInfo>();
+  const DEFAULT_URL = 'https://image.bcsdlab.com/';
 
   const formatPhoneNumber = (input: string) => {
     const numbers = input.replace(/[^\d]/g, '');
@@ -118,7 +119,7 @@ export default function MemberCreateModal({ open, onClose }: MemberInfoModalProp
     if (member) {
       if (imageInfo?.presignedUrl) {
         uploadImage({ presignedUrl: imageInfo.presignedUrl.presignedUrl, file: imageInfo.file });
-        createMember(toMemberCreate(member));
+        createMember(toMemberCreate({ ...member, profileImageUrl: DEFAULT_URL + imageInfo.presignedUrl.fileName }));
       } else {
         createMember(toMemberCreate(member));
       }
