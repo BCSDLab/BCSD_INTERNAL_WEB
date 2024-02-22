@@ -1,7 +1,7 @@
 import {
   Button, ButtonGroup, Table, TableBody, TableCell, TableHead, TableRow,
 } from '@mui/material';
-import { useEffect, useRef, useState } from 'react';
+import { useRef, useState } from 'react';
 import * as Excel from 'exceljs';
 import { Dues } from 'model/dues/allDues';
 import { useMutation } from '@tanstack/react-query';
@@ -202,11 +202,6 @@ export default function DuesSetup() {
     }
   };
 
-  useEffect(() => {
-    findDuesMonths();
-  // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [tableBody]);
-
   // status가 NOT_PAID인 월을 찾아서 PAID로 변경 (PUT /dues)
   // status가 없는 경우 PAID로 변경 (POST /dues)
   const updateUnpaidtoPaid = (memberId: number, name: string, dues: Dues[], year: number, transactionAmount: number) => {
@@ -300,6 +295,7 @@ export default function DuesSetup() {
                 />
               </Button>
             </label>
+            <Button variant="contained" color="primary" onClick={findDuesMonths}>회비가 적용되는 날짜 찾기</Button>
             <Button variant="contained" color="primary" disabled={buttonDisabled} onClick={handleCreateDuesClick}>회비 생성</Button>
           </ButtonGroup>
           <Table>
