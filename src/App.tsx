@@ -6,6 +6,7 @@ import AcceptMember from 'page/Admin';
 import AuthRoute from 'components/common/AuthRoute';
 import DuesManagement from 'page/DuesManagement';
 import DefaultLayout from 'layout/DefaultLayout';
+import MyPage from 'page/MyPage';
 import DuesSetup from 'page/DuesSetup';
 
 function App() {
@@ -19,6 +20,7 @@ function App() {
         <Route element={<DefaultLayout />}>
           <Route path="/accept" element={<AcceptMember />} />
           <Route path="/member" element={<MemberInfo />} />
+          <Route path="/mypage" element={<MyPage />} />
         </Route>
       </Route>
       <Route path="/login" element={<SignIn />} />
