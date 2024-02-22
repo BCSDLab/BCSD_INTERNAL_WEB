@@ -7,6 +7,7 @@ import AuthRoute from 'components/common/AuthRoute';
 import DuesManagement from 'page/DuesManagement';
 import DefaultLayout from 'layout/DefaultLayout';
 import { Suspense } from 'react';
+import DuesSetup from 'page/DuesSetup';
 
 function App() {
   return (
@@ -39,6 +40,7 @@ function App() {
         <Route path="/login" element={<SignIn />} />
       </Route>
       <Route path="/dues" element={<DuesManagement />} />
+      <Route path="/dues-setup" element={<DuesSetup />} />
     </Routes>
   );
 }
