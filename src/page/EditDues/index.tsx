@@ -12,15 +12,13 @@ import Modal from '@mui/material/Modal';
 import {
   ChangeEvent, Suspense, useEffect, useState,
 } from 'react';
-import { useGetAllDues } from 'query/dues';
+import { useGetAllDues, usePostDues, usePutDues } from 'query/dues';
 import useBooleanState from 'util/hooks/useBooleanState.ts';
 import { STATUS_MAPPING } from 'util/constants/status';
 import { useGetTracks } from 'query/tracks';
 import LoadingSpinner from 'layout/LoadingSpinner';
 import { ArrowBackIosNewOutlined, ArrowForwardIosOutlined } from '@mui/icons-material';
 import useQueryParam from 'util/hooks/useQueryParam';
-import { useMutation } from '@tanstack/react-query';
-import { NewDuesData, postDues, putDues } from 'api/Dues';
 import { useSnackBar } from 'ts/useSnackBar';
 import * as S from './style';
 
@@ -59,19 +57,8 @@ function DefaultTable() {
   const [filteredValue, setFilteredValue] = useState(allDues.dues);
 
   const { data: tracks } = useGetTracks();
-  const postDuesMutation = useMutation({
-    mutationKey: ['postDues'],
-    mutationFn: (data: NewDuesData) => postDues(data),
-    onError: (error) => openSnackBar({ type: 'error', message: error.message }),
-    onSuccess: () => openSnackBar({ type: 'success', message: '회비 내역이 수정되었습니다.' }),
-  });
-
-  const putDuesMutation = useMutation({
-    mutationKey: ['putDues'],
-    mutationFn: (data: NewDuesData) => putDues(data),
-    onError: (error) => openSnackBar({ type: 'error', message: error.message }),
-    onSuccess: () => openSnackBar({ type: 'success', message: '회비 내역이 수정되었습니다.' }),
-  });
+  const postDuesMutation = usePostDues();
+  const putDuesMutation = usePutDues();
 
   const handleNameChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const searchName = e.target.value;
