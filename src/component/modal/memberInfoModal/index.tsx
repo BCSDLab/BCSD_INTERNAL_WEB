@@ -52,7 +52,7 @@ const VisuallyHiddenInput = styled('input')({
   bottom: 0,
   left: 0,
   whiteSpace: 'nowrap',
-  width: 1,
+  width: '270px',
 });
 
 interface FileInfo {
@@ -106,8 +106,8 @@ export default function MemberInfoModal({ open, onClose, member: initialMember }
     if (member) setMember({ ...member, [name]: formatPhoneNumber(value) });
   };
 
-  const uploadImage = async ({ presignedUrl, file }: { presignedUrl: string, file: File }) => {
-    await axios.put(presignedUrl, file, {
+  const uploadImage = async ({ presignedUrl, file }: FileInfo) => {
+    await axios.put(presignedUrl.presignedUrl, file, {
       headers: {
         'Content-Type': 'image/jpeg, image/png, image/svg+xml, image/webp',
       },
@@ -117,7 +117,7 @@ export default function MemberInfoModal({ open, onClose, member: initialMember }
   const handleSave = () => {
     if (member && member.id) {
       if (imageInfo?.presignedUrl) {
-        uploadImage({ presignedUrl: imageInfo.presignedUrl.presignedUrl, file: imageInfo.file });
+        uploadImage({ presignedUrl: imageInfo.presignedUrl, file: imageInfo.file });
         updateMember({
           id: member.id,
           updatedMember: toAdminMemberUpdate({ ...member, profileImageUrl: DEFAULT_URL + imageInfo.presignedUrl.fileName }),
@@ -150,7 +150,7 @@ export default function MemberInfoModal({ open, onClose, member: initialMember }
 
     if (file) {
       const presigned = await getPresignedUrl({
-        fileName: file?.name as string,
+        fileName: file.name,
       });
 
       setImageInfo({ file, presignedUrl: presigned });
@@ -294,7 +294,7 @@ export default function MemberInfoModal({ open, onClose, member: initialMember }
               component="label"
               fullWidth
               variant="outlined"
-              sx={{ height: '60px', marginTop: '15px' }}
+              sx={{ height: '60px', marginTop: '15px', padding: '0px' }}
             >
               프로필 이미지
               <VisuallyHiddenInput type="file" accept="image/jpeg, image/png" onChange={(e) => handleImage(e)} />

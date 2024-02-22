@@ -6,6 +6,8 @@ import AcceptMember from 'page/Admin';
 import AuthRoute from 'components/common/AuthRoute';
 import DuesManagement from 'page/DuesManagement';
 import DefaultLayout from 'layout/DefaultLayout';
+import { Suspense } from 'react';
+import MyPage from 'page/MyPage';
 import DuesSetup from 'page/DuesSetup';
 import EditDues from 'page/EditDues';
 
@@ -18,6 +20,30 @@ function App() {
       <Route path="/register" element={<SignUp />} />
       <Route element={<AuthRoute needAuth redirectRoute="/login" />}>
         <Route element={<DefaultLayout />}>
+          <Route
+            path="/accept"
+            element={(
+              <Suspense fallback={<div />}>
+                <AcceptMember />
+              </Suspense>
+            )}
+          />
+          <Route
+            path="/member"
+            element={(
+              <Suspense fallback={<div />}>
+                <MemberInfo />
+              </Suspense>
+            )}
+          />
+          <Route
+            path="/mypage"
+            element={(
+              <Suspense fallback={<div />}>
+                <MyPage />
+              </Suspense>
+            )}
+          />
           <Route path="/accept" element={<AcceptMember />} />
           <Route path="/member" element={<MemberInfo />} />
           <Route path="/dues" element={<DuesManagement />} />
