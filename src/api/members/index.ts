@@ -5,13 +5,13 @@ import {
 import { Pagination } from 'model/page';
 
 export const getMembers = (pageIndex: number, pageSize: number, trackId?: number) => {
-  if (trackId === undefined) return accessClient.get <Pagination<Member>>(`/members?page=${pageIndex}&size=${pageSize}`);
-  return accessClient.get<Pagination<Member>>(`/members?page=${pageIndex}&size=${pageSize}&trackId=${trackId}`);
+  if (trackId === undefined) return accessClient.get <Pagination<Member>>(`/members?page=${pageIndex}&size=${pageSize}&deleted=false`);
+  return accessClient.get<Pagination<Member>>(`/members?page=${pageIndex}&size=${pageSize}&trackId=${trackId}&deleted=false`);
 };
 
-export const getMembersNotDeleted = (pageIndex: number, pageSize: number, deleted: boolean, trackId?: number) => {
-  if (trackId === undefined) return accessClient.get<Pagination<Member>>(`/members?page=${pageIndex}&size=${pageSize}&deleted=${deleted}`);
-  return accessClient.get<Pagination<Member>>(`/members?page=${pageIndex}&size=${pageSize}&trackId=${trackId}&deleted=${deleted}`);
+export const getMembersDeleted = (pageIndex: number, pageSize: number, trackId?: number) => {
+  if (trackId === undefined) return accessClient.get<Pagination<Member>>(`/members?page=${pageIndex}&size=${pageSize}&deleted=true`);
+  return accessClient.get<Pagination<Member>>(`/members?page=${pageIndex}&size=${pageSize}&trackId=${trackId}&deleted=true`);
 };
 
 export const getMember = (id: number) => {
