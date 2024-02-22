@@ -52,7 +52,7 @@ const VisuallyHiddenInput = styled('input')({
   bottom: 0,
   left: 0,
   whiteSpace: 'nowrap',
-  width: 1,
+  width: '270px',
 });
 
 interface FileInfo {
@@ -294,7 +294,7 @@ export default function MemberInfoModal({ open, onClose, member: initialMember }
               component="label"
               fullWidth
               variant="outlined"
-              sx={{ height: '60px', marginTop: '15px' }}
+              sx={{ height: '60px', marginTop: '15px', padding: '0px' }}
             >
               프로필 이미지
               <VisuallyHiddenInput type="file" accept="image/jpeg, image/png" onChange={(e) => handleImage(e)} />
