@@ -66,8 +66,9 @@ export const useUpdateMember = () => {
       openSnackBar({ type: 'success', message: '회원정보 수정에 성공했습니다.' });
     },
     onError: (e) => {
-      const err = e as AxiosError;
-      openSnackBar({ type: 'error', message: (err.response?.data as ErrorResponse).message });
+      if (e instanceof AxiosError) {
+        openSnackBar({ type: 'error', message: e.response?.data.message });
+      }
     },
   });
 };
@@ -82,8 +83,9 @@ export const useDeleteMember = () => {
       openSnackBar({ type: 'success', message: '회원 삭제에 성공했습니다.' });
     },
     onError: (e) => {
-      const err = e as AxiosError;
-      openSnackBar({ type: 'error', message: (err.response?.data as ErrorResponse).message });
+      if (e instanceof AxiosError) {
+        openSnackBar({ type: 'error', message: e.response?.data.message });
+      }
     },
   });
 };
@@ -98,8 +100,9 @@ export const useCreateMember = () => {
       openSnackBar({ type: 'success', message: '회원 추가에 성공했습니다.' });
     },
     onError: (e) => {
-      const err = e as AxiosError;
-      openSnackBar({ type: 'error', message: (err.response?.data as ErrorResponse).message });
+      if (e instanceof AxiosError) {
+        openSnackBar({ type: 'error', message: e.response?.data.message });
+      }
     },
   });
 };
@@ -148,8 +151,9 @@ export const useUpdateMe = () => {
       openSnackBar({ type: 'success', message: '회원정보 수정에 성공했습니다.' });
     },
     onError: (e) => {
-      const err = e as AxiosError;
-      openSnackBar({ type: 'error', message: (err.response?.data as ErrorResponse).message });
+      if (e instanceof AxiosError) {
+        openSnackBar({ type: 'error', message: e.response?.data.message });
+      }
     },
   });
 };
