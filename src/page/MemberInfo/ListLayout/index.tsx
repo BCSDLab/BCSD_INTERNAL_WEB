@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { DataGrid, GridColDef } from '@mui/x-data-grid';
-import { useGetMembers, useGetMembersNotDeleted } from 'query/members';
+import { useGetMembers, useGetMembersDeleted } from 'query/members';
 import { useTrackStore } from 'store/trackStore';
 import { Button } from '@mui/material';
 import MemberInfoModal from 'component/modal/memberInfoModal';
@@ -13,8 +13,8 @@ interface ListLayoutProps {
 export default function ListLayout({ deleteMemberChecked }: ListLayoutProps) {
   const { id } = useTrackStore();
   const { data: members } = useGetMembers({ pageIndex: 0, pageSize: 1000, trackId: id });
-  const { data: membersNotDeleted } = useGetMembersNotDeleted({
-    pageIndex: 0, pageSize: 1000, trackId: id, deleted: false,
+  const { data: membersDeleted } = useGetMembersDeleted({
+    pageIndex: 0, pageSize: 1000, trackId: id,
   });
   const [modalOpen, setModalOpen] = useState(false);
   const [memberInfo, setMemberInfo] = useState<Member | null>(null);
@@ -63,13 +63,13 @@ export default function ListLayout({ deleteMemberChecked }: ListLayoutProps) {
       <DataGrid
         rows={
             deleteMemberChecked
-              ? members.content.map((member) => ({
+              ? membersDeleted.content.map((member) => ({
                 ...member,
                 status: STATUS_LABEL[member.status],
                 trackName: member.track.name,
                 track: member.track,
               }))
-              : membersNotDeleted.content.map((member) => ({
+              : members.content.map((member) => ({
                 ...member,
                 status: STATUS_LABEL[member.status],
                 trackName: member.track.name,
