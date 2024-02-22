@@ -52,10 +52,6 @@ export const useGetMember = (id: number) => {
   return { data };
 };
 
-interface ErrorResponse {
-  message: string;
-}
-
 export const useUpdateMember = () => {
   const queryClient = useQueryClient();
   const openSnackBar = useSnackBar();
