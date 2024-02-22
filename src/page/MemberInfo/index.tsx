@@ -2,7 +2,7 @@ import {
   Button,
   FormControlLabel, Switch, ToggleButton,
 } from '@mui/material';
-import { useState } from 'react';
+import { useState, Suspense } from 'react';
 import ViewListIcon from '@mui/icons-material/ViewList';
 import ViewModuleIcon from '@mui/icons-material/ViewModule';
 import MemberCreateModal from 'component/modal/memberCreateModal';

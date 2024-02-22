@@ -35,7 +35,14 @@ function App() {
               </Suspense>
             )}
           />
-          <Route path="/mypage" element={<MyPage />} />
+          <Route
+            path="/mypage"
+            element={(
+              <Suspense fallback={<div />}>
+                <MyPage />
+              </Suspense>
+            )}
+          />
         </Route>
       </Route>
       <Route element={<AuthRoute needAuth={false} redirectRoute="/" />}>
