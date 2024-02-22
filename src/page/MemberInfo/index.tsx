@@ -1,7 +1,7 @@
 import {
   FormControlLabel, Switch, ToggleButton,
 } from '@mui/material';
-import { Suspense, useState } from 'react';
+import { useState } from 'react';
 import ViewListIcon from '@mui/icons-material/ViewList';
 import ViewModuleIcon from '@mui/icons-material/ViewModule';
 import MemberCreateModal from 'component/modal/memberCreateModal';
@@ -28,9 +28,7 @@ export default function MemberInfo() {
       <div css={S.topBar} />
       <div css={S.buttonContainer}>
         <FormControlLabel control={<Switch checked={deleteMemberChecked} onChange={handleChangedDeleteMember} />} label="탈퇴 회원" />
-        <Suspense fallback={<div />}>
-          <TrackFilter />
-        </Suspense>
+        <TrackFilter />
         <div css={S.layoutButtonContainer}>
           <ToggleButton
             value="list"
@@ -49,9 +47,7 @@ export default function MemberInfo() {
         </div>
       </div>
       <div css={S.content}>
-        <Suspense fallback={<div />}>
-          {layout === 'list' ? <ListLayout deleteMemberChecked={deleteMemberChecked} /> : <GridLayout />}
-        </Suspense>
+        {layout === 'list' ? <ListLayout deleteMemberChecked={deleteMemberChecked} /> : <GridLayout />}
       </div>
       <MemberCreateModal
         open={memberCreateModalOpen}
