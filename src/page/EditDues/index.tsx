@@ -20,6 +20,7 @@ import LoadingSpinner from 'layout/LoadingSpinner';
 import { ArrowBackIosNewOutlined, ArrowForwardIosOutlined } from '@mui/icons-material';
 import useQueryParam from 'util/hooks/useQueryParam';
 import { useSnackBar } from 'ts/useSnackBar';
+import makeNumberArray from 'util/hooks/makeNumberArray';
 import * as S from './style';
 
 // TODO: 데이터를 가져와서 테이블에 뿌려주기(제대로 안됨)
@@ -229,7 +230,7 @@ function DefaultTable() {
                 </TableCell>
                 <TableCell css={S.tableHeader}>미납 횟수</TableCell>
                 <TableCell css={S.tableHeader}>이름</TableCell>
-                {Array.from({ length: 12 }, (_, i) => i + 1).map((month) => (
+                {makeNumberArray(12, { start: 1 }).map((month) => (
                   <TableCell key={month} css={S.tableHeader}>
                     {month}
                     월
