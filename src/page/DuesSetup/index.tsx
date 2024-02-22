@@ -1,7 +1,7 @@
 import {
   Button, ButtonGroup, Table, TableBody, TableCell, TableHead, TableRow,
 } from '@mui/material';
-import { useRef, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import * as Excel from 'exceljs';
 import { Dues } from 'model/dues/allDues';
 import { useMutation } from '@tanstack/react-query';
@@ -17,13 +17,18 @@ interface TableBodyData {
   value: string[];
 }
 
+// 회비 생성
+// 매월 1일에 회비 생성 (단 한번만 하는 기능임)
+
 export default function DuesSetup() {
   const currentYear = new Date().getFullYear();
   const prevMonth = new Date().getMonth();
+  const currentMonth = new Date().getMonth() + 1;
   const excelFileRef = useRef<HTMLInputElement>(null);
   const workbook = new Excel.Workbook();
-  const tableHead = ['거래 일자', '구분', '거래 금액', '거래 후 잔액', '이름', '비고'];
+  const tableHead = ['거래 일자', '구분', '거래 금액', '거래 후 잔액', '이름', '비고', '회비가 적용되는 날짜'];
   const [tableBody, setTableBody] = useState<TableBodyData[]>([
+    { value: [] },
     { value: [] },
     { value: [] },
     { value: [] },
@@ -62,8 +67,99 @@ export default function DuesSetup() {
     return (unpaidPeople.map((value) => value.detail.filter((detail) => detail.status === 'NOT_PAID'))).map((value) => value.map((detail) => detail.month));
   };
 
+  const findStatus = (memberId: number, month: number, dues: Dues[]) => {
+    const memberDuesInfo = dues.find((member) => member.memberId === memberId);
+    return memberDuesInfo?.detail[month].status;
+  };
+
+  const findMemberId = (name: string, index: number) => {
+    // 동명이인인 경우 비고에 memberId가 적혀있음(수기로 반드시 작성해야 함) 예시) memberId: 12
+    const memberIdInNotes = tableBody[tableHead.indexOf('비고')].value[index]?.includes('memberId:');
+    if (memberIdInNotes) {
+      const memberId = tableBody[tableHead.indexOf('비고')].value[index].split('memberId:')[1];
+      return Number(memberId);
+    }
+
+    const member = members?.content.find((value) => value.name === name);
+    if (member) {
+      return member.id;
+    }
+
+    return null;
+  };
+
+  // 회비가 적용될 달을 찾아서 테이블에 추가
+  const findDuesMonths = () => {
+    const prevYearDuesData = prevYearDues?.dues;
+    const currentYearDuesData = currentYearDues?.dues;
+    tableBody[4].value.forEach((name, index) => {
+      const prevResult: number[] = [];
+      const currentResult: number[] = [];
+      const memberId = findMemberId(name, index);
+      const transactionAmount = Number(tableBody[2].value[index].replace(/,/g, ''));
+      const count = transactionAmount / 10000;
+      const unpaidMonthsInPrevYear = findUnpaidMonth(prevYearDuesData, name)?.[0];
+      const unpaidMonthsInCurrentYear = findUnpaidMonth(currentYearDuesData, name)?.[0];
+      // 작년에 미납된 회비가 있을 경우
+      if (unpaidMonthsInPrevYear && count > 0) {
+        const updatedMonths = unpaidMonthsInPrevYear.slice(0, count);
+        prevResult.push(...updatedMonths);
+      }
+      // 작년에 미납된 회비가 null일 경우
+      if (prevResult.length < count) {
+        const inAdvanceMonths = Array.from({ length: count - prevResult.length }).map((_, monthIndex) => {
+          if (memberId) {
+            const prevYearDuesStatus = findStatus(memberId, prevMonth, prevYearDuesData);
+            if (prevYearDuesStatus === null) {
+              if (currentMonth + monthIndex > 12) {
+                return null;
+              }
+              return currentMonth + monthIndex;
+            }
+          }
+          return null;
+        });
+        prevResult.push(...inAdvanceMonths.filter((value): value is number => value !== null));
+      }
+      // 이번 해에 미납된 회비가 있을 경우
+      if (unpaidMonthsInCurrentYear && prevResult.length < count) {
+        const updatedMonths = unpaidMonthsInCurrentYear.slice(0, count - prevResult.length);
+        currentResult.push(...updatedMonths);
+      }
+      // 이번 해에 미리 납부할 회비가 있을 경우
+      if (currentResult.length < count) {
+        const inAdvanceMonths = Array.from({ length: count - prevResult.length - currentResult.length }).map((_, monthIndex) => {
+          if (memberId) {
+            const currentYearDuesStatus = findStatus(memberId, currentMonth + monthIndex, currentYearDuesData);
+            if (currentYearDuesStatus === null) {
+              if (currentMonth + monthIndex > 12) {
+                return null;
+              }
+              return currentMonth + monthIndex;
+            }
+          }
+          return null;
+        });
+        currentResult.push(...inAdvanceMonths.filter((value): value is number => value !== null));
+      }
+      const monthCountArray = [prevResult.length, currentResult.length];
+      setTableBody((prev) => {
+        const newTableBody = [...prev];
+        if (monthCountArray[0] > 0 && monthCountArray[1] > 0) {
+          newTableBody[6].value[index] = `${currentYear - 1}년 ${prevResult.join('월, ')}월 ${currentYear}년 ${currentResult.join(',월 ')}월`;
+        } else if (monthCountArray[1] > 0) {
+          newTableBody[6].value[index] = `${currentYear}년 ${currentResult.join('월, ')}월`;
+        } else if (monthCountArray[0] > 0) {
+          newTableBody[6].value[index] = `${currentYear - 1}년 ${prevResult.join('월, ')}월`;
+        }
+        return newTableBody;
+      });
+    });
+  };
+
   const handleExcelFileChange = async () => {
     setTableBody([
+      { value: [] },
       { value: [] },
       { value: [] },
       { value: [] },
@@ -86,29 +182,16 @@ export default function DuesSetup() {
           const totalRowNumber = worksheet.actualRowCount;
           row.eachCell((cell, cellNumber) => {
             if (cell.value !== null && rowNumber > 4 && rowNumber < totalRowNumber) {
-              setTableBody((prev) => {
-                const newTableBody = [...prev];
-                newTableBody[cellNumber - 1].value.push(cell.text);
-                return newTableBody;
-              });
-              const currentYearUnpaidMonth = findUnpaidMonth(currentYearDues.dues, cellNumber === tableHead.indexOf('이름') + 1 ? cell.text : '')?.[0];
-              const prevYearUnpaidMonth = findUnpaidMonth(prevYearDues.dues, cellNumber === tableHead.indexOf('이름') + 1 ? cell.text : '')?.[0];
-              if (prevYearUnpaidMonth && currentYearUnpaidMonth) {
+              if (cellNumber !== 6) {
                 setTableBody((prev) => {
                   const newTableBody = [...prev];
-                  newTableBody[5].value[rowNumber - 5] = `${currentYear - 1}년 ${prevYearUnpaidMonth.join('월, ')}월, ${currentYear}년 ${currentYearUnpaidMonth.join('월, ')}월`;
+                  newTableBody[cellNumber - 1].value.push(cell.text);
                   return newTableBody;
                 });
-              } else if (prevYearUnpaidMonth) {
+              } else {
                 setTableBody((prev) => {
                   const newTableBody = [...prev];
-                  newTableBody[5].value[rowNumber - 5] = `${currentYear - 1}년 ${prevYearUnpaidMonth.join('월, ')}월`;
-                  return newTableBody;
-                });
-              } else if (currentYearUnpaidMonth) {
-                setTableBody((prev) => {
-                  const newTableBody = [...prev];
-                  newTableBody[5].value[rowNumber - 5] = `${currentYear}년 ${currentYearUnpaidMonth.join('월, ')}월`;
+                  newTableBody[cellNumber - 1].value[rowNumber - 5] = cell.text;
                   return newTableBody;
                 });
               }
@@ -119,26 +202,10 @@ export default function DuesSetup() {
     }
   };
 
-  const findMemberId = (name: string, index: number) => {
-    // 동명이인인 경우 비고에 memberId가 적혀있음(수기로 반드시 작성해야 함) 예시) memberId: 12
-    const memberIdInNotes = tableBody[tableHead.indexOf('비고')].value[index]?.includes('memberId:');
-    if (memberIdInNotes) {
-      const memberId = tableBody[tableHead.indexOf('비고')].value[index].split('memberId:')[1];
-      return Number(memberId);
-    }
-
-    const member = members?.content.find((value) => value.name === name);
-    if (member) {
-      return member.id;
-    }
-
-    return null;
-  };
-
-  const findStatus = (memberId: number, month: number, dues: Dues[]) => {
-    const memberDuesInfo = dues.find((member) => member.memberId === memberId);
-    return memberDuesInfo?.detail[month].status;
-  };
+  useEffect(() => {
+    findDuesMonths();
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [tableBody]);
 
   // status가 NOT_PAID인 월을 찾아서 PAID로 변경 (PUT /dues)
   // status가 없는 경우 PAID로 변경 (POST /dues)
