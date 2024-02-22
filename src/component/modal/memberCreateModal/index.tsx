@@ -102,7 +102,7 @@ export default function MemberCreateModal({ open, onClose }: MemberInfoModalProp
     }); // 헤더에 authrization을 담으면 안된다
   };
 
-  const handleImage = async (event: React.ChangeEvent<HTMLInputElement>) => {
+  const handleImageChange = async (event: React.ChangeEvent<HTMLInputElement>) => {
     const file = event.target.files?.[0];
 
     if (file) {
@@ -289,7 +289,7 @@ export default function MemberCreateModal({ open, onClose }: MemberInfoModalProp
               startIcon={<CloudUploadIcon />}
             >
               프로필 이미지
-              <VisuallyHiddenInput type="file" accept="image/jpeg, image/png" onChange={(e) => handleImage(e)} />
+              <VisuallyHiddenInput type="file" accept="image/jpeg, image/png" onChange={(e) => handleImageChange(e)} />
             </Button>
           </div>
           <div css={S.buttonContainer}>
