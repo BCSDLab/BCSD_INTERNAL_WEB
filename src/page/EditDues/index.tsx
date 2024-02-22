@@ -224,17 +224,15 @@ function DefaultTable() {
                           <FormControl css={S.checkboxFieldset} component="fieldset" variant="standard">
                             <FormLabel component="legend">원하는 트랙을 선택하세요.</FormLabel>
                             <FormGroup>
-                              {tracks.map((track, index) => {
-                                return (
-                                  <FormControlLabel
-                                    key={track.id}
-                                    control={
-                                      <Checkbox checked={trackFilter[index]} onChange={handleTrackFilterChange} name={track.name} />
+                              {tracks.map((track, index) => (
+                                <FormControlLabel
+                                  key={track.id}
+                                  control={
+                                    <Checkbox checked={trackFilter[index]} onChange={handleTrackFilterChange} name={track.name} />
                                       }
-                                    label={track.name}
-                                  />
-                                );
-                              })}
+                                  label={track.name}
+                                />
+                              ))}
                             </FormGroup>
                           </FormControl>
                         </div>
@@ -296,12 +294,7 @@ function DefaultTable() {
                             <Input
                               css={S.memoInput}
                               value={requiredData.memo}
-                              onChange={(e) => setRequiredData((prev) => {
-                                return {
-                                  ...prev,
-                                  memo: e.target.value,
-                                };
-                              })}
+                              onChange={(e) => setRequiredData((prev) => ({ ...prev, memo: e.target.value }))}
                               placeholder="면제 혹은 미납의 사유를 입력하세요(공백 가능)"
                             />
                           )}
