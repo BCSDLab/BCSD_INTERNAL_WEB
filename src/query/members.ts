@@ -35,7 +35,7 @@ export const useGetMembersDeleted = ({
   pageIndex, pageSize, trackId,
 }: GetMembers) => {
   const { data } = useSuspenseQuery({
-    queryKey: ['membersDeleted', pageIndex, pageSize, trackId],
+    queryKey: ['members', 'membersDeleted', pageIndex, pageSize, trackId],
     queryFn: () => {
       if (trackId === null) return getMembersDeleted(pageIndex, pageSize);
       return getMembersDeleted(pageIndex, pageSize, trackId);
