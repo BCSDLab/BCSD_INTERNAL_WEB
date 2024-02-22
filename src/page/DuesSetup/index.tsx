@@ -17,6 +17,11 @@ interface TableBodyData {
   value: string[];
 }
 
+interface DatesDuesApply {
+  year: number[];
+  prevYearMonth: number[];
+  currentYearMonth: number[];
+}
 // 회비 생성
 // 매월 1일에 회비 생성 (단 한번만 하는 기능임)
 
@@ -36,6 +41,7 @@ export default function DuesSetup() {
     { value: [] },
     { value: [] },
   ]);
+  const [datesDuesApply, setDatesDuesApply] = useState<DatesDuesApply[]>([{ year: [], prevYearMonth: [], currentYearMonth: [] }]);
   const [buttonDisabled, setButtonDisabled] = useState(true);
 
   const { data: members } = useGetMembers({ pageIndex: 0, pageSize: 1000, trackId: null });
@@ -146,13 +152,24 @@ export default function DuesSetup() {
       setTableBody((prev) => {
         const newTableBody = [...prev];
         if (monthCountArray[0] > 0 && monthCountArray[1] > 0) {
-          newTableBody[6].value[index] = `${currentYear - 1}년 ${prevResult.join('월, ')}월 ${currentYear}년 ${currentResult.join(',월 ')}월`;
+          newTableBody[6].value[index] = `${currentYear - 1}년 ${prevResult.join('월, ')}월 /${currentYear}년 ${currentResult.join(',월 ')}월`;
         } else if (monthCountArray[1] > 0) {
           newTableBody[6].value[index] = `${currentYear}년 ${currentResult.join('월, ')}월`;
         } else if (monthCountArray[0] > 0) {
           newTableBody[6].value[index] = `${currentYear - 1}년 ${prevResult.join('월, ')}월`;
         }
         return newTableBody;
+      });
+      setDatesDuesApply((prev) => {
+        const newDatesDuesApply = [...prev];
+        if (monthCountArray[0] > 0 && monthCountArray[1] > 0) {
+          newDatesDuesApply[index] = { year: [currentYear, currentYear - 1], prevYearMonth: prevResult, currentYearMonth: currentResult };
+        } else if (monthCountArray[0] > 0) {
+          newDatesDuesApply[index] = { year: [currentYear - 1], prevYearMonth: prevResult, currentYearMonth: [] };
+        } else if (monthCountArray[1] > 0) {
+          newDatesDuesApply[index] = { year: [currentYear], prevYearMonth: [], currentYearMonth: currentResult };
+        }
+        return newDatesDuesApply;
       });
     });
   };
@@ -204,32 +221,27 @@ export default function DuesSetup() {
 
   // status가 NOT_PAID인 월을 찾아서 PAID로 변경 (PUT /dues)
   // status가 없는 경우 PAID로 변경 (POST /dues)
-  const updateUnpaidtoPaid = (memberId: number, name: string, dues: Dues[], year: number, transactionAmount: number) => {
-    const unpaidMonths = findUnpaidMonth(dues, name)?.[0];
-    let count = 0;
-    Array.from({ length: transactionAmount % 10000 }).forEach((_, index) => {
-      const prevMonthStatus = findStatus(memberId, prevMonth, dues);
-      if (unpaidMonths[index]) {
+  const updateUnpaidtoPaid = (memberId: number, year: number, months: number[]) => {
+    months.forEach((month) => {
+      const monthStatus = findStatus(memberId, month, prevYearDues.dues);
+      if (monthStatus === 'NOT_PAID') {
         const data: NewDuesData = {
           memberId,
           year,
-          month: unpaidMonths[index],
+          month,
           status: 'PAID',
         };
         putDuesMutation.mutate(data);
-        count += 1;
-      } else if (unpaidMonths[index] === undefined && prevMonthStatus === null && year === currentYear) {
+      } else if (monthStatus === null) {
         const data: NewDuesData = {
           memberId,
           year,
-          month: prevMonth,
+          month,
           status: 'PAID',
         };
         postDuesMutation.mutate(data);
-        count += 1;
       }
     });
-    return count;
   };
 
   // 회비 면제인 경우 null -> SKIP (POST /dues)
@@ -245,21 +257,35 @@ export default function DuesSetup() {
           status: 'SKIP',
         };
       });
-      waiverMembersData.forEach((data) => {
-        postDuesMutation.mutate(data);
+      waiverMembersData.forEach((data, index) => {
+        const memberId = waiverMember[index].id;
+        // status null인 경우에만 면제 적용됨
+        if (currentYearDues.dues.find((value) => value.memberId === memberId)?.detail[prevMonth - 1].status === null) {
+          postDuesMutation.mutate(data);
+        }
+        if (prevMonth === 12 && prevYearDues.dues.find((value) => value.memberId === memberId)?.detail[prevMonth - 1].status === null) {
+          const prevYearData = { ...data, year: currentYear - 1 };
+          postDuesMutation.mutate(prevYearData);
+        }
       });
     }
   };
 
   const handleCreateDuesClick = () => {
     applyForDuesWaiver();
-    tableBody[tableHead.indexOf('이름')].value.forEach((name, index) => {
+    tableBody[4].value.forEach((name, index) => {
       const memberId = findMemberId(name, index);
-      const transactionAmount = Number(tableBody[2].value[index].replace(/,/g, ''));
-      if (memberId) {
-        const updatedTransactionCount = updateUnpaidtoPaid(memberId, name, prevYearDues.dues, currentYear - 1, transactionAmount);
-        if (updatedTransactionCount !== transactionAmount % 10000) {
-          updateUnpaidtoPaid(memberId, name, currentYearDues.dues, currentYear, updatedTransactionCount * 10000 - transactionAmount);
+      const unpaidYear = datesDuesApply[index]?.year;
+      const prevYearDuesApplyMonth = datesDuesApply[index]?.prevYearMonth;
+      const currentYearDuesApplyMonth = datesDuesApply[index]?.currentYearMonth;
+      if (memberId && unpaidYear.length === 2) {
+        updateUnpaidtoPaid(memberId, currentYear - 1, prevYearDuesApplyMonth);
+        updateUnpaidtoPaid(memberId, currentYear, currentYearDuesApplyMonth);
+      } else if (memberId && unpaidYear.length === 1) {
+        if (unpaidYear[0] === currentYear) {
+          updateUnpaidtoPaid(memberId, currentYear, currentYearDuesApplyMonth);
+        } else {
+          updateUnpaidtoPaid(memberId, currentYear - 1, prevYearDuesApplyMonth);
         }
       }
     });
