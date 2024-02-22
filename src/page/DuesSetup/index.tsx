@@ -275,6 +275,23 @@ export default function DuesSetup() {
     }
   };
 
+  // status가 null인 prevMonth를 찾아서 NOT_PAID로 변경 (POST /dues)
+  const updateNullToNotPaid = () => {
+    const memberIds = members?.content.map((value) => value.id);
+    memberIds?.forEach((memberId) => {
+      const prevMonthStatus = findStatus(memberId, prevMonth, prevMonth === 12 ? prevYearDues.dues : currentYearDues.dues);
+      if (prevMonthStatus === null) {
+        const data: NewDuesData = {
+          memberId,
+          year: prevMonth === 12 ? currentYear - 1 : currentYear,
+          month: prevMonth,
+          status: 'NOT_PAID',
+        };
+        postDuesMutation.mutate(data);
+      }
+    });
+  };
+
   const handleCreateDuesClick = () => {
     applyForDuesWaiver();
     tableBody[4].value.forEach((name, index) => {
@@ -293,6 +310,7 @@ export default function DuesSetup() {
         }
       }
     });
+    updateNullToNotPaid();
   };
   return (
     <div css={S.container}>
