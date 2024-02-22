@@ -150,7 +150,7 @@ export default function MemberInfoModal({ open, onClose, member: initialMember }
 
     if (file) {
       const presigned = await getPresignedUrl({
-        fileName: file?.name as string,
+        fileName: file.name,
       });
 
       setImageInfo({ file, presignedUrl: presigned });

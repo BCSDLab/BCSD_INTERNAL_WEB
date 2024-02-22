@@ -87,7 +87,7 @@ export default function MyPage() {
 
     if (file) {
       const presigned = await getPresignedUrl({
-        fileName: file?.name as string,
+        fileName: file.name,
       });
 
       setImageInfo({ file, presignedUrl: presigned });
