@@ -1,10 +1,10 @@
 import { useMutation, useQueryClient, useSuspenseQuery } from '@tanstack/react-query';
 import {
   createMember,
-  deleteMember, getMember, getMembers, getMembersNotDeleted, login, updateMember, getNotAuthedMembers,
+  deleteMember, getMember, getMembers, getMembersNotDeleted, login, updateMember, getNotAuthedMembers, getMe, updateMe,
 } from 'api/members';
+import { AdminMemberUpdate, MemberCreate, MemberUpdate } from 'model/member';
 import { AxiosError } from 'axios';
-import { AdminMemberUpdate, MemberCreate } from 'model/member';
 import { useNavigate } from 'react-router-dom';
 import { useSnackBar } from 'ts/useSnackBar';
 
@@ -52,10 +52,6 @@ export const useGetMember = (id: number) => {
   return { data };
 };
 
-interface ErrorResponse {
-  message: string;
-}
-
 export const useUpdateMember = () => {
   const queryClient = useQueryClient();
   const openSnackBar = useSnackBar();
@@ -66,28 +62,43 @@ export const useUpdateMember = () => {
       openSnackBar({ type: 'success', message: '회원정보 수정에 성공했습니다.' });
     },
     onError: (e) => {
-      const err = e as AxiosError;
-      openSnackBar({ type: 'error', message: (err.response?.data as ErrorResponse).message });
+      if (e instanceof AxiosError) {
+        openSnackBar({ type: 'error', message: e.response?.data.message });
+      }
     },
   });
 };
 
 export const useDeleteMember = () => {
   const queryClient = useQueryClient();
+  const openSnackBar = useSnackBar();
   return useMutation({
     mutationFn: (id: number) => deleteMember(id),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['members'] });
+      openSnackBar({ type: 'success', message: '회원 삭제에 성공했습니다.' });
+    },
+    onError: (e) => {
+      if (e instanceof AxiosError) {
+        openSnackBar({ type: 'error', message: e.response?.data.message });
+      }
     },
   });
 };
 
 export const useCreateMember = () => {
   const queryClient = useQueryClient();
+  const openSnackBar = useSnackBar();
   return useMutation({
     mutationFn: (member: MemberCreate) => createMember(member),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['members'] });
+      openSnackBar({ type: 'success', message: '회원 추가에 성공했습니다.' });
+    },
+    onError: (e) => {
+      if (e instanceof AxiosError) {
+        openSnackBar({ type: 'error', message: e.response?.data.message });
+      }
     },
   });
 };
@@ -115,4 +126,30 @@ export const useNotAuthedMember = () => {
   });
 
   return { data };
+};
+
+export const useGetMe = () => {
+  const { data } = useSuspenseQuery({
+    queryKey: ['me'],
+    queryFn: () => getMe(),
+  });
+
+  return { data };
+};
+
+export const useUpdateMe = () => {
+  const queryClient = useQueryClient();
+  const openSnackBar = useSnackBar();
+  return useMutation({
+    mutationFn: (member: MemberUpdate) => updateMe(member),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['me'] });
+      openSnackBar({ type: 'success', message: '회원정보 수정에 성공했습니다.' });
+    },
+    onError: (e) => {
+      if (e instanceof AxiosError) {
+        openSnackBar({ type: 'error', message: e.response?.data.message });
+      }
+    },
+  });
 };

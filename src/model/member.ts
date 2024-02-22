@@ -58,9 +58,25 @@ export interface AdminMemberUpdate {
   isDeleted: boolean;
 }
 
+export interface MemberUpdate {
+  joinedYear: number;
+  joinedMonth: number;
+  trackId: number;
+  memberType: MemberType;
+  status: StatusType;
+  name: string;
+  company: string;
+  department: string;
+  studentNumber: string;
+  phoneNumber: string;
+  email: string;
+  githubName: string;
+  profileImageUrl: string;
+}
+
 export interface MemberCreate {
-  year?: number;
-  month?: number;
+  joinedYear?: number;
+  joinedMonth?: number;
   trackId?: number;
   memberType?: MemberType;
   status?: StatusType;
@@ -110,7 +126,6 @@ export const toAdminMemberUpdate = (member: Member): AdminMemberUpdate => {
 
 export const toMemberCreate = (member: MemberCreate): MemberCreate => {
   const reverseStatus = member.status ? getReverseStatus(member.status) : undefined;
-
   return {
     name: member.name,
     trackId: member.trackId,
@@ -123,8 +138,8 @@ export const toMemberCreate = (member: MemberCreate): MemberCreate => {
     email: member.email,
     githubName: member.githubName,
     profileImageUrl: member.profileImageUrl,
-    year: member.year,
-    month: member.month,
+    joinedYear: member.joinedYear,
+    joinedMonth: member.joinedMonth,
     password: member.password,
     isAuthed: true,
     isDeleted: false,

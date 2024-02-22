@@ -6,9 +6,8 @@
 
 ## Please check if the PR fulfills these requirements
 
-- [ ] It's submitted to `develop` branch, __not__ the `main` branch
 - [ ] The commit message follows our guidelines
-- [ ] Did you merge recent `develop` branch?
+- [ ] Did you merge recent `main` branch?
 
 ### Screenshot
 
