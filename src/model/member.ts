@@ -126,8 +126,6 @@ export const toAdminMemberUpdate = (member: Member): AdminMemberUpdate => {
 
 export const toMemberCreate = (member: MemberCreate): MemberCreate => {
   const reverseStatus = member.status ? getReverseStatus(member.status) : undefined;
-  console.log(member.profileImageUrl);
-  console.log(member);
   return {
     name: member.name,
     trackId: member.trackId,

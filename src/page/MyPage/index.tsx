@@ -94,8 +94,8 @@ export default function MyPage() {
     }
   };
 
-  const uploadImage = async ({ presignedUrl, file }: { presignedUrl: string, file: File }) => {
-    await axios.put(presignedUrl, file, {
+  const uploadImage = async ({ presignedUrl, file }: FileInfo) => {
+    await axios.put(presignedUrl.presignedUrl, file, {
       headers: {
         'Content-Type': 'image/jpeg, image/png, image/svg+xml, image/webp',
       },
@@ -105,7 +105,7 @@ export default function MyPage() {
   const handleSave = () => {
     if (member) {
       if (imageInfo?.presignedUrl) {
-        uploadImage({ presignedUrl: imageInfo.presignedUrl.presignedUrl, file: imageInfo.file });
+        uploadImage({ presignedUrl: imageInfo.presignedUrl, file: imageInfo.file });
         updateMe({
           ...member,
           trackId: member.track?.id,

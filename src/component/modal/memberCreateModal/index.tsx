@@ -95,8 +95,8 @@ export default function MemberCreateModal({ open, onClose }: MemberInfoModalProp
     setMember({ ...member, [name]: formatPhoneNumber(value) });
   };
 
-  const uploadImage = async ({ presignedUrl, file }: { presignedUrl: string, file: File }) => {
-    await axios.put(presignedUrl, file, {
+  const uploadImage = async ({ presignedUrl, file }: FileInfo) => {
+    await axios.put(presignedUrl.presignedUrl, file, {
       headers: {
         'Content-Type': 'image/jpeg, image/png, image/svg+xml, image/webp',
       },
@@ -118,7 +118,7 @@ export default function MemberCreateModal({ open, onClose }: MemberInfoModalProp
   const handleSave = () => {
     if (member) {
       if (imageInfo?.presignedUrl) {
-        uploadImage({ presignedUrl: imageInfo.presignedUrl.presignedUrl, file: imageInfo.file });
+        uploadImage({ presignedUrl: imageInfo.presignedUrl, file: imageInfo.file });
         createMember(toMemberCreate({ ...member, profileImageUrl: DEFAULT_URL + imageInfo.presignedUrl.fileName }));
       } else {
         createMember(toMemberCreate(member));
