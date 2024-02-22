@@ -6,6 +6,7 @@ import {
   TextField, Button, InputAdornment, OutlinedInput, IconButton, FormControl, InputLabel, Paper,
 } from '@mui/material';
 import { Visibility, VisibilityOff } from '@mui/icons-material';
+import { useNavigate } from 'react-router-dom';
 import * as S from './style';
 
 const DemoPaper = styled(Paper)(({ theme }) => ({
@@ -22,6 +23,8 @@ export default function SignIn() {
     studentNumber: '',
     password: '',
   });
+
+  const navigate = useNavigate();
 
   const handleClickShowPassword = () => {
     setVisible((prev) => !prev);
@@ -69,13 +72,23 @@ export default function SignIn() {
               label="Password"
             />
           </FormControl>
-          <Button
-            variant="contained"
-            type="submit"
-            disabled={isPending}
-          >
-            로그인
-          </Button>
+          <div>
+            <Button
+              variant="contained"
+              type="submit"
+              sx={{ width: '100px', marginRight: '5px' }}
+              disabled={isPending}
+            >
+              로그인
+            </Button>
+            <Button
+              variant="contained"
+              sx={{ width: '100px' }}
+              onClick={() => navigate('/register')}
+            >
+              회원가입
+            </Button>
+          </div>
         </form>
       </DemoPaper>
     </div>
