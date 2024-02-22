@@ -7,6 +7,7 @@ import AuthRoute from 'components/common/AuthRoute';
 import DuesManagement from 'page/DuesManagement';
 import DefaultLayout from 'layout/DefaultLayout';
 import { Suspense } from 'react';
+import MyPage from 'page/MyPage';
 import DuesSetup from 'page/DuesSetup';
 
 function App() {
@@ -34,6 +35,7 @@ function App() {
               </Suspense>
             )}
           />
+          <Route path="/mypage" element={<MyPage />} />
         </Route>
       </Route>
       <Route element={<AuthRoute needAuth={false} redirectRoute="/" />}>

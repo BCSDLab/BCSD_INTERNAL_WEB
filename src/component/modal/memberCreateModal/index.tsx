@@ -1,5 +1,5 @@
 import {
-  Modal, Box, Typography, Button, TextField, MenuItem,
+  Modal, Box, Typography, Button, TextField, MenuItem, styled,
 } from '@mui/material';
 import {
   MemberCreate, toMemberCreate,
@@ -7,6 +7,9 @@ import {
 import { useState } from 'react';
 import { useCreateMember } from 'query/members';
 import { useGetTracks } from 'query/tracks';
+import { FileResponse, getPresignedUrl } from 'api/image';
+import CloudUploadIcon from '@mui/icons-material/CloudUpload';
+import axios from 'axios';
 import * as S from './style';
 
 const style = {
@@ -44,10 +47,29 @@ const STATUS_LABEL = {
 
 const statusList = ['ATTEND', 'OFF', 'IPP', 'ARMY', 'COMPLETION', 'GRADUATE'] as const;
 
+const VisuallyHiddenInput = styled('input')({
+  clip: 'rect(0 0 0 0)',
+  clipPath: 'inset(50%)',
+  height: 1,
+  overflow: 'hidden',
+  position: 'absolute',
+  bottom: 0,
+  left: 0,
+  whiteSpace: 'nowrap',
+  width: 1,
+});
+
+interface FileInfo {
+  file: File;
+  presignedUrl: FileResponse;
+}
+
 export default function MemberCreateModal({ open, onClose }: MemberInfoModalProps): React.ReactElement {
-  const [member, setMember] = useState<MemberCreate | null>();
+  const [member, setMember] = useState<MemberCreate | null>(null);
   const { mutate: createMember } = useCreateMember();
   const { data: tracks } = useGetTracks();
+  const [imageInfo, setImageInfo] = useState<FileInfo>();
+  const DEFAULT_URL = 'https://image.bcsdlab.com/';
 
   const formatPhoneNumber = (input: string) => {
     const numbers = input.replace(/[^\d]/g, '');
@@ -73,9 +95,34 @@ export default function MemberCreateModal({ open, onClose }: MemberInfoModalProp
     setMember({ ...member, [name]: formatPhoneNumber(value) });
   };
 
+  const uploadImage = async ({ presignedUrl, file }: FileInfo) => {
+    await axios.put(presignedUrl.presignedUrl, file, {
+      headers: {
+        'Content-Type': 'image/jpeg, image/png, image/svg+xml, image/webp',
+      },
+    }); // 헤더에 authrization을 담으면 안된다
+  };
+
+  const handleImageChange = async (event: React.ChangeEvent<HTMLInputElement>) => {
+    const file = event.target.files?.[0];
+
+    if (file) {
+      const presigned = await getPresignedUrl({
+        fileName: file.name,
+      });
+
+      setImageInfo({ file, presignedUrl: presigned });
+    }
+  };
+
   const handleSave = () => {
     if (member) {
-      createMember(toMemberCreate(member));
+      if (imageInfo?.presignedUrl) {
+        uploadImage({ presignedUrl: imageInfo.presignedUrl, file: imageInfo.file });
+        createMember(toMemberCreate({ ...member, profileImageUrl: DEFAULT_URL + imageInfo.presignedUrl.fileName }));
+      } else {
+        createMember(toMemberCreate(member));
+      }
     }
     onClose();
   };
@@ -194,16 +241,16 @@ export default function MemberCreateModal({ open, onClose }: MemberInfoModalProp
             <TextField
               margin="normal"
               label="가입 연도"
-              name="year"
-              value={member?.year || ''}
+              name="joinedYear"
+              value={member?.joinedYear || ''}
               fullWidth
               onChange={handleChange}
             />
             <TextField
               margin="normal"
               label="가입 월"
-              name="month"
-              value={member?.month || ''}
+              name="joinedMonth"
+              value={member?.joinedMonth || ''}
               fullWidth
               onChange={handleChange}
             />
@@ -235,14 +282,16 @@ export default function MemberCreateModal({ open, onClose }: MemberInfoModalProp
               fullWidth
               onChange={handleChange}
             />
-            <TextField
-              margin="normal"
-              label="프로필 이미지"
-              name="profileImageUrl"
-              value="추후 파일 업로드 구현"
+            <Button
+              component="label"
               fullWidth
-
-            />
+              variant="outlined"
+              sx={{ height: '60px', marginTop: '15px', padding: '0px' }}
+              startIcon={<CloudUploadIcon />}
+            >
+              프로필 이미지
+              <VisuallyHiddenInput type="file" accept="image/jpeg, image/png" onChange={(e) => handleImageChange(e)} />
+            </Button>
           </div>
           <div css={S.buttonContainer}>
             <div css={S.buttonWrapper}>
