@@ -33,7 +33,7 @@ const MEMBER_TYPE_LIST = ['BEGINNER', 'REGULAR', 'MENTOR'] as const;
 const STATUS_LIST = ['ATTEND', 'OFF', 'IPP', 'ARMY', 'COMPLETION', 'GRADUATE'] as const;
 
 export default function MyPage() {
-  const [member, setMember] = useState<Member | null>();
+  const [member, setMember] = useState<Member | null>(null);
   const [imageInfo, setImageInfo] = useState<FileInfo>();
   const { data: tracks } = useGetTracks();
   const { mutate: updateMe } = useUpdateMe();

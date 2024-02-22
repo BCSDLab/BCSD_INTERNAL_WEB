@@ -65,7 +65,7 @@ interface FileInfo {
 }
 
 export default function MemberCreateModal({ open, onClose }: MemberInfoModalProps): React.ReactElement {
-  const [member, setMember] = useState<MemberCreate | null>();
+  const [member, setMember] = useState<MemberCreate | null>(null);
   const { mutate: createMember } = useCreateMember();
   const { data: tracks } = useGetTracks();
   const [imageInfo, setImageInfo] = useState<FileInfo>();
