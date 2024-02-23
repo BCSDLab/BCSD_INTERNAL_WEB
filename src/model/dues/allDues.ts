@@ -11,6 +11,8 @@ export interface Dues {
   detail: DuesDetail[];
 }
 
+export type DuesStatus = 'PAID' | 'SKIP' | 'NOT_PAID' | null;
+
 export interface DuesDetail {
   month: number;
   status: 'PAID' | 'SKIP' | 'NOT_PAID' | null;
