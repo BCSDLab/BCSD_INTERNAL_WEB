@@ -39,6 +39,7 @@ export default function MyPage() {
   const { mutate: updateMe } = useUpdateMe();
   const { data: getMe } = useGetMe();
   const DEFAULT_URL = 'https://image.bcsdlab.com/';
+  const [imageUrl, setImageUrl] = useState<string>('');
 
   interface FileInfo {
     file: File;
@@ -91,6 +92,7 @@ export default function MyPage() {
       });
 
       setImageInfo({ file, presignedUrl: presigned });
+      setImageUrl(URL.createObjectURL(file));
     }
   };
 
@@ -99,7 +101,7 @@ export default function MyPage() {
       headers: {
         'Content-Type': 'image/jpeg, image/png, image/svg+xml, image/webp',
       },
-    }); // 헤더에 authrization을 담으면 안된다
+    });
   };
 
   const handleSave = () => {
@@ -124,6 +126,7 @@ export default function MyPage() {
     const { name, value } = event.target;
     if (member) setMember({ ...member, [name]: formatPhoneNumber(value) });
   };
+
   return (
     <div css={S.container}>
       <div css={S.topBar}>
@@ -276,26 +279,38 @@ export default function MyPage() {
                 fullWidth
                 onChange={handleChange}
               />
-              <Button
-                component="label"
-                fullWidth
-                variant="outlined"
-                startIcon={<CloudUploadIcon />}
-                sx={{ height: '60px', marginTop: '15px', padding: '0px' }}
-              >
-                프로필 이미지
-                <VisuallyHiddenInput type="file" accept="image/jpeg, image/png" onChange={(e) => handleImage(e)} />
-              </Button>
+              <div css={S.imageContainer}>
+                <img
+                  css={S.image}
+                  src={imageUrl || member?.profileImageUrl}
+                  alt="profileImage"
+                />
+                <div css={S.buttonWrapper}>
+                  <Button
+                    component="label"
+                    fullWidth
+                    variant="outlined"
+                    startIcon={<CloudUploadIcon />}
+                    sx={{
+                      height: '50px', padding: '0px', width: '150px',
+                    }}
+                  >
+                    프로필 이미지
+                    <VisuallyHiddenInput type="file" accept="image/jpeg, image/png" onChange={(e) => handleImage(e)} />
+                  </Button>
+                  <Button
+                    sx={{
+                      width: '100px', height: '50px',
+                    }}
+                    variant="contained"
+                    onClick={handleSave}
+                  >
+                    저장
+                  </Button>
+                </div>
+              </div>
             </div>
-            <div css={S.buttonContainer}>
-              <Button
-                sx={{ mt: 2, mb: 2 }}
-                variant="contained"
-                onClick={handleSave}
-              >
-                저장
-              </Button>
-            </div>
+
           </Box>
         </Box>
       </div>

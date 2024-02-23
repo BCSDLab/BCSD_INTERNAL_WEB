@@ -1,7 +1,7 @@
 import { useMutation, useQueryClient, useSuspenseQuery } from '@tanstack/react-query';
 import {
   createMember,
-  deleteMember, getMember, getMembers, getMembersNotDeleted, login, updateMember, getNotAuthedMembers, getMe, updateMe,
+  deleteMember, getMember, getMembers, getMembersDeleted, login, updateMember, getNotAuthedMembers, getMe, updateMe,
 } from 'api/members';
 import { AdminMemberUpdate, MemberCreate, MemberUpdate } from 'model/member';
 import { AxiosError } from 'axios';
@@ -31,14 +31,14 @@ export const useGetMembers = ({ pageIndex, pageSize, trackId }: GetMembers) => {
   return { data };
 };
 
-export const useGetMembersNotDeleted = ({
-  pageIndex, pageSize, trackId, deleted,
+export const useGetMembersDeleted = ({
+  pageIndex, pageSize, trackId,
 }: GetMembers) => {
   const { data } = useSuspenseQuery({
-    queryKey: ['members', pageIndex, pageSize, trackId, deleted],
+    queryKey: ['members', 'membersDeleted', pageIndex, pageSize, trackId],
     queryFn: () => {
-      if (trackId === null) return getMembersNotDeleted(pageIndex, pageSize, false);
-      return getMembersNotDeleted(pageIndex, pageSize, false, trackId);
+      if (trackId === null) return getMembersDeleted(pageIndex, pageSize);
+      return getMembersDeleted(pageIndex, pageSize, trackId);
     },
   });
   return { data };
