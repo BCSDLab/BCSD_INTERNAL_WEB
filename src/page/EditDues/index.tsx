@@ -113,22 +113,24 @@ function DefaultTable() {
   const handleChangeMutationStatusClick = () => {
     // TODO: 이전 status와 수정하려는 status가 같은 경우 API 호출이 필요 없음
     const prevStatus = allDues.dues.find((row) => row.memberId === requiredData.memberId)?.detail.find((detail) => detail.month === requiredData.month)?.status;
-    if (prevStatus === null && prevStatus !== status) {
-      postDuesMutation.mutate({
-        year: requiredData.year,
-        memberId: requiredData.memberId,
-        month: requiredData.month,
-        status,
-        memo: requiredData.memo,
-      });
-    } else if (prevStatus !== null && prevStatus !== status) {
-      putDuesMutation.mutate({
-        year: requiredData.year,
-        memberId: requiredData.memberId,
-        month: requiredData.month,
-        status,
-        memo: requiredData.memo,
-      });
+    if (prevStatus !== status) {
+      if (prevStatus === null) {
+        postDuesMutation.mutate({
+          year: requiredData.year,
+          memberId: requiredData.memberId,
+          month: requiredData.month,
+          status,
+          memo: requiredData.memo,
+        });
+      } else {
+        putDuesMutation.mutate({
+          year: requiredData.year,
+          memberId: requiredData.memberId,
+          month: requiredData.month,
+          status,
+          memo: requiredData.memo,
+        });
+      }
     }
     if (prevStatus === status) {
       openSnackBar({ type: 'info', message: '이전 상태와 같은 상태로 변경할 수 없습니다.' });
