@@ -8,6 +8,7 @@ import { useState } from 'react';
 import { useCreateMember } from 'query/members';
 import { useGetTracks } from 'query/tracks';
 import { FileResponse, getPresignedUrl } from 'api/image';
+import { SHA256 } from 'crypto-js';
 import CloudUploadIcon from '@mui/icons-material/CloudUpload';
 import axios from 'axios';
 import * as S from './style';
@@ -82,7 +83,8 @@ export default function MemberCreateModal({ open, onClose }: MemberInfoModalProp
   };
 
   const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    const { name, value } = event.target; setMember({ ...member, [name]: value });
+    const { name, value } = event.target;
+    setMember({ ...member, [name]: value });
   };
 
   const handleTrackChange = (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -116,15 +118,16 @@ export default function MemberCreateModal({ open, onClose }: MemberInfoModalProp
   };
 
   const handleSave = () => {
-    if (member) {
+    if (member && member.password) {
       if (imageInfo?.presignedUrl) {
         uploadImage({ presignedUrl: imageInfo.presignedUrl, file: imageInfo.file });
-        createMember(toMemberCreate({ ...member, profileImageUrl: DEFAULT_URL + imageInfo.presignedUrl.fileName }));
+        createMember(toMemberCreate({ ...member, password: SHA256(member.password).toString(), profileImageUrl: DEFAULT_URL + imageInfo.presignedUrl.fileName }));
       } else {
-        createMember(toMemberCreate(member));
+        createMember(toMemberCreate({ ...member, password: SHA256(member.password).toString() }));
       }
     }
     onClose();
+    setMember(null);
   };
 
   const handleClose = () => {
