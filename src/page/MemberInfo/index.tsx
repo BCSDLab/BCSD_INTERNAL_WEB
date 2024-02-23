@@ -36,15 +36,7 @@ export default function MemberInfo() {
       </div>
       <div>
         <div css={S.buttonContainer}>
-          <Button
-            variant="outlined"
-            color="primary"
-            startIcon={<AddIcon />}
-            onClick={handleOpenMemberCreateModal}
-          >
-            생성
-          </Button>
-          <FormControlLabel control={<Switch checked={deleteMemberChecked} onChange={handleChangedDeleteMember} />} label="탈퇴 회원" />
+          <FormControlLabel control={<Switch checked={deleteMemberChecked} onChange={handleChangedDeleteMember} sx={{ marginLeft: 2 }} />} label="탈퇴 회원" />
           <Suspense fallback={<div />}>
             <TrackFilter />
           </Suspense>
@@ -69,6 +61,18 @@ export default function MemberInfo() {
           <Suspense fallback={<div />}>
             {layout === 'list' ? <ListLayout deleteMemberChecked={deleteMemberChecked} /> : <GridLayout />}
           </Suspense>
+          <div css={S.createButtonContainer}>
+            <div css={S.createButton}>
+              <Button
+                variant="outlined"
+                color="primary"
+                startIcon={<AddIcon />}
+                onClick={handleOpenMemberCreateModal}
+              >
+                회원 생성
+              </Button>
+            </div>
+          </div>
         </div>
         <MemberCreateModal
           open={memberCreateModalOpen}
