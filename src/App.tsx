@@ -10,6 +10,7 @@ import { Suspense } from 'react';
 import MyPage from 'page/MyPage';
 import DuesSetup from 'page/DuesSetup';
 import EditDues from 'page/EditDues';
+import LoadingSpinner from 'layout/LoadingSpinner';
 
 function App() {
   return (
@@ -17,13 +18,20 @@ function App() {
       <Route element={<AuthRoute needAuth={false} redirectRoute="/member" />}>
         <Route path="/" element={<SignIn />} />
       </Route>
-      <Route path="/register" element={<SignUp />} />
+      <Route
+        path="/register"
+        element={(
+          <Suspense fallback={<LoadingSpinner />}>
+            <SignUp />
+          </Suspense>
+        )}
+      />
       <Route element={<AuthRoute needAuth redirectRoute="/login" />}>
         <Route element={<DefaultLayout />}>
           <Route
             path="/accept"
             element={(
-              <Suspense fallback={<div />}>
+              <Suspense fallback={<LoadingSpinner />}>
                 <AcceptMember />
               </Suspense>
             )}
@@ -31,7 +39,7 @@ function App() {
           <Route
             path="/member"
             element={(
-              <Suspense fallback={<div />}>
+              <Suspense fallback={<LoadingSpinner />}>
                 <MemberInfo />
               </Suspense>
             )}
@@ -39,7 +47,7 @@ function App() {
           <Route
             path="/mypage"
             element={(
-              <Suspense fallback={<div />}>
+              <Suspense fallback={<LoadingSpinner />}>
                 <MyPage />
               </Suspense>
             )}
