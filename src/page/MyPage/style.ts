@@ -40,7 +40,7 @@ export const textGap = css`
 
 export const buttonWrapper = css`
   display: flex;
-  gap: 20px;
+  gap: 30px;
 `;
 
 export const buttonContainer = css`
@@ -58,3 +58,16 @@ export const style = {
   boxShadow: 24,
   p: 4,
 };
+
+export const imageContainer = css`
+  width: 100%;
+  display: flex;
+  margin-top: 20px;
+  justify-content: space-between;
+`;
+
+export const image = css`
+  width: 150px;
+  height: 150px;
+  border: 1px solid ${colors.borderGray};
+`;
