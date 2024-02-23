@@ -12,7 +12,7 @@ import { DatePicker } from '@mui/x-date-pickers/DatePicker';
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
 import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
 import dayjs, { Dayjs } from 'dayjs';
-import { Suspense, useState } from 'react';
+import { useState } from 'react';
 import Snackbar from '@mui/material/Snackbar';
 
 /* eslint-disable  */
@@ -22,7 +22,6 @@ import { useGetTracks } from 'query/tracks.ts';
 import { SnackBarParam, useSnackBar } from 'ts/useSnackBar.tsx';
 import { AxiosError } from 'axios';
 import { useNavigate } from 'react-router-dom';
-import LoadingSpinner from 'layout/LoadingSpinner/index.tsx';
 
 const status = [
   {
@@ -264,13 +263,11 @@ export default function SignUp() {
               {...field}
               error={!!errors.trackId}
             >
-              <Suspense fallback={<LoadingSpinner />}>
-                {track.map((option) => (
-                  <MenuItem key={option.id} value={option.id}>
-                    {option.name}
-                  </MenuItem>
-                ))}
-              </Suspense>
+              {track.map((option) => (
+                <MenuItem key={option.id} value={option.id}>
+                  {option.name}
+                </MenuItem>
+              ))}
             </TextField>}
         />
         <Controller
