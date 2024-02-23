@@ -150,11 +150,13 @@ export const memoTableCell = (props: DuesDetail) => {
 
   switch (props.status) {
     case 'NOT_PAID':
-      backgroundColor = '#ff5630';
+      backgroundColor = colors.notPaid;
       break;
     case 'SKIP':
+      backgroundColor = colors.success;
+      break;
     case 'PAID':
-      backgroundColor = '#00a76f';
+      backgroundColor = colors.success;
       break;
     default:
       backgroundColor = 'default';
