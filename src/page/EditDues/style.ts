@@ -24,12 +24,19 @@ export const topBarTitle = css`
   margin-left: 16px;
 `;
 
+export const content = css`
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: 100vw;
+`;
+
 export const mainContent = css`
   position: relative;
   display: flex;
   flex-direction: column;
   align-items: center;
-  width: calc(100vw - 250px);
+  width: (100vw - 250px);
   min-height: calc(100vh - 250px);
 `;
 
@@ -143,11 +150,13 @@ export const memoTableCell = (props: DuesDetail) => {
 
   switch (props.status) {
     case 'NOT_PAID':
-      backgroundColor = '#ff5630';
+      backgroundColor = colors.notPaid;
       break;
     case 'SKIP':
+      backgroundColor = colors.success;
+      break;
     case 'PAID':
-      backgroundColor = '#00a76f';
+      backgroundColor = colors.success;
       break;
     default:
       backgroundColor = 'default';
@@ -155,26 +164,37 @@ export const memoTableCell = (props: DuesDetail) => {
   }
 
   return css`
-    cursor: ${props.status === 'NOT_PAID' || props.status === 'SKIP' ? 'pointer' : 'default'};
+    cursor: pointer;
     background-color: ${backgroundColor};
-    text-align: center;
     border-right: 1px solid #e0e0e0;
-    min-width: 38px;;
+    min-width: 38px;
+    text-align: center;
   `;
 };
 
-export const memoPopover = css`
+export const editStatusModalContainer = css`
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 400px;
   display: flex;
   flex-direction: column;
-  justify-content: center;
-  align-items: center;
-  padding: 16px;
-  min-width: 150px;
-  min-height: 70px;
+  gap: 8px;
+  overflow: hidden;
+  background-color: #ffffff;
+  border-radius: 8px;
+  border: 1px solid #e0e0e0;
+  box-shadow: 0 4px 12px rgb(0 0 0 / 0.2);
+  padding: 24px;
+  color: #212121;
 `;
 
-export const memoPopoverText = css`
-  margin-top: 15px;
-  color: #212121;
-  text-align: center;
+export const editStatusModalContent = css`
+  display: flex;
+  flex-direction: column;
+`;
+
+export const memoInput = css`
+  margin-bottom: 10px;
 `;

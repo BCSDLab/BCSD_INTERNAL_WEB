@@ -314,64 +314,58 @@ export default function DuesSetup() {
   };
   return (
     <div css={S.container}>
-      <div css={S.sidebar}>
-        <img src="https://image.bcsdlab.com/banner.png" alt="logo" css={S.logo} />
-        <Button variant="outlined" color="secondary" sx={{ marginTop: '20px' }}>회원정보</Button>
+      <div css={S.topBar}>
+        <h1 css={S.topBarTitle}>
+          {currentYear}
+          년
+          {' '}
+          {prevMonth}
+          월 회비 생성
+        </h1>
       </div>
-      <div css={S.content}>
-        <div css={S.topBar}>
-          <h1 css={S.topBarTitle}>
-            {currentYear}
-            년
-            {' '}
-            {prevMonth}
-            월 회비 생성
-          </h1>
-        </div>
-        <form css={S.mainContent}>
-          <ButtonGroup css={S.buttonGroup}>
-            <label htmlFor="fileUpload">
-              <Button variant="contained" color="primary" css={S.fileUploadButton}>
-                엑셀 파일 업로드
-                <input
-                  type="file"
-                  id="fileUpload"
-                  accept=".xlsx"
-                  css={S.fileUpload}
-                  ref={excelFileRef}
-                  onChange={handleExcelFileChange}
-                />
-              </Button>
-            </label>
-            <Button variant="contained" color="primary" onClick={findDuesMonths}>회비가 적용되는 날짜 찾기</Button>
-            <Button variant="contained" color="primary" disabled={buttonDisabled} onClick={handleCreateDuesClick}>회비 생성</Button>
-          </ButtonGroup>
-          <Table>
-            <TableHead>
-              <TableRow>
-                {tableHead.map((head) => {
-                  return (
-                    <TableCell css={S.tableCell} key={head}>{head}</TableCell>
-                  );
-                })}
-              </TableRow>
-            </TableHead>
-            <TableBody>
-              {tableBody[4].value.map((date, index) => {
+      <form css={S.mainContent}>
+        <ButtonGroup css={S.buttonGroup}>
+          <label htmlFor="fileUpload">
+            <Button variant="contained" color="primary" css={S.fileUploadButton}>
+              엑셀 파일 업로드
+              <input
+                type="file"
+                id="fileUpload"
+                accept=".xlsx"
+                css={S.fileUpload}
+                ref={excelFileRef}
+                onChange={handleExcelFileChange}
+              />
+            </Button>
+          </label>
+          <Button variant="contained" color="primary" onClick={findDuesMonths}>회비가 적용되는 날짜 찾기</Button>
+          <Button variant="contained" color="primary" disabled={buttonDisabled} onClick={handleCreateDuesClick}>회비 생성</Button>
+        </ButtonGroup>
+        <Table>
+          <TableHead>
+            <TableRow>
+              {tableHead.map((head) => {
                 return (
-                  <TableRow key={date}>
-                    {tableBody.map((dues) => {
-                      return (
-                        <TableCell key={dues.value[index]}>{dues.value[index]}</TableCell>
-                      );
-                    })}
-                  </TableRow>
+                  <TableCell css={S.tableCell} key={head}>{head}</TableCell>
                 );
               })}
-            </TableBody>
-          </Table>
-        </form>
-      </div>
+            </TableRow>
+          </TableHead>
+          <TableBody>
+            {tableBody[4].value.map((date, index) => {
+              return (
+                <TableRow key={date}>
+                  {tableBody.map((dues) => {
+                    return (
+                      <TableCell key={dues.value[index]}>{dues.value[index]}</TableCell>
+                    );
+                  })}
+                </TableRow>
+              );
+            })}
+          </TableBody>
+        </Table>
+      </form>
     </div>
   );
 }

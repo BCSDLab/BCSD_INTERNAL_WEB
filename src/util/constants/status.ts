@@ -3,3 +3,9 @@ export const STATUS_MAPPING = {
   SKIP: '-',
   PAID: 'O',
 };
+
+export const STATUS = {
+  NOT_PAID: '미납',
+  SKIP: '면제',
+  PAID: '납부',
+} as const;
