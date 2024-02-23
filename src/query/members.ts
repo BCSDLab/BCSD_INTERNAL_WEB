@@ -113,7 +113,11 @@ export const useLogin = () => {
       openSnackBar({ type: 'success', message: '로그인에 성공했습니다.' });
       navigate('/member');
     },
-    onError: (e) => openSnackBar({ type: 'error', message: e.message }),
+    onError: (e) => {
+      if (e instanceof AxiosError) {
+        openSnackBar({ type: 'error', message: e.response?.data.message });
+      }
+    },
   });
 
   return { mutate, isPending };
