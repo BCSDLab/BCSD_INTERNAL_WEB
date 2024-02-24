@@ -335,25 +335,23 @@ function DefaultTable() {
       <Table>
         <TableHead>
           <TableRow>
-            {tableHead.map((head) => {
-              return (
-                <TableCell css={S.tableCell} key={head}>{head}</TableCell>
-              );
-            })}
+            {tableHead.map((head) => (
+              <TableCell css={S.tableCell} key={head}>{head}</TableCell>
+            ))}
           </TableRow>
         </TableHead>
         <TableBody>
-          {tableBody[4].value.map((date, index) => {
-            return (
-              <TableRow key={date}>
-                {tableBody.map((dues) => {
-                  return (
-                    <TableCell key={dues.value[index]}>{dues.value[index]}</TableCell>
-                  );
-                })}
-              </TableRow>
-            );
-          })}
+          {tableBody[4].value.map((name, index) => (
+            <TableRow key={name}>
+              <TableCell>{tableBody[0].value[index]}</TableCell>
+              <TableCell>{tableBody[1].value[index]}</TableCell>
+              <TableCell>{tableBody[2].value[index]}</TableCell>
+              <TableCell>{tableBody[3].value[index]}</TableCell>
+              <TableCell>{tableBody[4].value[index]}</TableCell>
+              <TableCell>{tableBody[5].value[index]}</TableCell>
+              <TableCell>{tableBody[6].value[index]}</TableCell>
+            </TableRow>
+          ))}
         </TableBody>
       </Table>
     </form>
