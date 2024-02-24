@@ -1,7 +1,7 @@
 import {
   Button, ButtonGroup, Table, TableBody, TableCell, TableHead, TableRow,
 } from '@mui/material';
-import { useRef, useState } from 'react';
+import { Suspense, useRef, useState } from 'react';
 import * as Excel from 'exceljs';
 import { Dues } from 'model/dues/allDues';
 import { useMutation } from '@tanstack/react-query';
@@ -11,6 +11,7 @@ import {
 import { useGetMembers } from 'query/members';
 import { useGetAllDues } from 'query/dues';
 import { useSnackBar } from 'ts/useSnackBar';
+import LoadingSpinner from 'layout/LoadingSpinner';
 import * as S from './style';
 
 interface TableBodyData {
@@ -25,7 +26,7 @@ interface DatesDuesApply {
 // 회비 생성
 // 매월 1일에 회비 생성 (단 한번만 하는 기능임)
 
-export default function DuesSetup() {
+function DefaultTable() {
   const currentYear = new Date().getFullYear();
   const prevMonth = new Date().getMonth();
   const excelFileRef = useRef<HTMLInputElement>(null);
@@ -313,6 +314,56 @@ export default function DuesSetup() {
     updateNullToNotPaid();
   };
   return (
+    <form css={S.mainContent}>
+      <ButtonGroup css={S.buttonGroup}>
+        <label htmlFor="fileUpload">
+          <Button variant="contained" color="primary" css={S.fileUploadButton}>
+            엑셀 파일 업로드
+            <input
+              type="file"
+              id="fileUpload"
+              accept=".xlsx"
+              css={S.fileUpload}
+              ref={excelFileRef}
+              onChange={handleExcelFileChange}
+            />
+          </Button>
+        </label>
+        <Button variant="contained" color="primary" onClick={findDuesMonths}>회비가 적용되는 날짜 찾기</Button>
+        <Button variant="contained" color="primary" disabled={buttonDisabled} onClick={handleCreateDuesClick}>회비 생성</Button>
+      </ButtonGroup>
+      <Table>
+        <TableHead>
+          <TableRow>
+            {tableHead.map((head) => {
+              return (
+                <TableCell css={S.tableCell} key={head}>{head}</TableCell>
+              );
+            })}
+          </TableRow>
+        </TableHead>
+        <TableBody>
+          {tableBody[4].value.map((date, index) => {
+            return (
+              <TableRow key={date}>
+                {tableBody.map((dues) => {
+                  return (
+                    <TableCell key={dues.value[index]}>{dues.value[index]}</TableCell>
+                  );
+                })}
+              </TableRow>
+            );
+          })}
+        </TableBody>
+      </Table>
+    </form>
+  );
+}
+
+export default function DuesSetup() {
+  const currentYear = new Date().getFullYear();
+  const prevMonth = new Date().getMonth();
+  return (
     <div css={S.container}>
       <div css={S.topBar}>
         <h1 css={S.topBarTitle}>
@@ -323,49 +374,9 @@ export default function DuesSetup() {
           월 회비 생성
         </h1>
       </div>
-      <form css={S.mainContent}>
-        <ButtonGroup css={S.buttonGroup}>
-          <label htmlFor="fileUpload">
-            <Button variant="contained" color="primary" css={S.fileUploadButton}>
-              엑셀 파일 업로드
-              <input
-                type="file"
-                id="fileUpload"
-                accept=".xlsx"
-                css={S.fileUpload}
-                ref={excelFileRef}
-                onChange={handleExcelFileChange}
-              />
-            </Button>
-          </label>
-          <Button variant="contained" color="primary" onClick={findDuesMonths}>회비가 적용되는 날짜 찾기</Button>
-          <Button variant="contained" color="primary" disabled={buttonDisabled} onClick={handleCreateDuesClick}>회비 생성</Button>
-        </ButtonGroup>
-        <Table>
-          <TableHead>
-            <TableRow>
-              {tableHead.map((head) => {
-                return (
-                  <TableCell css={S.tableCell} key={head}>{head}</TableCell>
-                );
-              })}
-            </TableRow>
-          </TableHead>
-          <TableBody>
-            {tableBody[4].value.map((date, index) => {
-              return (
-                <TableRow key={date}>
-                  {tableBody.map((dues) => {
-                    return (
-                      <TableCell key={dues.value[index]}>{dues.value[index]}</TableCell>
-                    );
-                  })}
-                </TableRow>
-              );
-            })}
-          </TableBody>
-        </Table>
-      </form>
+      <Suspense fallback={<LoadingSpinner />}>
+        <DefaultTable />
+      </Suspense>
     </div>
   );
 }
