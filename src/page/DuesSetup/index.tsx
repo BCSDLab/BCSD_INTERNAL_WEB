@@ -120,8 +120,8 @@ function DefaultTable() {
         const updatedMonths = unpaidMonthsInPrevYear.slice(0, count);
         prevResult.push(...updatedMonths);
       }
-      // 작년에 미납된 회비가 null일 경우
-      if (prevResult.length < count) {
+      // 작년에 미납된 회비가 null일 경우(현재 월이 1월인 경우에만 적용됨)
+      if (prevResult.length < count && prevMonth === 12) {
         const inAdvanceMonths = Array.from({ length: count - prevResult.length }).map((_, monthIndex) => {
           if (memberId) {
             const prevYearDuesStatus = findStatus(memberId, prevMonth, prevYearDues.dues);
