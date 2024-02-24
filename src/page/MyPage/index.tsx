@@ -38,6 +38,7 @@ export default function MyPage() {
   const { data: tracks } = useGetTracks();
   const { mutate: updateMe } = useUpdateMe();
   const { data: getMe } = useGetMe();
+  const DEFAULT_URL = 'https://image.bcsdlab.com/';
   const DEFAULT_PROFILE = 'https://image.bcsdlab.com/default-profile.png';
   const [imageUrl, setImageUrl] = useState<string>('');
 
@@ -111,7 +112,7 @@ export default function MyPage() {
         updateMe({
           ...member,
           trackId: member.track?.id,
-          profileImageUrl: DEFAULT_PROFILE + imageInfo.presignedUrl.fileName,
+          profileImageUrl: DEFAULT_URL + imageInfo.presignedUrl.fileName,
         });
       } else {
         updateMe({
