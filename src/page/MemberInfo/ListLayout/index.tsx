@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { DataGrid, GridColDef } from '@mui/x-data-grid';
-import { useGetMembers, useGetMembersDeleted } from 'query/members';
+import { useGetMe, useGetMembers, useGetMembersDeleted } from 'query/members';
 import { useTrackStore } from 'store/trackStore';
 import { Button } from '@mui/material';
 import MemberInfoModal from 'component/modal/memberInfoModal';
@@ -16,8 +16,10 @@ export default function ListLayout({ deleteMemberChecked }: ListLayoutProps) {
   const { data: membersDeleted } = useGetMembersDeleted({
     pageIndex: 0, pageSize: 1000, trackId: id,
   });
+  const { data: getMe } = useGetMe();
   const [modalOpen, setModalOpen] = useState(false);
   const [memberInfo, setMemberInfo] = useState<Member | null>(null);
+  const memberAuthority = getMe.authority;
 
   const handleOpenModal = () => {
     setModalOpen(true);
@@ -39,9 +41,10 @@ export default function ListLayout({ deleteMemberChecked }: ListLayoutProps) {
     { field: 'email', headerName: '이메일', width: 220 },
     {
       field: 'update',
-      headerName: '정보수정',
-      width: 100,
+      headerName: memberAuthority === ('ADMIN' || 'MANAGER') ? '정보수정' : '',
+      width: memberAuthority === ('ADMIN' || 'MANAGER') ? 100 : 0,
       renderCell: (data) => (
+        memberAuthority === ('ADMIN' || 'MANAGER') && (
         <Button
           variant="contained"
           color="primary"
@@ -54,6 +57,7 @@ export default function ListLayout({ deleteMemberChecked }: ListLayoutProps) {
         >
           수정
         </Button>
+        )
       ),
     },
   ];
