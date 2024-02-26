@@ -1,5 +1,12 @@
+import * as S from './style';
+
 export default function GridLayout() {
   return (
-    <div>그리드 레이아웃</div>
+    <div css={S.container}>
+      <div css={S.memberTypeContainer}>MENTOR</div>
+      <div css={S.memberTypeContainer}>REGULAR</div>
+      <div css={S.memberTypeContainer}>BEGINNER</div>
+    </div>
+
   );
 }
