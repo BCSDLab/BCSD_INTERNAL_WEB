@@ -48,7 +48,7 @@ export const buttonContainer = css`
   justify-content: flex-end;
   align-items: flex-end;
   margin-top: 10px;
-  gap: 50px;
+  gap: 30px;
 `;
 
 export const layoutButtonContainer = css`
@@ -70,4 +70,15 @@ export const container = css`
 export const logo = css`
   width: 100%;
   margin-top: -10px;
+`;
+
+export const createButtonContainer = css`
+  display: flex;
+  justify-content: flex-end;
+  margin-top: 20px;
+`;
+
+export const createButton = css`
+  width: 130px;
+  height: 65px;
 `;
