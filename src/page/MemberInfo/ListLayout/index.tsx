@@ -30,15 +30,15 @@ export default function ListLayout({ deleteMemberChecked }: ListLayoutProps) {
   };
 
   const columns: GridColDef[] = [
-    { field: 'name', headerName: '이름', width: 100 },
-    { field: 'trackName', headerName: '트랙', width: 130 },
-    { field: 'memberType', headerName: '직책', width: 130 },
+    { field: 'name', headerName: '이름', width: 95 },
+    { field: 'trackName', headerName: '트랙', width: 120 },
+    { field: 'memberType', headerName: '직책', width: 120 },
     { field: 'status', headerName: '상태', width: 100 },
-    { field: 'company', headerName: '소속', width: 160 },
-    { field: 'department', headerName: '학부', width: 130 },
+    { field: 'company', headerName: '소속', width: 170 },
+    { field: 'department', headerName: '학부', width: 140 },
     { field: 'studentNumber', headerName: '학번', width: 130 },
     { field: 'phoneNumber', headerName: '전화번호', width: 150 },
-    { field: 'email', headerName: '이메일', width: 220 },
+    { field: 'email', headerName: '이메일', width: 225 },
     {
       field: 'update',
       headerName: memberAuthority === ('ADMIN' || 'MANAGER') ? '정보수정' : '',

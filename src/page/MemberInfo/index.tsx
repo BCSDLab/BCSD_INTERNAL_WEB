@@ -74,6 +74,18 @@ export default function MemberInfo() {
           <Suspense fallback={<div />}>
             {layout === 'list' ? <ListLayout deleteMemberChecked={deleteMemberChecked} /> : <GridLayout />}
           </Suspense>
+          <div css={S.createButtonContainer}>
+            <div css={S.createButton}>
+              <Button
+                variant="outlined"
+                color="primary"
+                startIcon={<AddIcon />}
+                onClick={handleOpenMemberCreateModal}
+              >
+                회원 생성
+              </Button>
+            </div>
+          </div>
         </div>
         <MemberCreateModal
           open={memberCreateModalOpen}
