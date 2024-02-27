@@ -13,4 +13,4 @@
 
 ### Precautions (main files for this PR ...)
 
-Close #ISSUE_NUMBER
+- Close #ISSUE_NUMBER
