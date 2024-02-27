@@ -7,6 +7,7 @@ import ViewListIcon from '@mui/icons-material/ViewList';
 import ViewModuleIcon from '@mui/icons-material/ViewModule';
 import MemberCreateModal from 'component/modal/memberCreateModal';
 import AddIcon from '@mui/icons-material/Add';
+import { useGetMe } from 'query/members';
 import * as S from './style';
 import ListLayout from './ListLayout';
 import GridLayout from './GridLayout';
@@ -16,6 +17,8 @@ export default function MemberInfo() {
   const [layout, setLayout] = useState('list');
   const [deleteMemberChecked, setDeleteMemberChecked] = useState(false);
   const [memberCreateModalOpen, setMemberCreateModalOpen] = useState(false);
+  const { data: getMe } = useGetMe();
+  const memberAuthority = getMe.authority;
 
   const handleChangedDeleteMember = (event: React.ChangeEvent<HTMLInputElement>) => {
     setDeleteMemberChecked(event.target.checked);
@@ -36,7 +39,17 @@ export default function MemberInfo() {
       </div>
       <div>
         <div css={S.buttonContainer}>
-          <FormControlLabel control={<Switch checked={deleteMemberChecked} onChange={handleChangedDeleteMember} sx={{ marginLeft: 2 }} />} label="탈퇴 회원" />
+          {memberAuthority === ('ADMIN' || 'MANAGER') && (
+          <Button
+            variant="outlined"
+            color="primary"
+            startIcon={<AddIcon />}
+            onClick={handleOpenMemberCreateModal}
+          >
+            생성
+          </Button>
+          )}
+          <FormControlLabel control={<Switch checked={deleteMemberChecked} onChange={handleChangedDeleteMember} />} label="탈퇴 회원" />
           <Suspense fallback={<div />}>
             <TrackFilter />
           </Suspense>
