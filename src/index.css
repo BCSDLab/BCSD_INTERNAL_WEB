@@ -9,6 +9,8 @@
 body {
   min-height: 100vh;
   min-width: 1148px;
+  background-color: #F9FAFB;
+  
 
   @include media.media-breakpoint-down(mobile) {
     min-width: 320px;
