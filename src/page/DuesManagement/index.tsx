@@ -99,6 +99,8 @@ function DefaultTable() {
       setMemoAnchorEl(e.currentTarget);
       if (dueDetail.memo) {
         setDetail(dueDetail);
+      } else {
+        setDetail({ month: dueDetail.month, status: dueDetail.status, memo: '사유 없음' });
       }
     }
   };
@@ -250,8 +252,6 @@ function DefaultTable() {
                       onClick={(e) => handleMemoClick(e, dueDetail)}
                       key={dueDetail.month}
                     >
-                      {/* TODO: detail.status에 따른 UI */}
-                      {/* 미납 X(빨강), 면제 -(초록), 납부 O(초록), null -(default) */}
                       {dueDetail.status !== null ? STATUS_MAPPING[dueDetail.status] : '-'}
                     </TableCell>
                   ))}
