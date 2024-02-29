@@ -54,7 +54,7 @@ export default function GridLayout() {
                 <div css={S.memberWrapper}>
                   <div css={S.imageNameWrapper}>
                     <img css={S.image} src={member.profileImageUrl || defaultImageUrl} alt="profile" />
-                    <div>{member.name}</div>
+                    <div css={S.name}>{member.name}</div>
                   </div>
                   <div>
                     {STATUS_LABEL[member.status]}

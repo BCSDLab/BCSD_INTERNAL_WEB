@@ -22,6 +22,7 @@ export const topBar = css`
   background-color: ${color.gray};
   border-bottom: 1px solid ${color.borderGray};
   box-sizing: border-box;
+  flex-shrink: 0;
 `;
 
 export const topBarTitle = css`

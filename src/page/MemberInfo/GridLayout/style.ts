@@ -15,14 +15,15 @@ export const memberContainer = css`
 `;
 
 export const memberWrapper = css`
-  width: 300px;
-  height: 380px;
+  width: 280px;
+  height: 370px;
   display: flex;
   flex-direction: column;
   justify-content: flex-start;
   align-items: center;
-  padding-top: 20px;
+  padding-top: 10px;
   gap: 15px;
+  font-size: 15px;
 `;
 
 export const imageNameWrapper = css`
@@ -31,10 +32,19 @@ export const imageNameWrapper = css`
   display: flex;
   justify-content: space-around;
   align-items: center;
+  margin-top: 10px;
+  position: relative;
 `;
 
 export const image = css`
   width: 50%;
   height: 100%;
   object-fit: scale-down;
+`;
+
+export const name = css`
+  font-size: 25px;
+  font-weight: bold;
+  color: #000;
+  margin-right: 30px;
 `;
