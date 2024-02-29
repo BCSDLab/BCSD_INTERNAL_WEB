@@ -39,16 +39,6 @@ export default function MemberInfo() {
       </div>
       <div>
         <div css={S.buttonContainer}>
-          {memberAuthority === ('ADMIN' || 'MANAGER') && (
-          <Button
-            variant="outlined"
-            color="primary"
-            startIcon={<AddIcon />}
-            onClick={handleOpenMemberCreateModal}
-          >
-            생성
-          </Button>
-          )}
           <FormControlLabel control={<Switch checked={deleteMemberChecked} onChange={handleChangedDeleteMember} />} label="탈퇴 회원" />
           <Suspense fallback={<div />}>
             <TrackFilter />
