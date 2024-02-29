@@ -1,7 +1,8 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 import {
-  Button, ButtonGroup, Table, TableBody, TableCell, TableHead, TableRow,
+  Button, ButtonGroup, Popover, Table, TableBody, TableCell, TableHead, TableRow,
 } from '@mui/material';
-import { useRef, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import * as Excel from 'exceljs';
 import { Dues } from 'model/dues/allDues';
 import { useMutation } from '@tanstack/react-query';
@@ -11,6 +12,7 @@ import {
 import { useGetMembers } from 'query/members';
 import { useGetAllDues } from 'query/dues';
 import { useSnackBar } from 'ts/useSnackBar';
+import { ArrowDownward, ArrowUpward, Sort } from '@mui/icons-material';
 import * as S from './style';
 
 interface TableBodyData {
@@ -42,6 +44,12 @@ export default function DuesSetup() {
   ]);
   const [datesDuesApply, setDatesDuesApply] = useState<DatesDuesApply[]>([{ year: [], prevYearMonth: [], currentYearMonth: [] }]);
   const [buttonDisabled, setButtonDisabled] = useState(true);
+  const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
+  const isSortPopoverOpen = Boolean(anchorEl);
+
+  const handlePopoverClick = (e: React.MouseEvent<HTMLElement>) => {
+    setAnchorEl(e.currentTarget);
+  };
 
   const { data: members } = useGetMembers({ pageIndex: 0, pageSize: 1000, trackId: null });
   const { data: currentYearDues } = useGetAllDues({ year: currentYear });
@@ -66,6 +74,62 @@ export default function DuesSetup() {
     onError: (error) => openSnackBar({ type: 'error', message: error.message }),
     onSuccess: () => onMutationSuccess(),
   });
+
+  const sortInAscendingOrderByName = () => {
+    const rowData = tableBody[4].value.map((name, index) => {
+      return {
+        name,
+        date: tableBody[0].value[index],
+        category: tableBody[1].value[index],
+        amount: tableBody[2].value[index],
+        balance: tableBody[3].value[index],
+        note: tableBody[5].value[index],
+        month: tableBody[6].value[index],
+      };
+    });
+    rowData.sort((a, b) => a.name.localeCompare(b.name));
+    rowData.forEach((value, index) => {
+      setTableBody((prev) => {
+        const newTableBody = [...prev];
+        newTableBody[0].value[index] = value.date;
+        newTableBody[1].value[index] = value.category;
+        newTableBody[2].value[index] = value.amount;
+        newTableBody[3].value[index] = value.balance;
+        newTableBody[4].value[index] = value.name;
+        newTableBody[5].value[index] = value.note;
+        newTableBody[6].value[index] = value.month;
+        return newTableBody;
+      });
+    });
+  };
+
+  const sortInDescendingOrderByName = () => {
+    const rowData = tableBody[4].value.map((name, index) => {
+      return {
+        name,
+        date: tableBody[0].value[index],
+        category: tableBody[1].value[index],
+        amount: tableBody[2].value[index],
+        balance: tableBody[3].value[index],
+        note: tableBody[5].value[index],
+        month: tableBody[6].value[index],
+      };
+    });
+    rowData.sort((a, b) => b.name.localeCompare(a.name));
+    rowData.forEach((value, index) => {
+      setTableBody((prev) => {
+        const newTableBody = [...prev];
+        newTableBody[0].value[index] = value.date;
+        newTableBody[1].value[index] = value.category;
+        newTableBody[2].value[index] = value.amount;
+        newTableBody[3].value[index] = value.balance;
+        newTableBody[4].value[index] = value.name;
+        newTableBody[5].value[index] = value.note;
+        newTableBody[6].value[index] = value.month;
+        return newTableBody;
+      });
+    });
+  };
 
   const findUnpaidMonth = (dues: Dues[], name: string) => {
     const unpaidPeople = dues.filter((value) => name !== '' && value.name === name && value.unpaidCount > 0);
@@ -312,6 +376,16 @@ export default function DuesSetup() {
     });
     updateNullToNotPaid();
   };
+  const mix = async () => {
+    handleExcelFileChange();
+  };
+
+  useEffect(() => {
+    if (tableBody[4].value.length > 0) {
+      findDuesMonths();
+    }
+  }, [tableBody]);
+
   return (
     <div css={S.container}>
       <div css={S.topBar}>
@@ -334,17 +408,24 @@ export default function DuesSetup() {
                 accept=".xlsx"
                 css={S.fileUpload}
                 ref={excelFileRef}
-                onChange={handleExcelFileChange}
+                onChange={mix}
               />
             </Button>
           </label>
-          <Button variant="contained" color="primary" onClick={findDuesMonths}>회비가 적용되는 날짜 찾기</Button>
           <Button variant="contained" color="primary" disabled={buttonDisabled} onClick={handleCreateDuesClick}>회비 생성</Button>
         </ButtonGroup>
         <Table>
           <TableHead>
             <TableRow>
               {tableHead.map((head) => {
+                if (head === '이름') {
+                  return (
+                    <TableCell css={S.tableNameHeader} key={head}>
+                      {head}
+                      <Button onClick={(e) => handlePopoverClick(e)} disabled={tableBody[0].value.length === 0}><Sort /></Button>
+                    </TableCell>
+                  );
+                }
                 return (
                   <TableCell css={S.tableCell} key={head}>{head}</TableCell>
                 );
@@ -365,6 +446,32 @@ export default function DuesSetup() {
             })}
           </TableBody>
         </Table>
+        <Popover
+          id="simple-popover"
+          open={isSortPopoverOpen}
+          anchorEl={anchorEl}
+          onClose={() => setAnchorEl(null)}
+          anchorOrigin={{
+            vertical: 'bottom',
+            horizontal: 'left',
+          }}
+        >
+          <div css={S.sortPopover}>
+            <h3>
+              이름순 정렬
+            </h3>
+            <div css={S.sortPopoverButtonGroup}>
+              <Button variant="contained" color="primary" onClick={sortInAscendingOrderByName}>
+                <ArrowDownward />
+                오름차순
+              </Button>
+              <Button variant="contained" color="primary" onClick={sortInDescendingOrderByName}>
+                <ArrowUpward />
+                내림차순
+              </Button>
+            </div>
+          </div>
+        </Popover>
       </form>
     </div>
   );
