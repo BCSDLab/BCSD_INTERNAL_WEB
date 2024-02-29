@@ -101,6 +101,7 @@ export default function DuesSetup() {
         return newTableBody;
       });
     });
+    setAnchorEl(null);
   };
 
   const sortInDescendingOrderByName = () => {
@@ -129,6 +130,7 @@ export default function DuesSetup() {
         return newTableBody;
       });
     });
+    setAnchorEl(null);
   };
 
   const findUnpaidMonth = (dues: Dues[], name: string) => {
