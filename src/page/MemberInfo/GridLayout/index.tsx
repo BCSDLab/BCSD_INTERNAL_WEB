@@ -1,4 +1,4 @@
-import { useGetMembers, useGetMembersDeleted } from 'query/members';
+import { useGetMe, useGetMembers, useGetMembersDeleted } from 'query/members';
 import { useTrackStore } from 'store/trackStore';
 import { Member, STATUS_LABEL } from 'model/member';
 import Grid from '@mui/material/Grid';
@@ -30,8 +30,12 @@ export default function GridLayout() {
   const { data: membersDeleted } = useGetMembersDeleted({
     pageIndex: 0, pageSize: 1000, trackId: id,
   });
+  const { data: getMe } = useGetMe();
+
   const handleOpenModal = () => {
-    setModalOpen(true);
+    if (getMe.authority === 'ADMIN' || getMe.authority === 'MANAGER') {
+      setModalOpen(true);
+    }
   };
 
   const handleCloseModal = () => {
