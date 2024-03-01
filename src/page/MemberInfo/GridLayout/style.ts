@@ -12,6 +12,7 @@ export const memberContainer = css`
   align-items: center;
   gap: 10px;
   margin: 10px 10px 0 10px;
+  border-radius: 10px;
 `;
 
 export const memberWrapper = css`
