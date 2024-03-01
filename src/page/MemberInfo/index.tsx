@@ -65,16 +65,18 @@ export default function MemberInfo() {
             {layout === 'list' ? <ListLayout deleteMemberChecked={deleteMemberChecked} /> : <GridLayout />}
           </Suspense>
           <div css={S.createButtonContainer}>
-            <div css={S.createButton}>
-              <Button
-                variant="outlined"
-                color="primary"
-                startIcon={<AddIcon />}
-                onClick={handleOpenMemberCreateModal}
-              >
-                회원 생성
-              </Button>
-            </div>
+            {memberAuthority === 'ADMIN' || memberAuthority === 'MANAGER' ? (
+              <div css={S.createButton}>
+                <Button
+                  variant="outlined"
+                  color="primary"
+                  startIcon={<AddIcon />}
+                  onClick={handleOpenMemberCreateModal}
+                >
+                  회원 생성
+                </Button>
+              </div>
+            ) : <div />}
           </div>
         </div>
         <MemberCreateModal
