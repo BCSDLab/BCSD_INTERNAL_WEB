@@ -93,14 +93,47 @@ export default function GridLayout({ deleteMemberChecked }: ListLayoutProps) {
                       <div css={S.name}>{member.name}</div>
                     </div>
                     <div>
+                      <div css={S.memberInfoLabel}>
+                        상태
+                      </div>
                       {STATUS_LABEL[member.status as keyof typeof STATUS_LABEL]}
                     </div>
-                    <div>{member.memberType}</div>
-                    <div>{member.studentNumber}</div>
-                    <div>{member.company}</div>
-                    <div>{member.department}</div>
-                    <div>{member.phoneNumber}</div>
-                    <div>{member.email}</div>
+                    <div>
+                      <div css={S.memberInfoLabel}>
+                        직책
+                      </div>
+                      {member.memberType}
+                    </div>
+                    <div>
+                      <div css={S.memberInfoLabel}>
+                        학번
+                      </div>
+                      {member.studentNumber}
+                    </div>
+                    <div>
+                      <div css={S.memberInfoLabel}>
+                        소속
+                      </div>
+                      {member.company}
+                    </div>
+                    <div>
+                      <div css={S.memberInfoLabel}>
+                        학부
+                      </div>
+                      {member.department}
+                    </div>
+                    <div>
+                      <div css={S.memberInfoLabel}>
+                        전화번호
+                      </div>
+                      {member.phoneNumber}
+                    </div>
+                    <div>
+                      <div css={S.memberInfoLabel}>
+                        이메일
+                      </div>
+                      {member.email}
+                    </div>
                   </div>
                 </Item>
               </Grid>

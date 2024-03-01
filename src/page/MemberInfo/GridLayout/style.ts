@@ -1,4 +1,5 @@
-import { css } from '@emotion/react';
+import { css, keyframes } from '@emotion/react';
+import styled from '@emotion/styled';
 
 export const container = css`
   display: flex;
@@ -16,12 +17,13 @@ export const memberContainer = css`
 
 export const memberWrapper = css`
   width: 280px;
-  height: 370px;
+  height: 100%;
   display: flex;
   flex-direction: column;
   justify-content: flex-start;
-  align-items: center;
+  align-items: flex-start;
   padding-top: 10px;
+  padding-bottom: 10px;
   gap: 15px;
   font-size: 15px;
 `;
@@ -47,4 +49,12 @@ export const name = css`
   font-weight: bold;
   color: #000;
   margin-right: 30px;
+`;
+
+export const memberInfoLabel = css`
+  font-weight: bold;
+  display: inline-block;
+  justify-content: flex-start;
+  width: 60px;
+  margin-right: 10px;
 `;
