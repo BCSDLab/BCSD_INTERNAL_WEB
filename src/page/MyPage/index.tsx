@@ -8,6 +8,7 @@ import { useGetMe, useUpdateMe } from 'query/members';
 import { FileResponse, getPresignedUrl } from 'api/image';
 import CloudUploadIcon from '@mui/icons-material/CloudUpload';
 import axios from 'axios';
+import { useForm } from 'react-hook-form';
 import * as S from './style';
 
 const MEMBER_TYPE_LABEL = {
@@ -39,7 +40,9 @@ export default function MyPage() {
   const { mutate: updateMe } = useUpdateMe();
   const { data: getMe } = useGetMe();
   const DEFAULT_URL = 'https://image.bcsdlab.com/';
-  const [imageUrl, setImageUrl] = useState<string>('');
+  const DEFAULT_PROFILE = 'https://image.bcsdlab.com/default-profile.png';
+  const { watch, setValue } = useForm();
+  const imageUrl = watch('profileImage');
 
   interface FileInfo {
     file: File;
@@ -50,9 +53,10 @@ export default function MyPage() {
     () => {
       if (getMe) {
         setMember(getMe);
+        setValue('profileImage', getMe.profileImageUrl || DEFAULT_PROFILE);
       }
     },
-    [getMe],
+    [getMe, setValue],
   );
 
   const formatPhoneNumber = (input: string) => {
@@ -92,7 +96,7 @@ export default function MyPage() {
       });
 
       setImageInfo({ file, presignedUrl: presigned });
-      setImageUrl(URL.createObjectURL(file));
+      setValue('profileImage', URL.createObjectURL(file));
     }
   };
 
@@ -281,8 +285,8 @@ export default function MyPage() {
               />
               <div css={S.imageContainer}>
                 <img
-                  css={S.image}
-                  src={imageUrl || member?.profileImageUrl}
+                  css={S.profileImage}
+                  src={imageUrl}
                   alt="profileImage"
                 />
                 <div css={S.buttonWrapper}>
@@ -310,7 +314,6 @@ export default function MyPage() {
                 </div>
               </div>
             </div>
-
           </Box>
         </Box>
       </div>
