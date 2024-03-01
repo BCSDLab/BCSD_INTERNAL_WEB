@@ -15,6 +15,7 @@ interface MemberInfoModalProps {
   open: boolean;
   onClose: () => void;
   member: Member | null;
+  isList: boolean;
 }
 
 const MEMBER_TYPE_LABEL = {
@@ -59,19 +60,25 @@ interface FileInfo {
   file: File;
   presignedUrl: FileResponse;
 }
-export default function MemberInfoModal({ open, onClose, member: initialMember }: MemberInfoModalProps): React.ReactElement {
+export default function MemberInfoModal({
+  open, onClose, member: initialMember, isList,
+}: MemberInfoModalProps): React.ReactElement {
   const [member, setMember] = useState<Member | null>(initialMember);
   const { mutate: updateMember } = useUpdateMember();
   const { mutate: deleteMember } = useDeleteMember();
   const { data: tracks } = useGetTracks();
   const [imageInfo, setImageInfo] = useState<FileInfo>();
 
-  useEffect(
-    () => {
+  useEffect(() => {
+    if (isList) {
       setMember(initialMember);
-    },
-    [initialMember],
-  );
+    } else if (initialMember) {
+      setMember({
+        ...initialMember,
+        status: STATUS_LABEL[initialMember.status as keyof typeof STATUS_LABEL],
+      });
+    }
+  }, [initialMember, isList]);
 
   const formatPhoneNumber = (input: string) => {
     const numbers = input.replace(/[^\d]/g, '');

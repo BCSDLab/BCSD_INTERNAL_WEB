@@ -61,7 +61,7 @@ export default function GridLayout() {
                     <div css={S.name}>{member.name}</div>
                   </div>
                   <div>
-                    {STATUS_LABEL[member.status]}
+                    {STATUS_LABEL[member.status as keyof typeof STATUS_LABEL]}
                   </div>
                   <div>{member.memberType}</div>
                   <div>{member.studentNumber}</div>
@@ -79,6 +79,7 @@ export default function GridLayout() {
         open={modalOpen}
         onClose={handleCloseModal}
         member={memberInfo}
+        isList={false}
       />
     </div>
 
