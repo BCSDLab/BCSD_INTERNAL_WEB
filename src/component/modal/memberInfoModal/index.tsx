@@ -8,6 +8,7 @@ import { useEffect, useState } from 'react';
 import { useUpdateMember, useDeleteMember } from 'query/members';
 import { useGetTracks } from 'query/tracks';
 import { FileResponse, getPresignedUrl } from 'api/image';
+import CloudUploadIcon from '@mui/icons-material/CloudUpload';
 import axios from 'axios';
 import * as S from './style';
 
@@ -302,6 +303,7 @@ export default function MemberInfoModal({
               component="label"
               fullWidth
               variant="outlined"
+              startIcon={<CloudUploadIcon />}
               sx={{ height: '60px', marginTop: '15px', padding: '0px' }}
             >
               프로필 이미지
