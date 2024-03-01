@@ -62,7 +62,7 @@ export default function MemberInfo() {
         </div>
         <div css={S.viewContent}>
           <Suspense fallback={<div />}>
-            {layout === 'list' ? <ListLayout deleteMemberChecked={deleteMemberChecked} /> : <GridLayout />}
+            {layout === 'list' ? <ListLayout deleteMemberChecked={deleteMemberChecked} /> : <GridLayout deleteMemberChecked={deleteMemberChecked} />}
           </Suspense>
           <div css={S.createButtonContainer}>
             {memberAuthority === 'ADMIN' || memberAuthority === 'MANAGER' ? (

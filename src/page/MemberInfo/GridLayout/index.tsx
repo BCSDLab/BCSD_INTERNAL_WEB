@@ -21,7 +21,11 @@ const Item = styled(Paper)(({ theme }) => ({
 
 const STATUS_LIST = ['ATTEND', 'OFF', 'IPP', 'ARMY', 'COMPLETION', 'GRADUATE'] as const;
 
-export default function GridLayout() {
+interface ListLayoutProps {
+  deleteMemberChecked: boolean;
+}
+
+export default function GridLayout({ deleteMemberChecked }: ListLayoutProps) {
   const defaultImageUrl = 'https://image.bcsdlab.com/default-profile.png';
   const { id } = useTrackStore();
   const { data: members } = useGetMembers({ pageIndex: 0, pageSize: 1000, trackId: id });
@@ -46,33 +50,61 @@ export default function GridLayout() {
     <div css={S.container}>
       <div css={S.memberContainer}>
         <Grid container spacing={3}>
-          {members?.content.map((member: Member) => (
-            <Grid item xs={3} key={member.id}>
-              <Item
-                css={S.memberContainer}
-                onClick={() => {
-                  setMemberInfo(member);
-                  handleOpenModal();
-                }}
-              >
-                <div css={S.memberWrapper}>
-                  <div css={S.imageNameWrapper}>
-                    <img css={S.image} src={member.profileImageUrl || defaultImageUrl} alt="profile" />
-                    <div css={S.name}>{member.name}</div>
+          { deleteMemberChecked
+            ? membersDeleted?.content.map((member: Member) => (
+              <Grid item xs={3} key={member.id}>
+                <Item
+                  css={S.memberContainer}
+                  onClick={() => {
+                    setMemberInfo(member);
+                    handleOpenModal();
+                  }}
+                >
+                  <div css={S.memberWrapper}>
+                    <div css={S.imageNameWrapper}>
+                      <img css={S.image} src={member.profileImageUrl || defaultImageUrl} alt="profile" />
+                      <div css={S.name}>{member.name}</div>
+                    </div>
+                    <div>
+                      {STATUS_LABEL[member.status as keyof typeof STATUS_LABEL]}
+                    </div>
+                    <div>{member.memberType}</div>
+                    <div>{member.studentNumber}</div>
+                    <div>{member.company}</div>
+                    <div>{member.department}</div>
+                    <div>{member.phoneNumber}</div>
+                    <div>{member.email}</div>
                   </div>
-                  <div>
-                    {STATUS_LABEL[member.status as keyof typeof STATUS_LABEL]}
+                </Item>
+              </Grid>
+            ))
+            : members?.content.map((member: Member) => (
+              <Grid item xs={3} key={member.id}>
+                <Item
+                  css={S.memberContainer}
+                  onClick={() => {
+                    setMemberInfo(member);
+                    handleOpenModal();
+                  }}
+                >
+                  <div css={S.memberWrapper}>
+                    <div css={S.imageNameWrapper}>
+                      <img css={S.image} src={member.profileImageUrl || defaultImageUrl} alt="profile" />
+                      <div css={S.name}>{member.name}</div>
+                    </div>
+                    <div>
+                      {STATUS_LABEL[member.status as keyof typeof STATUS_LABEL]}
+                    </div>
+                    <div>{member.memberType}</div>
+                    <div>{member.studentNumber}</div>
+                    <div>{member.company}</div>
+                    <div>{member.department}</div>
+                    <div>{member.phoneNumber}</div>
+                    <div>{member.email}</div>
                   </div>
-                  <div>{member.memberType}</div>
-                  <div>{member.studentNumber}</div>
-                  <div>{member.company}</div>
-                  <div>{member.department}</div>
-                  <div>{member.phoneNumber}</div>
-                  <div>{member.email}</div>
-                </div>
-              </Item>
-            </Grid>
-          ))}
+                </Item>
+              </Grid>
+            ))}
         </Grid>
       </div>
       <MemberInfoModal
