@@ -72,12 +72,13 @@ export default function MemberInfoModal({
   useEffect(() => {
     if (isList) {
       setMember(initialMember);
-    } else if (initialMember) {
-      setMember({
-        ...initialMember,
-        status: STATUS_LABEL[initialMember.status as keyof typeof STATUS_LABEL],
-      });
-    }
+    } else
+      if (initialMember) {
+        setMember({
+          ...initialMember,
+          status: STATUS_LABEL[initialMember.status as keyof typeof STATUS_LABEL],
+        });
+      }
   }, [initialMember, isList]);
 
   const formatPhoneNumber = (input: string) => {
