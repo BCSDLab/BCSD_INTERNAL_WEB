@@ -137,6 +137,13 @@ export default function GridLayout({ deleteMemberChecked }: ListLayoutProps) {
                     </div>
                     <div>
                       <div css={S.memberInfoLabel}>
+                        트랙
+                      </div>
+                      {member.track.name}
+                    </div>
+
+                    <div>
+                      <div css={S.memberInfoLabel}>
                         학번
                       </div>
                       {member.studentNumber}

@@ -30,11 +30,10 @@ export const memberWrapper = css`
 
 export const imageNameWrapper = css`
   width: 100%;
-  height: 100px;
+  height: 120px;
   display: flex;
   justify-content: space-around;
   align-items: center;
-  margin-top: 10px;
   position: relative;
 `;
 
