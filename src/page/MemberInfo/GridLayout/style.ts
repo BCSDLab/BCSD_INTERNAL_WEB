@@ -1,5 +1,4 @@
-import { css, keyframes } from '@emotion/react';
-import styled from '@emotion/styled';
+import { css } from '@emotion/react';
 
 export const container = css`
   display: flex;

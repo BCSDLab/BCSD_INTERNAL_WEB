@@ -19,8 +19,6 @@ const Item = styled(Paper)(({ theme }) => ({
   },
 }));
 
-const STATUS_LIST = ['ATTEND', 'OFF', 'IPP', 'ARMY', 'COMPLETION', 'GRADUATE'] as const;
-
 interface ListLayoutProps {
   deleteMemberChecked: boolean;
 }
