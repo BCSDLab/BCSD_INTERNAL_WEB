@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { DataGrid, GridColDef } from '@mui/x-data-grid';
-import { useGetMembers, useGetMembersDeleted } from 'query/members';
+import { useGetMe, useGetMembers, useGetMembersDeleted } from 'query/members';
 import { useTrackStore } from 'store/trackStore';
 import { Button } from '@mui/material';
 import MemberInfoModal from 'component/modal/memberInfoModal';
@@ -16,8 +16,10 @@ export default function ListLayout({ deleteMemberChecked }: ListLayoutProps) {
   const { data: membersDeleted } = useGetMembersDeleted({
     pageIndex: 0, pageSize: 1000, trackId: id,
   });
+  const { data: getMe } = useGetMe();
   const [modalOpen, setModalOpen] = useState(false);
   const [memberInfo, setMemberInfo] = useState<Member | null>(null);
+  const memberAuthority = getMe.authority;
 
   const handleOpenModal = () => {
     setModalOpen(true);
@@ -28,20 +30,21 @@ export default function ListLayout({ deleteMemberChecked }: ListLayoutProps) {
   };
 
   const columns: GridColDef[] = [
-    { field: 'name', headerName: '이름', width: 100 },
-    { field: 'trackName', headerName: '트랙', width: 130 },
-    { field: 'memberType', headerName: '직책', width: 130 },
+    { field: 'name', headerName: '이름', width: 95 },
+    { field: 'trackName', headerName: '트랙', width: 120 },
+    { field: 'memberType', headerName: '직책', width: 120 },
     { field: 'status', headerName: '상태', width: 100 },
-    { field: 'company', headerName: '소속', width: 160 },
-    { field: 'department', headerName: '학부', width: 130 },
+    { field: 'company', headerName: '소속', width: 170 },
+    { field: 'department', headerName: '학부', width: 140 },
     { field: 'studentNumber', headerName: '학번', width: 130 },
     { field: 'phoneNumber', headerName: '전화번호', width: 150 },
-    { field: 'email', headerName: '이메일', width: 220 },
+    { field: 'email', headerName: '이메일', width: 225 },
     {
       field: 'update',
-      headerName: '정보수정',
-      width: 100,
+      headerName: memberAuthority === ('ADMIN' || 'MANAGER') ? '정보수정' : '',
+      width: memberAuthority === ('ADMIN' || 'MANAGER') ? 100 : 0,
       renderCell: (data) => (
+        memberAuthority === ('ADMIN' || 'MANAGER') && (
         <Button
           variant="contained"
           color="primary"
@@ -54,6 +57,7 @@ export default function ListLayout({ deleteMemberChecked }: ListLayoutProps) {
         >
           수정
         </Button>
+        )
       ),
     },
   ];
