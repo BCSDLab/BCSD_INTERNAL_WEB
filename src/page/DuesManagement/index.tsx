@@ -29,6 +29,7 @@ function DefaultTable() {
   const navigate = useNavigate();
   const page = useQueryParam('page', 'number') as number | null;
   const currentYear = new Date().getFullYear();
+  const lastDuesYear = 2021;
   const [duesYear, setDuesYear] = useState(page ? currentYear - page + 1 : currentYear);
   const [trackFilter, setTrackFilter] = useState([true, true, true, true, true, true]);
   const [name, setName] = useState('');
@@ -127,7 +128,7 @@ function DefaultTable() {
     <>
       <div css={S.searchAndPagination}>
         <div css={S.pagination}>
-          <Button onClick={goToPrevYear} disabled={duesYear === 2021}>
+          <Button onClick={goToPrevYear} disabled={duesYear === lastDuesYear}>
             <ArrowBackIosNewOutlined />
           </Button>
           <span css={S.paginationTitle}>{duesYear}</span>
