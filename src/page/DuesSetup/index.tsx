@@ -1,16 +1,17 @@
 import {
   Button, ButtonGroup, Table, TableBody, TableCell, TableHead, TableRow,
 } from '@mui/material';
-import { useRef, useState } from 'react';
+import { Suspense, useRef, useState } from 'react';
 import * as Excel from 'exceljs';
 import { Dues } from 'model/dues/allDues';
 import { useMutation } from '@tanstack/react-query';
 import {
   NewDuesData, postDues, putDues,
 } from 'api/Dues';
-import { useGetMembers } from 'query/members';
+import { useGetMe, useGetMembers } from 'query/members';
 import { useGetAllDues } from 'query/dues';
 import { useSnackBar } from 'ts/useSnackBar';
+import LoadingSpinner from 'layout/LoadingSpinner';
 import * as S from './style';
 
 interface TableBodyData {
@@ -18,14 +19,14 @@ interface TableBodyData {
 }
 
 interface DatesDuesApply {
-  year: number[];
   prevYearMonth: number[];
   currentYearMonth: number[];
+  nextYearMonth: number[];
 }
 // 회비 생성
 // 매월 1일에 회비 생성 (단 한번만 하는 기능임)
 
-export default function DuesSetup() {
+function DefaultTable() {
   const currentYear = new Date().getFullYear();
   const prevMonth = new Date().getMonth();
   const excelFileRef = useRef<HTMLInputElement>(null);
@@ -40,29 +41,42 @@ export default function DuesSetup() {
     { value: [] },
     { value: [] },
   ]);
-  const [datesDuesApply, setDatesDuesApply] = useState<DatesDuesApply[]>([{ year: [], prevYearMonth: [], currentYearMonth: [] }]);
+  const [datesDuesApply, setDatesDuesApply] = useState<DatesDuesApply[]>([{ prevYearMonth: [], currentYearMonth: [], nextYearMonth: [] }]);
   const [buttonDisabled, setButtonDisabled] = useState(true);
 
   const { data: members } = useGetMembers({ pageIndex: 0, pageSize: 1000, trackId: null });
+  const { data: me } = useGetMe();
   const { data: currentYearDues } = useGetAllDues({ year: currentYear });
   const { data: prevYearDues } = useGetAllDues({ year: currentYear - 1 });
+  const { data: nextYearDues } = useGetAllDues({ year: currentYear + 1 });
 
   const openSnackBar = useSnackBar();
 
   const onMutationSuccess = () => {
-    openSnackBar({ type: 'success', message: '회비 생성이 완료되었습니다.' });
+    openSnackBar({ type: 'success', message: '회비가 생성되었습니다.' });
     setButtonDisabled(true);
   };
 
   const postDuesMutation = useMutation({
     mutationKey: ['postDues'],
-    mutationFn: (data: NewDuesData) => postDues(data),
+    mutationFn: (data: NewDuesData) => {
+      if (me.authority === 'ADMIN') {
+        return postDues(data);
+      }
+      throw new Error('권한이 없습니다.');
+    },
     onError: (error) => openSnackBar({ type: 'error', message: error.message }),
+    onSuccess: () => onMutationSuccess(),
   });
 
   const putDuesMutation = useMutation({
     mutationKey: ['putDues'],
-    mutationFn: (data: NewDuesData) => putDues(data),
+    mutationFn: (data: NewDuesData) => {
+      if (me.authority === 'ADMIN') {
+        return putDues(data);
+      }
+      throw new Error('권한이 없습니다.');
+    },
     onError: (error) => openSnackBar({ type: 'error', message: error.message }),
     onSuccess: () => onMutationSuccess(),
   });
@@ -109,6 +123,7 @@ export default function DuesSetup() {
     tableBody[4].value.forEach((name, index) => {
       const prevResult: number[] = [];
       const currentResult: number[] = [];
+      const nextResult: number[] = [];
       const memberId = findMemberId(name, index);
       const transactionAmount = Number(tableBody[2].value[index].replace(/,/g, ''));
       const count = transactionAmount / 10000;
@@ -119,8 +134,8 @@ export default function DuesSetup() {
         const updatedMonths = unpaidMonthsInPrevYear.slice(0, count);
         prevResult.push(...updatedMonths);
       }
-      // 작년에 미납된 회비가 null일 경우
-      if (prevResult.length < count) {
+      // 작년에 미납된 회비가 null일 경우(현재 월이 1월인 경우에만 적용됨)
+      if (prevResult.length < count && prevMonth === 12) {
         const inAdvanceMonths = Array.from({ length: count - prevResult.length }).map((_, monthIndex) => {
           if (memberId) {
             const prevYearDuesStatus = findStatus(memberId, prevMonth, prevYearDues.dues);
@@ -144,37 +159,50 @@ export default function DuesSetup() {
       if (currentResult.length < count) {
         const inAdvanceMonths = Array.from({ length: count - prevResult.length - currentResult.length }).map((_, monthIndex) => {
           if (memberId) {
-            // 반복해서 null인 값을 찾아야 함 (month를 더해가면서 하면 되지 않을까?)
+            // 반복해서 null인 값을 찾아야 함
             const nullStatusMonths = findNullStatusMonth(memberId, currentYearDues.dues);
             return nullStatusMonths[monthIndex];
           }
           return null;
         });
-        currentResult.push(...inAdvanceMonths.filter((value): value is number => value !== null));
+        currentResult.push(...inAdvanceMonths.filter((value): value is number => value !== null && value !== undefined));
       }
-      const monthCountArray = [prevResult.length, currentResult.length];
-      setTableBody((prev) => {
-        const newTableBody = [...prev];
-        if (monthCountArray[0] > 0 && monthCountArray[1] > 0) {
-          newTableBody[6].value[index] = `${currentYear - 1}년 ${prevResult.join('월, ')}월 /${currentYear}년 ${currentResult.join(',월 ')}월`;
-        } else if (monthCountArray[1] > 0) {
-          newTableBody[6].value[index] = `${currentYear}년 ${currentResult.join('월, ')}월`;
-        } else if (monthCountArray[0] > 0) {
-          newTableBody[6].value[index] = `${currentYear - 1}년 ${prevResult.join('월, ')}월`;
-        }
-        return newTableBody;
-      });
-      setDatesDuesApply((prev) => {
-        const newDatesDuesApply = [...prev];
-        if (monthCountArray[0] > 0 && monthCountArray[1] > 0) {
-          newDatesDuesApply[index] = { year: [currentYear, currentYear - 1], prevYearMonth: prevResult, currentYearMonth: currentResult };
-        } else if (monthCountArray[0] > 0) {
-          newDatesDuesApply[index] = { year: [currentYear - 1], prevYearMonth: prevResult, currentYearMonth: [] };
-        } else if (monthCountArray[1] > 0) {
-          newDatesDuesApply[index] = { year: [currentYear], prevYearMonth: [], currentYearMonth: currentResult };
-        }
-        return newDatesDuesApply;
-      });
+
+      // 다음 해에 미리 납부할 회비가 있을 경우
+      if (currentResult.length < count) {
+        const inAdvanceMonths = Array.from({ length: count - prevResult.length - currentResult.length }).map((_, monthIndex) => {
+          if (memberId) {
+            const nullStatusMonths = findNullStatusMonth(memberId, nextYearDues.dues);
+            return nullStatusMonths[monthIndex];
+          }
+          return null;
+        });
+        nextResult.push(...inAdvanceMonths.filter((value): value is number => value !== null));
+      }
+      const yearInfo: string[] = [];
+
+      if (prevResult.length > 0) {
+        yearInfo.push(`${currentYear - 1}년 ${prevResult.join('월, ')}월`);
+      }
+      if (currentResult.length > 0) {
+        yearInfo.push(`${currentYear}년 ${currentResult.join('월, ')}월`);
+      }
+      if (nextResult.length > 0) {
+        yearInfo.push(`${currentYear + 1}년 ${nextResult.join('월, ')}월`);
+      }
+
+      if (yearInfo.length > 0) {
+        setTableBody((prev) => {
+          const newTableBody = [...prev];
+          newTableBody[6].value[index] = yearInfo.join(' / ');
+          return newTableBody;
+        });
+        setDatesDuesApply((prev) => {
+          const newDatesDuesApply = [...prev];
+          newDatesDuesApply[index] = { prevYearMonth: prevResult, currentYearMonth: currentResult, nextYearMonth: nextResult };
+          return newDatesDuesApply;
+        });
+      }
     });
   };
 
@@ -256,7 +284,7 @@ export default function DuesSetup() {
       const waiverMembersData: NewDuesData[] = waiverMember.map((value) => {
         return {
           memberId: value.id,
-          year: currentYear,
+          year: prevMonth === 12 ? currentYear - 1 : currentYear,
           month: prevMonth,
           status: 'SKIP',
         };
@@ -267,27 +295,26 @@ export default function DuesSetup() {
         if (currentYearDues.dues.find((value) => value.memberId === memberId)?.detail[prevMonth - 1].status === null) {
           postDuesMutation.mutate(data);
         }
-        if (prevMonth === 12 && prevYearDues.dues.find((value) => value.memberId === memberId)?.detail[prevMonth - 1].status === null) {
-          const prevYearData = { ...data, year: currentYear - 1 };
-          postDuesMutation.mutate(prevYearData);
-        }
       });
     }
   };
 
   // status가 null인 prevMonth를 찾아서 NOT_PAID로 변경 (POST /dues)
+  // 오직 regular user만 적용
   const updateNullToNotPaid = () => {
     const memberIds = members?.content.map((value) => value.id);
     memberIds?.forEach((memberId) => {
-      const prevMonthStatus = findStatus(memberId, prevMonth, prevMonth === 12 ? prevYearDues.dues : currentYearDues.dues);
-      if (prevMonthStatus === null) {
-        const data: NewDuesData = {
-          memberId,
-          year: prevMonth === 12 ? currentYear - 1 : currentYear,
-          month: prevMonth,
-          status: 'NOT_PAID',
-        };
-        postDuesMutation.mutate(data);
+      if (members?.content.find((value) => value.id === memberId)?.memberType === 'REGULAR') {
+        const prevMonthStatus = findStatus(memberId, prevMonth, prevMonth === 12 ? prevYearDues.dues : currentYearDues.dues);
+        if (prevMonthStatus === null) {
+          const data: NewDuesData = {
+            memberId,
+            year: prevMonth === 12 ? currentYear - 1 : currentYear,
+            month: prevMonth,
+            status: 'NOT_PAID',
+          };
+          postDuesMutation.mutate(data);
+        }
       }
     });
   };
@@ -296,22 +323,71 @@ export default function DuesSetup() {
     applyForDuesWaiver();
     tableBody[4].value.forEach((name, index) => {
       const memberId = findMemberId(name, index);
-      const unpaidYear = datesDuesApply[index]?.year;
       const prevYearDuesApplyMonth = datesDuesApply[index]?.prevYearMonth;
       const currentYearDuesApplyMonth = datesDuesApply[index]?.currentYearMonth;
-      if (memberId && unpaidYear.length === 2) {
-        updateUnpaidtoPaid(memberId, currentYear - 1, prevYearDuesApplyMonth, prevYearDues.dues);
-        updateUnpaidtoPaid(memberId, currentYear, currentYearDuesApplyMonth, currentYearDues.dues);
-      } else if (memberId && unpaidYear.length === 1) {
-        if (unpaidYear[0] === currentYear) {
-          updateUnpaidtoPaid(memberId, currentYear, currentYearDuesApplyMonth, currentYearDues.dues);
-        } else {
+      const nextYearDuesApplyMonth = datesDuesApply[index]?.nextYearMonth;
+      if (memberId) {
+        if (prevYearDuesApplyMonth) {
           updateUnpaidtoPaid(memberId, currentYear - 1, prevYearDuesApplyMonth, prevYearDues.dues);
+        }
+        if (currentYearDuesApplyMonth) {
+          updateUnpaidtoPaid(memberId, currentYear, currentYearDuesApplyMonth, currentYearDues.dues);
+        }
+        if (nextYearDuesApplyMonth) {
+          updateUnpaidtoPaid(memberId, currentYear + 1, nextYearDuesApplyMonth, nextYearDues.dues);
         }
       }
     });
     updateNullToNotPaid();
   };
+  return (
+    <form css={S.mainContent}>
+      <ButtonGroup css={S.buttonGroup}>
+        <label htmlFor="fileUpload">
+          <Button variant="contained" color="primary" css={S.fileUploadButton}>
+            엑셀 파일 업로드
+            <input
+              type="file"
+              id="fileUpload"
+              accept=".xlsx"
+              css={S.fileUpload}
+              ref={excelFileRef}
+              onChange={handleExcelFileChange}
+            />
+          </Button>
+        </label>
+        <Button variant="contained" color="primary" onClick={findDuesMonths}>회비가 적용되는 날짜 찾기</Button>
+        <Button variant="contained" color="primary" disabled={buttonDisabled} onClick={handleCreateDuesClick}>회비 생성</Button>
+      </ButtonGroup>
+      <Table>
+        <TableHead>
+          <TableRow>
+            {tableHead.map((head) => (
+              <TableCell css={S.tableCell(head)} key={head}>{head}</TableCell>
+            ))}
+          </TableRow>
+        </TableHead>
+        <TableBody>
+          {tableBody[4].value.map((name, index) => (
+            <TableRow key={name}>
+              <TableCell>{tableBody[0].value[index]}</TableCell>
+              <TableCell>{tableBody[1].value[index]}</TableCell>
+              <TableCell>{tableBody[2].value[index]}</TableCell>
+              <TableCell>{tableBody[3].value[index]}</TableCell>
+              <TableCell>{tableBody[4].value[index]}</TableCell>
+              <TableCell>{tableBody[5].value[index]}</TableCell>
+              <TableCell>{tableBody[6].value[index]}</TableCell>
+            </TableRow>
+          ))}
+        </TableBody>
+      </Table>
+    </form>
+  );
+}
+
+export default function DuesSetup() {
+  const currentYear = new Date().getFullYear();
+  const prevMonth = new Date().getMonth();
   return (
     <div css={S.container}>
       <div css={S.topBar}>
@@ -323,49 +399,9 @@ export default function DuesSetup() {
           월 회비 생성
         </h1>
       </div>
-      <form css={S.mainContent}>
-        <ButtonGroup css={S.buttonGroup}>
-          <label htmlFor="fileUpload">
-            <Button variant="contained" color="primary" css={S.fileUploadButton}>
-              엑셀 파일 업로드
-              <input
-                type="file"
-                id="fileUpload"
-                accept=".xlsx"
-                css={S.fileUpload}
-                ref={excelFileRef}
-                onChange={handleExcelFileChange}
-              />
-            </Button>
-          </label>
-          <Button variant="contained" color="primary" onClick={findDuesMonths}>회비가 적용되는 날짜 찾기</Button>
-          <Button variant="contained" color="primary" disabled={buttonDisabled} onClick={handleCreateDuesClick}>회비 생성</Button>
-        </ButtonGroup>
-        <Table>
-          <TableHead>
-            <TableRow>
-              {tableHead.map((head) => {
-                return (
-                  <TableCell css={S.tableCell} key={head}>{head}</TableCell>
-                );
-              })}
-            </TableRow>
-          </TableHead>
-          <TableBody>
-            {tableBody[4].value.map((date, index) => {
-              return (
-                <TableRow key={date}>
-                  {tableBody.map((dues) => {
-                    return (
-                      <TableCell key={dues.value[index]}>{dues.value[index]}</TableCell>
-                    );
-                  })}
-                </TableRow>
-              );
-            })}
-          </TableBody>
-        </Table>
-      </form>
+      <Suspense fallback={<LoadingSpinner />}>
+        <DefaultTable />
+      </Suspense>
     </div>
   );
 }
