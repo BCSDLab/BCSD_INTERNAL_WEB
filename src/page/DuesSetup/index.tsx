@@ -24,6 +24,8 @@ interface DatesDuesApply {
   prevYearMonth: number[];
   currentYearMonth: number[];
 }
+
+type Column = 'date' | 'category' | 'amount' | 'balance' | 'name' | 'note' | 'month';
 // 회비 생성
 // 매월 1일에 회비 생성 (단 한번만 하는 기능임)
 
@@ -75,29 +77,30 @@ export default function DuesSetup() {
     onSuccess: () => onMutationSuccess(),
   });
 
+  const columns: Column[] = ['date', 'category', 'amount', 'balance', 'name', 'note', 'month'];
   const sortInAscendingOrderByName = () => {
-    const rowData = tableBody[4].value.map((name, index) => {
-      return {
-        name,
-        date: tableBody[0].value[index],
-        category: tableBody[1].value[index],
-        amount: tableBody[2].value[index],
-        balance: tableBody[3].value[index],
-        note: tableBody[5].value[index],
-        month: tableBody[6].value[index],
+    const rowData = tableBody[4].value.map((_, index) => {
+      const newRowData: Record<Column, string> = {
+        date: '',
+        category: '',
+        amount: '',
+        balance: '',
+        name: '',
+        note: '',
+        month: '',
       };
+      columns.forEach((col, colIndex) => {
+        newRowData[col] = tableBody[colIndex].value[index];
+      });
+      return newRowData;
     });
     rowData.sort((a, b) => a.name.localeCompare(b.name));
     rowData.forEach((value, index) => {
       setTableBody((prev) => {
         const newTableBody = [...prev];
-        newTableBody[0].value[index] = value.date;
-        newTableBody[1].value[index] = value.category;
-        newTableBody[2].value[index] = value.amount;
-        newTableBody[3].value[index] = value.balance;
-        newTableBody[4].value[index] = value.name;
-        newTableBody[5].value[index] = value.note;
-        newTableBody[6].value[index] = value.month;
+        columns.forEach((col, colIndex) => {
+          newTableBody[colIndex].value[index] = value[col];
+        });
         return newTableBody;
       });
     });
@@ -105,28 +108,28 @@ export default function DuesSetup() {
   };
 
   const sortInDescendingOrderByName = () => {
-    const rowData = tableBody[4].value.map((name, index) => {
-      return {
-        name,
-        date: tableBody[0].value[index],
-        category: tableBody[1].value[index],
-        amount: tableBody[2].value[index],
-        balance: tableBody[3].value[index],
-        note: tableBody[5].value[index],
-        month: tableBody[6].value[index],
+    const rowData = tableBody[4].value.map((_, index) => {
+      const newRowData: Record<Column, string> = {
+        date: '',
+        category: '',
+        amount: '',
+        balance: '',
+        name: '',
+        note: '',
+        month: '',
       };
+      columns.forEach((col, colIndex) => {
+        newRowData[col] = tableBody[colIndex].value[index];
+      });
+      return newRowData;
     });
     rowData.sort((a, b) => b.name.localeCompare(a.name));
     rowData.forEach((value, index) => {
       setTableBody((prev) => {
         const newTableBody = [...prev];
-        newTableBody[0].value[index] = value.date;
-        newTableBody[1].value[index] = value.category;
-        newTableBody[2].value[index] = value.amount;
-        newTableBody[3].value[index] = value.balance;
-        newTableBody[4].value[index] = value.name;
-        newTableBody[5].value[index] = value.note;
-        newTableBody[6].value[index] = value.month;
+        columns.forEach((col, colIndex) => {
+          newTableBody[colIndex].value[index] = value[col];
+        });
         return newTableBody;
       });
     });
