@@ -69,13 +69,13 @@ export default function ListLayout({ deleteMemberChecked }: ListLayoutProps) {
             deleteMemberChecked
               ? membersDeleted.content.map((member) => ({
                 ...member,
-                status: STATUS_LABEL[member.status],
+                status: STATUS_LABEL[member.status as keyof typeof STATUS_LABEL],
                 trackName: member.track.name,
                 track: member.track,
               }))
               : members.content.map((member) => ({
                 ...member,
-                status: STATUS_LABEL[member.status],
+                status: STATUS_LABEL[member.status as keyof typeof STATUS_LABEL],
                 trackName: member.track.name,
                 track: member.track,
               }))
@@ -93,6 +93,7 @@ export default function ListLayout({ deleteMemberChecked }: ListLayoutProps) {
         open={modalOpen}
         onClose={handleCloseModal}
         member={memberInfo}
+        isList={true}
       />
     </div>
   );
