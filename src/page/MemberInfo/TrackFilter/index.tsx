@@ -27,7 +27,7 @@ export default function TrackFilter() {
           <ToggleButton
             key={track.id}
             value={track.name}
-            sx={{ width: '100px' }}
+            sx={{ width: '90px' }}
             onClick={() => setTrack(track.id, track.name)}
           >
             {track.name}

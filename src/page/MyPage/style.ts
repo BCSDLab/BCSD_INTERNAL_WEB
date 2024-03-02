@@ -66,8 +66,9 @@ export const imageContainer = css`
   justify-content: space-between;
 `;
 
-export const image = css`
+export const profileImage = css`
   width: 150px;
   height: 150px;
   border: 1px solid ${colors.borderGray};
+  padding: 10px;
 `;
