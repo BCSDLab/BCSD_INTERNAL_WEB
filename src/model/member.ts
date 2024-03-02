@@ -2,7 +2,7 @@ import { Track } from './track';
 
 export type StatusType = 'ATTEND' | 'OFF' | 'IPP' | 'ARMY' | 'COMPLETION' | 'GRADUATE';
 export type StatusLabel = '재학' | '휴학' | '현장실습' | '군 휴학' | '수료' | '졸업';
-export type Status = 'ATTEND' | 'OFF' | 'IPP' | 'ARMY' | 'COMPLETION' | 'GRADUATE' | '재학' | '휴학' | '현장실습' | '군 휴학' | '수료' | '졸업';
+export type Status = StatusType | StatusLabel;
 export type MemberType = 'BEGINNER' | 'REGULAR' | 'MENTOR';
 
 export const STATUS_LABEL = {
