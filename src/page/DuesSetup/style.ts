@@ -27,21 +27,27 @@ export const topBarTitle = css`
   margin-left: 16px;
 `;
 
-export const tableCell = css`
-  width: 100px;
-`;
+export const tableCell = (header: string) => {
+  if (header === '비고' || header === '구분' || header === '이름' || header === '거래 금액') {
+    return css`
+      width: 60px;
+    `;
+  }
+  return css`
+    width: 100px;
+  `;
+};
 
 export const tableNameHeader = css`
   width: 100px;
 `;
 
 export const mainContent = css`
-  position: relative;
   display: flex;
   flex-direction: column;
   align-items: center;
-  width: calc(100vw - 250px);
-  min-height: calc(100vh - 250px);
+  width: calc(100vw - 270px);
+  min-height: calc(100vh - 120px);
 `;
 
 export const buttonGroup = css`
