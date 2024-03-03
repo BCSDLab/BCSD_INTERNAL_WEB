@@ -11,7 +11,7 @@ import MyPage from 'page/MyPage';
 import DuesSetup from 'page/DuesSetup';
 import EditDues from 'page/EditDues';
 import LoadingSpinner from 'layout/LoadingSpinner';
-import Track from 'page/Track';
+import TrackInfo from 'page/Track';
 
 function App() {
   return (
@@ -62,7 +62,7 @@ function App() {
             path="/track"
             element={(
               <Suspense fallback={<LoadingSpinner />}>
-                <Track />
+                <TrackInfo />
               </Suspense>
             )}
           />
