@@ -15,7 +15,7 @@ import {
 import { useGetAllDues } from 'query/dues';
 import useBooleanState from 'util/hooks/useBooleanState.ts';
 import { DuesDetail } from 'model/dues/allDues';
-import { STATUS, STATUS_MAPPING } from 'util/constants/status';
+import { LAST_DUES_YEAR, STATUS, STATUS_MAPPING } from 'util/constants/status';
 import { useGetTracks } from 'query/tracks';
 import LoadingSpinner from 'layout/LoadingSpinner';
 import {
@@ -29,7 +29,6 @@ function DefaultTable() {
   const navigate = useNavigate();
   const page = useQueryParam('page', 'number') as number | null;
   const currentYear = new Date().getFullYear();
-  const lastDuesYear = 2021;
   const [duesYear, setDuesYear] = useState(page ? currentYear - page + 1 : currentYear);
   const [trackFilter, setTrackFilter] = useState([true, true, true, true, true, true]);
   const [name, setName] = useState('');
@@ -128,7 +127,8 @@ function DefaultTable() {
     <>
       <div css={S.searchAndPagination}>
         <div css={S.pagination}>
-          <Button onClick={goToPrevYear} disabled={duesYear === lastDuesYear}>
+          {/* 회비 데이터의 마지막 연도는 2021년 입니다. */}
+          <Button onClick={goToPrevYear} disabled={duesYear === LAST_DUES_YEAR}>
             <ArrowBackIosNewOutlined />
           </Button>
           <span css={S.paginationTitle}>{duesYear}</span>

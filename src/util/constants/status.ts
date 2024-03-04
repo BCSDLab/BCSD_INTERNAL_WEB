@@ -9,3 +9,5 @@ export const STATUS = {
   SKIP: '면제',
   PAID: '납부',
 } as const;
+
+export const LAST_DUES_YEAR = 2021;
