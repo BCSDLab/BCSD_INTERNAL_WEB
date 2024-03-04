@@ -1,6 +1,8 @@
 import { Track } from './track';
 
 export type StatusType = 'ATTEND' | 'OFF' | 'IPP' | 'ARMY' | 'COMPLETION' | 'GRADUATE';
+export type StatusLabel = '재학' | '휴학' | '현장실습' | '군 휴학' | '수료' | '졸업';
+export type Status = StatusType | StatusLabel;
 export type MemberType = 'BEGINNER' | 'REGULAR' | 'MENTOR';
 
 export const STATUS_LABEL = {
@@ -24,7 +26,7 @@ export interface Member {
   joinedMonth: number;
   track: Track;
   memberType: MemberType;
-  status: StatusType;
+  status: Status;
   name: string;
   company: string;
   department: string;
@@ -45,7 +47,7 @@ export interface AdminMemberUpdate {
   joinedMonth: number;
   trackId: number;
   memberType: MemberType;
-  status: StatusType;
+  status: Status;
   name: string;
   company: string;
   department: string;
@@ -63,7 +65,7 @@ export interface MemberUpdate {
   joinedMonth: number;
   trackId: number;
   memberType: MemberType;
-  status: StatusType;
+  status: Status;
   name: string;
   company: string;
   department: string;

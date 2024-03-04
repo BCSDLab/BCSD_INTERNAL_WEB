@@ -8,6 +8,7 @@ import { useEffect, useState } from 'react';
 import { useUpdateMember, useDeleteMember } from 'query/members';
 import { useGetTracks } from 'query/tracks';
 import { FileResponse, getPresignedUrl } from 'api/image';
+import CloudUploadIcon from '@mui/icons-material/CloudUpload';
 import axios from 'axios';
 import * as S from './style';
 
@@ -15,6 +16,7 @@ interface MemberInfoModalProps {
   open: boolean;
   onClose: () => void;
   member: Member | null;
+  isList: boolean;
 }
 
 const MEMBER_TYPE_LABEL = {
@@ -59,19 +61,26 @@ interface FileInfo {
   file: File;
   presignedUrl: FileResponse;
 }
-export default function MemberInfoModal({ open, onClose, member: initialMember }: MemberInfoModalProps): React.ReactElement {
+export default function MemberInfoModal({
+  open, onClose, member: initialMember, isList,
+}: MemberInfoModalProps): React.ReactElement {
   const [member, setMember] = useState<Member | null>(initialMember);
   const { mutate: updateMember } = useUpdateMember();
   const { mutate: deleteMember } = useDeleteMember();
   const { data: tracks } = useGetTracks();
   const [imageInfo, setImageInfo] = useState<FileInfo>();
 
-  useEffect(
-    () => {
+  useEffect(() => {
+    if (isList) {
       setMember(initialMember);
-    },
-    [initialMember],
-  );
+    } else
+      if (initialMember) {
+        setMember({
+          ...initialMember,
+          status: STATUS_LABEL[initialMember.status as keyof typeof STATUS_LABEL],
+        });
+      }
+  }, [initialMember, isList]);
 
   const formatPhoneNumber = (input: string) => {
     const numbers = input.replace(/[^\d]/g, '');
@@ -294,6 +303,7 @@ export default function MemberInfoModal({ open, onClose, member: initialMember }
               component="label"
               fullWidth
               variant="outlined"
+              startIcon={<CloudUploadIcon />}
               sx={{ height: '60px', marginTop: '15px', padding: '0px' }}
             >
               프로필 이미지
