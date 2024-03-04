@@ -38,6 +38,10 @@ export const tableCell = (header: string) => {
   `;
 };
 
+export const tableNameHeader = css`
+  width: 100px;
+`;
+
 export const mainContent = css`
   display: flex;
   flex-direction: column;
@@ -85,4 +89,20 @@ export const modalContainer = css`
 export const modalContent = css`
   display: flex;
   flex-direction: column;
+`;
+
+export const sortPopover = css`
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  padding: 16px;
+  min-width: 150px;
+  min-height: 70px;
+`;
+
+export const sortPopoverButtonGroup = css`
+  margin-top: 8px;
+  display: flex;
+  gap: 8px;
 `;

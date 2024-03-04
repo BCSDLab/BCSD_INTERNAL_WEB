@@ -15,10 +15,12 @@ import {
 import { useGetAllDues } from 'query/dues';
 import useBooleanState from 'util/hooks/useBooleanState.ts';
 import { DuesDetail } from 'model/dues/allDues';
-import { STATUS, STATUS_MAPPING } from 'util/constants/status';
+import { LAST_DUES_YEAR, STATUS, STATUS_MAPPING } from 'util/constants/status';
 import { useGetTracks } from 'query/tracks';
 import LoadingSpinner from 'layout/LoadingSpinner';
-import { ArrowBackIosNewOutlined, ArrowForwardIosOutlined } from '@mui/icons-material';
+import {
+  ArrowBackIosNewOutlined, ArrowDownward, ArrowForwardIosOutlined, ArrowUpward, Sort,
+} from '@mui/icons-material';
 import useQueryParam from 'util/hooks/useQueryParam';
 import makeNumberArray from 'util/hooks/makeNumberArray';
 import * as S from './style';
@@ -31,8 +33,9 @@ function DefaultTable() {
   const [trackFilter, setTrackFilter] = useState([true, true, true, true, true, true]);
   const [name, setName] = useState('');
   const [detail, setDetail] = useState<DuesDetail>({ month: 0, status: null });
-  const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
-  const memoPopOverOpen = Boolean(anchorEl);
+  const [memoAnchorEl, setMemoAnchorEl] = useState<null | HTMLElement>(null);
+  const [sortAnchorEl, setSortAnchorEl] = useState<null | HTMLElement>(null);
+  const memoPopOverOpen = Boolean(memoAnchorEl);
   const {
     value: isFilterModalOpen,
     setTrue: openFilterModal,
@@ -81,11 +84,23 @@ function DefaultTable() {
     });
   };
 
+  const sortInAscendingOrderByName = () => {
+    setFilteredValue((prevValue) => prevValue.sort((a, b) => a.name.localeCompare(b.name)));
+    setSortAnchorEl(null);
+  };
+
+  const sortInDescendingOrderByName = () => {
+    setFilteredValue((prevValue) => prevValue.sort((a, b) => b.name.localeCompare(a.name)));
+    setSortAnchorEl(null);
+  };
+
   const handleMemoClick = (e: React.MouseEvent<HTMLTableCellElement>, dueDetail: DuesDetail) => {
     if (dueDetail.status === 'NOT_PAID' || dueDetail.status === 'SKIP') {
-      setAnchorEl(e.currentTarget);
+      setMemoAnchorEl(e.currentTarget);
       if (dueDetail.memo) {
         setDetail(dueDetail);
+      } else {
+        setDetail({ month: dueDetail.month, status: dueDetail.status, memo: '사유 없음' });
       }
     }
   };
@@ -112,11 +127,12 @@ function DefaultTable() {
     <>
       <div css={S.searchAndPagination}>
         <div css={S.pagination}>
-          <Button onClick={goToPrevYear}>
+          {/* 회비 데이터의 마지막 연도는 2021년 입니다. */}
+          <Button onClick={goToPrevYear} disabled={duesYear === LAST_DUES_YEAR}>
             <ArrowBackIosNewOutlined />
           </Button>
           <span css={S.paginationTitle}>{duesYear}</span>
-          <Button onClick={goToNextYear}>
+          <Button onClick={goToNextYear} disabled={duesYear === currentYear}>
             <ArrowForwardIosOutlined />
           </Button>
         </div>
@@ -139,13 +155,13 @@ function DefaultTable() {
                 <TableCell css={S.tableHeader}>
                   <div css={S.trackTableCell}>
                     <span>트랙</span>
-                    <button
+                    <Button
                       type="button"
                       onClick={openFilterModal}
                       css={S.filterModalButton}
                     >
-                      필터
-                    </button>
+                      <Sort css={S.sortLogo} />
+                    </Button>
                     <Modal
                       open={isFilterModalOpen}
                       onClose={closeFilterModal}
@@ -177,7 +193,44 @@ function DefaultTable() {
                   </div>
                 </TableCell>
                 <TableCell css={S.tableHeader}>미납 횟수</TableCell>
-                <TableCell css={S.tableHeader}>이름</TableCell>
+                <TableCell css={S.tableHeader}>
+                  <div css={S.nameTableCell}>
+                    <span>이름</span>
+                    <Button
+                      type="button"
+                      onClick={(e) => setSortAnchorEl(e.currentTarget)}
+                      css={S.filterModalButton}
+                    >
+                      <Sort css={S.sortLogo} />
+                    </Button>
+                    <Popover
+                      id="simple-popover"
+                      open={Boolean(sortAnchorEl)}
+                      anchorEl={sortAnchorEl}
+                      onClose={() => setSortAnchorEl(null)}
+                      anchorOrigin={{
+                        vertical: 'bottom',
+                        horizontal: 'left',
+                      }}
+                    >
+                      <div css={S.sortPopover}>
+                        <h3>
+                          이름순 정렬
+                        </h3>
+                        <div css={S.sortPopoverButtonGroup}>
+                          <Button variant="contained" color="primary" onClick={sortInAscendingOrderByName}>
+                            <ArrowDownward />
+                            오름차순
+                          </Button>
+                          <Button variant="contained" color="primary" onClick={sortInDescendingOrderByName}>
+                            <ArrowUpward />
+                            내림차순
+                          </Button>
+                        </div>
+                      </div>
+                    </Popover>
+                  </div>
+                </TableCell>
                 {makeNumberArray(12, { start: 1 }).map((month) => (
                   <TableCell key={month} css={S.tableHeader}>
                     {month}
@@ -200,8 +253,6 @@ function DefaultTable() {
                       onClick={(e) => handleMemoClick(e, dueDetail)}
                       key={dueDetail.month}
                     >
-                      {/* TODO: detail.status에 따른 UI */}
-                      {/* 미납 X(빨강), 면제 -(초록), 납부 O(초록), null -(default) */}
                       {dueDetail.status !== null ? STATUS_MAPPING[dueDetail.status] : '-'}
                     </TableCell>
                   ))}
@@ -210,8 +261,8 @@ function DefaultTable() {
               <Popover
                 id="simple-popover"
                 open={memoPopOverOpen}
-                anchorEl={anchorEl}
-                onClose={() => setAnchorEl(null)}
+                anchorEl={memoAnchorEl}
+                onClose={() => setMemoAnchorEl(null)}
                 anchorOrigin={{
                   vertical: 'bottom',
                   horizontal: 'left',

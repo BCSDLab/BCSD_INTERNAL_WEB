@@ -6,7 +6,7 @@ import TableContainer from '@mui/material/TableContainer';
 import TableHead from '@mui/material/TableHead';
 import TableRow from '@mui/material/TableRow';
 import {
-  Button, Checkbox, FormControl, FormControlLabel, FormGroup, FormLabel, Input, Radio, RadioGroup,
+  Button, Checkbox, FormControl, FormControlLabel, FormGroup, FormLabel, Input, Popover, Radio, RadioGroup,
 } from '@mui/material';
 import Modal from '@mui/material/Modal';
 import {
@@ -17,7 +17,9 @@ import useBooleanState from 'util/hooks/useBooleanState.ts';
 import { STATUS_MAPPING } from 'util/constants/status';
 import { useGetTracks } from 'query/tracks';
 import LoadingSpinner from 'layout/LoadingSpinner';
-import { ArrowBackIosNewOutlined, ArrowForwardIosOutlined } from '@mui/icons-material';
+import {
+  ArrowBackIosNewOutlined, ArrowDownward, ArrowForwardIosOutlined, ArrowUpward, Sort,
+} from '@mui/icons-material';
 import useQueryParam from 'util/hooks/useQueryParam';
 import { useSnackBar } from 'ts/useSnackBar';
 import makeNumberArray from 'util/hooks/makeNumberArray';
@@ -51,6 +53,7 @@ function DefaultTable() {
     memo: '',
   });
   const [status, setStatus] = useState<Status>('PAID');
+  const [sortAnchorEl, setSortAnchorEl] = useState<null | HTMLElement>(null);
 
   const openSnackBar = useSnackBar();
 
@@ -164,15 +167,29 @@ function DefaultTable() {
       navigate(`/edit-dues?page=${page - 1}`);
     }
   };
+
+  const sortInAscendingOrderByName = () => {
+    setFilteredValue((prev) => {
+      return prev.sort((a, b) => a.name.localeCompare(b.name));
+    });
+    setSortAnchorEl(null);
+  };
+
+  const sortInDescendingOrderByName = () => {
+    setFilteredValue((prev) => {
+      return prev.sort((a, b) => b.name.localeCompare(a.name));
+    });
+    setSortAnchorEl(null);
+  };
   return (
     <>
       <div css={S.searchAndPagination}>
         <div css={S.pagination}>
-          <Button onClick={goToPrevYear}>
+          <Button onClick={goToPrevYear} disabled={duesYear === 2021}>
             <ArrowBackIosNewOutlined />
           </Button>
           <span css={S.paginationTitle}>{duesYear}</span>
-          <Button onClick={goToNextYear}>
+          <Button onClick={goToNextYear} disabled={duesYear === currentYear}>
             <ArrowForwardIosOutlined />
           </Button>
         </div>
@@ -195,13 +212,13 @@ function DefaultTable() {
                 <TableCell css={S.tableHeader}>
                   <div css={S.trackTableCell}>
                     <span>트랙</span>
-                    <button
+                    <Button
                       type="button"
                       onClick={openFilterModal}
                       css={S.filterModalButton}
                     >
-                      필터
-                    </button>
+                      <Sort css={S.sortLogo} />
+                    </Button>
                     <Modal
                       open={isFilterModalOpen}
                       onClose={closeFilterModal}
@@ -231,7 +248,44 @@ function DefaultTable() {
                   </div>
                 </TableCell>
                 <TableCell css={S.tableHeader}>미납 횟수</TableCell>
-                <TableCell css={S.tableHeader}>이름</TableCell>
+                <TableCell css={S.tableHeader}>
+                  <div css={S.nameTableCell}>
+                    <span>이름</span>
+                    <Button
+                      type="button"
+                      onClick={(e) => setSortAnchorEl(e.currentTarget)}
+                      css={S.filterModalButton}
+                    >
+                      <Sort css={S.sortLogo} />
+                    </Button>
+                    <Popover
+                      id="simple-popover"
+                      open={Boolean(sortAnchorEl)}
+                      anchorEl={sortAnchorEl}
+                      onClose={() => setSortAnchorEl(null)}
+                      anchorOrigin={{
+                        vertical: 'bottom',
+                        horizontal: 'left',
+                      }}
+                    >
+                      <div css={S.sortPopover}>
+                        <h3>
+                          이름순 정렬
+                        </h3>
+                        <div css={S.sortPopoverButtonGroup}>
+                          <Button variant="contained" color="primary" onClick={sortInAscendingOrderByName}>
+                            <ArrowDownward />
+                            오름차순
+                          </Button>
+                          <Button variant="contained" color="primary" onClick={sortInDescendingOrderByName}>
+                            <ArrowUpward />
+                            내림차순
+                          </Button>
+                        </div>
+                      </div>
+                    </Popover>
+                  </div>
+                </TableCell>
                 {makeNumberArray(12, { start: 1 }).map((month) => (
                   <TableCell key={month} css={S.tableHeader}>
                     {month}
