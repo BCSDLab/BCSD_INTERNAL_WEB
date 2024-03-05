@@ -10,6 +10,7 @@ import Backdrop from '@mui/material/Backdrop';
 import CircularProgress from '@mui/material/CircularProgress';
 import { useState } from 'react';
 import Snackbar from '@mui/material/Snackbar';
+import { formatPhoneNumber } from 'ts/common';
 
 /* eslint-disable  */
 import { accessClient } from 'api/index.ts';
@@ -59,8 +60,8 @@ const member = [
 ] as const;
 
 type Member = {
-  joinedYear: number,
-  joinedMonth: number,
+  joinedYear: number | null,
+  joinedMonth: number | null,
   trackId: number,
   memberType: string,
   status: string,
@@ -76,8 +77,8 @@ type Member = {
 };
 
 const initialValue = {
-  joinedYear: new Date().getFullYear(),
-  joinedMonth: new Date().getMonth(),
+  joinedYear: null,
+  joinedMonth: null,
   trackId: 1,
   memberType: '',
   status: '',
@@ -113,11 +114,12 @@ const regist = async (
 }
 
 export default function SignUp() {
-  const { control, handleSubmit, formState: { errors }, getValues, clearErrors, setError } = useForm<Member>({
+  const { control, handleSubmit, formState: { errors }, getValues, clearErrors, setError, setValue } = useForm<Member>({
     mode: 'onChange',
     defaultValues: initialValue,
   });
   const { data: track } = useGetTracks();
+
   const openSnackBar = useSnackBar();
 
   // 비밀번호 체크는 member 타입에 존재하지 않아서 useState로 관리
@@ -127,6 +129,9 @@ export default function SignUp() {
 
   const navigate = useNavigate();
 
+  const handlePhoneNumber = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setValue('phoneNumber', formatPhoneNumber(e.target.value))
+  }
   const { isPending, mutate: signUp } = useMutation({
     mutationKey: ['signup'],
     mutationFn: (data: Member) =>
@@ -294,8 +299,8 @@ export default function SignUp() {
               variant="outlined"
               fullWidth
               {...field}
+              onChange={handlePhoneNumber}
               error={!!errors.phoneNumber}
-              helperText={errors.phoneNumber ? errors.phoneNumber.message : 'ex) 010-1234-5678'}
             />
           }
         />
