@@ -15,7 +15,7 @@ import Snackbar from '@mui/material/Snackbar';
 import { accessClient } from 'api/index.ts';
 import * as S from './styles.ts';
 import { useGetTracks } from 'query/tracks.ts';
-import { SnackBarParam, useSnackBar } from 'ts/useSnackBar.tsx';
+import { useSnackBar } from 'ts/useSnackBar.tsx';
 import { AxiosError } from 'axios';
 import { useNavigate } from 'react-router-dom';
 
@@ -105,17 +105,11 @@ export interface AxiosErrorMessage {
 
 const regist = async (
   user: Member,
-  getValues: UseFormGetValues<Member>,
-  openSnackBar: ({ type, message }: SnackBarParam) => void) => {
+  getValues: UseFormGetValues<Member>) => {
   const hash = SHA256(getValues('password')).toString();
-  try {
-    await register({ ...user, password: hash });
-  }
-  catch (e) {
-    const err = e as AxiosError;
-    const { message } = (err.response?.data as AxiosErrorMessage);
-    openSnackBar({ type: 'error', message: message })
-  }
+  console.log(user)
+  await register({ ...user, password: hash });
+
 }
 
 export default function SignUp() {
@@ -136,12 +130,14 @@ export default function SignUp() {
   const { isPending, mutate: signUp } = useMutation({
     mutationKey: ['signup'],
     mutationFn: (data: Member) =>
-      regist(data, getValues, openSnackBar),
+      regist(data, getValues),
     onSuccess: () => {
       openSnackBar({ type: 'success', message: '회원가입에 성공했습니다.' })
       navigate('/login')
     },
-    onError: (e) => openSnackBar({ type: 'error', message: e.message })
+    onError: (e) => {
+      if (e instanceof AxiosError) openSnackBar({ type: 'error', message: e.response?.data.message })
+    }
   });
 
   return (
