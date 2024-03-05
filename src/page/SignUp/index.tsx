@@ -199,28 +199,6 @@ export default function SignUp() {
       </div>
       <div css={S.inputSet}>
         <Controller
-          name='memberType'
-          control={control}
-          rules={{
-            required: true,
-          }}
-          render={({ field }) =>
-            <TextField
-              select
-              label="멤버"
-              variant="outlined"
-              fullWidth
-              {...field}
-              error={!!errors.memberType}
-            >
-              {member.map((option) => (
-                <MenuItem key={option.value} value={option.value}>
-                  {option.value}
-                </MenuItem>
-              ))}
-            </TextField>}
-        />
-        <Controller
           control={control}
           name='joinedYear'
           rules={{
@@ -233,6 +211,22 @@ export default function SignUp() {
               fullWidth
               {...field}
               error={!!errors.joinedYear}
+            />
+          }
+        />
+        <Controller
+          control={control}
+          name='joinedMonth'
+          rules={{
+            required: true,
+          }}
+          render={({ field }) =>
+            <TextField
+              label='가입월'
+              variant='outlined'
+              fullWidth
+              {...field}
+              error={!!errors.joinedMonth}
             />
           }
         />
@@ -304,6 +298,28 @@ export default function SignUp() {
               helperText={errors.phoneNumber ? errors.phoneNumber.message : 'ex) 010-1234-5678'}
             />
           }
+        />
+        <Controller
+          name='memberType'
+          control={control}
+          rules={{
+            required: true,
+          }}
+          render={({ field }) =>
+            <TextField
+              select
+              label="멤버"
+              variant="outlined"
+              fullWidth
+              {...field}
+              error={!!errors.memberType}
+            >
+              {member.map((option) => (
+                <MenuItem key={option.value} value={option.value}>
+                  {option.value}
+                </MenuItem>
+              ))}
+            </TextField>}
         />
       </div>
       <div css={S.inputSet}>
