@@ -25,7 +25,7 @@ import {
 import useQueryParam from 'util/hooks/useQueryParam';
 import { useSnackBar } from 'ts/useSnackBar';
 import makeNumberArray from 'util/hooks/makeNumberArray';
-import { NewDuesData } from 'api/Dueses';
+import { NewDuesData } from 'api/dues';
 import * as S from './style';
 
 type Status = 'PAID' | 'NOT_PAID' | 'SKIP' | 'NONE';

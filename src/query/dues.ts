@@ -2,7 +2,7 @@ import { useMutation, useSuspenseQuery } from '@tanstack/react-query';
 import {
   DeleteDuesProps,
   DuesOptions, NewDuesData, deleteDues, getAllDues, postDues, putDues,
-} from 'api/Dueses';
+} from 'api/dues';
 import { DuesInfo } from 'model/dues/allDues';
 import { useSnackBar } from 'ts/useSnackBar';
 
