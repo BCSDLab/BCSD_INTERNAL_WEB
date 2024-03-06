@@ -33,7 +33,7 @@ export const createMember = (member: MemberCreate) => {
 
 export const login = (studentNumber: string, password: string) => accessClient.post<LoginResponse>('/members/login', { studentNumber, password });
 
-export const getNotAuthedMembers = () => accessClient.get<MemberResponse>('/members?authed=false');
+export const getNotAuthedMembers = () => accessClient.get<MemberResponse>('/members?authed=false&size=1000&page=0');
 
 export const getMe = () => accessClient.get<Member>('/members/me');
 
