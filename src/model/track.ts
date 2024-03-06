@@ -4,7 +4,7 @@ import { Member } from './member';
 export interface Track {
   id: number;
   name: string;
-  leader: Member;
+  leader?: Member;
 }
 
 export interface TrackUpdate {
