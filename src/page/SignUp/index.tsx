@@ -8,18 +8,15 @@ import { SHA256 } from 'crypto-js';
 import { useMutation } from '@tanstack/react-query';
 import Backdrop from '@mui/material/Backdrop';
 import CircularProgress from '@mui/material/CircularProgress';
-import { DatePicker } from '@mui/x-date-pickers/DatePicker';
-import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
-import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
-import dayjs, { Dayjs } from 'dayjs';
 import { useState } from 'react';
 import Snackbar from '@mui/material/Snackbar';
+import { formatPhoneNumber } from 'ts/common';
 
 /* eslint-disable  */
 import { accessClient } from 'api/index.ts';
 import * as S from './styles.ts';
 import { useGetTracks } from 'query/tracks.ts';
-import { SnackBarParam, useSnackBar } from 'ts/useSnackBar.tsx';
+import { useSnackBar } from 'ts/useSnackBar.tsx';
 import { AxiosError } from 'axios';
 import { useNavigate } from 'react-router-dom';
 
@@ -79,9 +76,15 @@ type Member = {
   profileImageUrl: string | null
 };
 
+
+// 가입 연도와 가입 월의 초기 값으로 현재 날짜 입력
+const date = new Date();
+const currentMonth = date.getMonth() + 1;
+const currentYear = date.getFullYear(); // 월은 0부터 시작하기 때문에 1 더하기
+
 const initialValue = {
-  joinedYear: new Date().getFullYear(),
-  joinedMonth: new Date().getMonth(),
+  joinedYear: currentYear,
+  joinedMonth: currentMonth,
   trackId: 1,
   memberType: '',
   status: '',
@@ -101,7 +104,6 @@ const emailRegExp = new RegExp(/^[-0-9A-Za-z!#$%&'*+/=?^_`{|}~.]+@[-0-9A-Za-z!#$
 
 const phoneNumberNegExp = new RegExp(/^\d{3}-\d{3,4}-\d{4}$/);
 
-
 const register = (user: Member) => accessClient.post('/members/register', user)
 
 export interface AxiosErrorMessage {
@@ -110,62 +112,53 @@ export interface AxiosErrorMessage {
 
 const regist = async (
   user: Member,
-  getValues: UseFormGetValues<Member>,
-  joinedYear: number, joinedMonth:
-    number,
-  openSnackBar: ({ type, message }: SnackBarParam) => void) => {
+  getValues: UseFormGetValues<Member>) => {
   const hash = SHA256(getValues('password')).toString();
-  try {
-    await register({ ...user, password: hash, joinedYear: joinedYear, joinedMonth: joinedMonth });
-  }
-  catch (e) {
-    const err = e as AxiosError;
-    const { message } = (err.response?.data as AxiosErrorMessage);
-    openSnackBar({ type: 'error', message: message })
-  }
+  console.log(user)
+  await register({ ...user, password: hash });
 }
 
-const date = new Date()
-const year = date.getFullYear()
-const month = date.getMonth() + 1
-const day = date.getDate()
-
 export default function SignUp() {
-  const { control, handleSubmit, formState: { errors }, getValues, clearErrors } = useForm<Member>({
+  const { control, handleSubmit, formState: { errors }, getValues, clearErrors, setError, setValue } = useForm<Member>({
     mode: 'onChange',
     defaultValues: initialValue,
   });
   const { data: track } = useGetTracks();
+
   const openSnackBar = useSnackBar();
 
-  // Dayjs 타입을 사용하기에 부적절하다고 판단해서 새로운 state를 만듦
-  const [days, setDays] = useState<Dayjs | null>(dayjs(year + '-' + month + '-' + day)); // 날짜 초기값 오늘 날짜로 임의 설정
+  // 비밀번호 체크는 member 타입에 존재하지 않아서 useState로 관리
+  const [passwordCheck, setPasswordCheck] = useState<string>('');
+
+  const changePasswordCheck = (e: React.ChangeEvent<HTMLInputElement>) => setPasswordCheck(e.target.value);
 
   const navigate = useNavigate();
 
+  const handlePhoneNumber = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setValue('phoneNumber', formatPhoneNumber(e.target.value))
+  }
   const { isPending, mutate: signUp } = useMutation({
     mutationKey: ['signup'],
-    mutationFn: ({ data, joinedYear, joinedMonth }: { data: Member, joinedYear: number, joinedMonth: number }) =>
-      regist(data, getValues, joinedYear, joinedMonth, openSnackBar),
+    mutationFn: (data: Member) =>
+      regist(data, getValues),
     onSuccess: () => {
       openSnackBar({ type: 'success', message: '회원가입에 성공했습니다.' })
       navigate('/login')
     },
-    onError: (e) => openSnackBar({ type: 'error', message: e.message })
+    onError: (e) => {
+      if (e instanceof AxiosError) openSnackBar({ type: 'error', message: e.response?.data.message })
+    }
   });
 
   return (
     <form css={S.template} onSubmit={handleSubmit((data) => {
-      if (days) {
-        const format = days?.format('YYYY-MM-DD');
-        const joinedYear = parseInt(format?.slice(0, 4));
-        const joinedMonth = parseInt(format?.slice(5, 7));
-        signUp({ data, joinedYear, joinedMonth })
+      if (getValues('password') === passwordCheck) signUp(data)
+      else {
+        setError('password', { type: 'custom' });
+        openSnackBar({ type: 'error', message: '비밀번호가 일치하지 않습니다.' });
       }
     }
-    )
-    }
-    >
+    )}>
       <Snackbar
         open={!!errors.root}
         autoHideDuration={5000}
@@ -216,36 +209,37 @@ export default function SignUp() {
       </div>
       <div css={S.inputSet}>
         <Controller
-          name='memberType'
           control={control}
+          name='joinedYear'
           rules={{
             required: true,
           }}
           render={({ field }) =>
             <TextField
-              select
-              label="멤버"
-              variant="outlined"
+              label='가입연도'
+              variant='outlined'
               fullWidth
               {...field}
-              error={!!errors.memberType}
-            >
-              {member.map((option) => (
-                <MenuItem key={option.value} value={option.value}>
-                  {option.value}
-                </MenuItem>
-              ))}
-            </TextField>}
+              error={!!errors.joinedYear}
+            />
+          }
         />
-        <LocalizationProvider
-          dateAdapter={AdapterDayjs}
-        >
-          <DatePicker
-            label="가입 시기"
-            value={days}
-            onChange={(newDay) => setDays(newDay)}
-          />
-        </LocalizationProvider>
+        <Controller
+          control={control}
+          name='joinedMonth'
+          rules={{
+            required: true,
+          }}
+          render={({ field }) =>
+            <TextField
+              label='가입월'
+              variant='outlined'
+              fullWidth
+              {...field}
+              error={!!errors.joinedMonth}
+            />
+          }
+        />
       </div>
       <div css={S.inputSet}>
         <Controller
@@ -310,11 +304,35 @@ export default function SignUp() {
               variant="outlined"
               fullWidth
               {...field}
+              onChange={handlePhoneNumber}
               error={!!errors.phoneNumber}
-              helperText={errors.phoneNumber ? errors.phoneNumber.message : 'ex) 010-1234-5678'}
             />
           }
         />
+        <Controller
+          name='memberType'
+          control={control}
+          rules={{
+            required: true,
+          }}
+          render={({ field }) =>
+            <TextField
+              select
+              label="멤버"
+              variant="outlined"
+              fullWidth
+              {...field}
+              error={!!errors.memberType}
+            >
+              {member.map((option) => (
+                <MenuItem key={option.value} value={option.value}>
+                  {option.value}
+                </MenuItem>
+              ))}
+            </TextField>}
+        />
+      </div>
+      <div css={S.inputSet}>
         <Controller
           name='password'
           control={control}
@@ -330,6 +348,15 @@ export default function SignUp() {
               {...field}
               error={!!errors.password}
             />}
+        />
+        <TextField
+          label="비밀번호 확인"
+          variant="outlined"
+          type='password'
+          fullWidth
+          value={passwordCheck}
+          onChange={changePasswordCheck}
+          error={!!errors.password}
         />
       </div>
       <div css={S.inputSet}>

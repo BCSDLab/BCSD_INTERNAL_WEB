@@ -9,6 +9,7 @@ import { FileResponse, getPresignedUrl } from 'api/image';
 import CloudUploadIcon from '@mui/icons-material/CloudUpload';
 import axios from 'axios';
 import { useForm } from 'react-hook-form';
+import { formatPhoneNumber } from 'ts/common';
 import * as S from './style';
 
 const MEMBER_TYPE_LABEL = {
@@ -58,16 +59,6 @@ export default function MyPage() {
     },
     [getMe, setValue],
   );
-
-  const formatPhoneNumber = (input: string) => {
-    const numbers = input.replace(/[^\d]/g, '');
-    if (numbers.length <= 3) {
-      return numbers;
-    } if (numbers.length <= 7) {
-      return `${numbers.slice(0, 3)}-${numbers.slice(3)}`;
-    }
-    return `${numbers.slice(0, 3)}-${numbers.slice(3, 7)}-${numbers.slice(7, 11)}`;
-  };
 
   const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = event.target;
