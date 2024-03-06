@@ -1,6 +1,7 @@
 import { accessClient } from 'api';
 import {
   AdminMemberUpdate, LoginResponse, Member, MemberCreate, MemberResponse, MemberUpdate,
+  CertificationToken, RequestChangePassword, ChangePassword,
 } from 'model/member';
 import { Pagination } from 'model/page';
 
@@ -37,3 +38,10 @@ export const getNotAuthedMembers = () => accessClient.get<MemberResponse>('/memb
 export const getMe = () => accessClient.get<Member>('/members/me');
 
 export const updateMe = (member: MemberUpdate) => accessClient.put<Member>('/members', member);
+
+// response body가 없는 api
+export const requestChangePassword = (email: RequestChangePassword) => accessClient.post('/members/password/change', email);
+
+export const certificationToken = (info: CertificationToken) => accessClient.post('/members/password/certification', info);
+
+export const changePassword = (info: ChangePassword) => accessClient.post('/members/password', info);
