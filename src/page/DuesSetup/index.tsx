@@ -10,7 +10,7 @@ import { Dues } from 'model/dues/allDues';
 import { useMutation } from '@tanstack/react-query';
 import {
   NewDuesData, postDues, putDues,
-} from 'api/dues';
+} from 'api/Dueses';
 import { useGetMe, useGetMembers } from 'query/members';
 import { useGetAllDues } from 'query/dues';
 import { useSnackBar } from 'ts/useSnackBar';
