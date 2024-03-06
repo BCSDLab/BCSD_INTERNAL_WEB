@@ -60,8 +60,8 @@ const member = [
 ] as const;
 
 type Member = {
-  joinedYear: number | null,
-  joinedMonth: number | null,
+  joinedYear: number,
+  joinedMonth: number,
   trackId: number,
   memberType: string,
   status: string,
@@ -76,9 +76,15 @@ type Member = {
   profileImageUrl: string | null
 };
 
+
+// 가입 연도와 가입 월의 초기 값으로 현재 날짜 입력
+const date = new Date();
+const currentMonth = date.getMonth() + 1;
+const currentYear = date.getFullYear(); // 월은 0부터 시작하기 때문에 1 더하기
+
 const initialValue = {
-  joinedYear: null,
-  joinedMonth: null,
+  joinedYear: currentYear,
+  joinedMonth: currentMonth,
   trackId: 1,
   memberType: '',
   status: '',
@@ -110,7 +116,6 @@ const regist = async (
   const hash = SHA256(getValues('password')).toString();
   console.log(user)
   await register({ ...user, password: hash });
-
 }
 
 export default function SignUp() {
