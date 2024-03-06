@@ -12,9 +12,11 @@ import Modal from '@mui/material/Modal';
 import {
   ChangeEvent, Suspense, useEffect, useState,
 } from 'react';
-import { useGetAllDues, usePostDues, usePutDues } from 'query/dues';
+import {
+  useDeleteDues, useGetAllDues, usePostDues, usePutDues,
+} from 'query/dues';
 import useBooleanState from 'util/hooks/useBooleanState.ts';
-import { STATUS_MAPPING } from 'util/constants/status';
+import { LAST_DUES_YEAR, STATUS_MAPPING } from 'util/constants/status';
 import { useGetTracks } from 'query/tracks';
 import LoadingSpinner from 'layout/LoadingSpinner';
 import {
@@ -23,10 +25,10 @@ import {
 import useQueryParam from 'util/hooks/useQueryParam';
 import { useSnackBar } from 'ts/useSnackBar';
 import makeNumberArray from 'util/hooks/makeNumberArray';
+import { NewDuesData } from 'api/dues';
 import * as S from './style';
 
-// TODO: 데이터를 가져와서 테이블에 뿌려주기(제대로 안됨)
-type Status = 'PAID' | 'NOT_PAID' | 'SKIP' | null;
+type Status = 'PAID' | 'NOT_PAID' | 'SKIP' | 'NONE';
 
 function DefaultTable() {
   const navigate = useNavigate();
@@ -45,7 +47,7 @@ function DefaultTable() {
     setTrue: openEditStatusModal,
     setFalse: closeEditStatusModal,
   } = useBooleanState(false);
-  const [requiredData, setRequiredData] = useState({
+  const [requiredData, setRequiredData] = useState<NewDuesData>({
     year: duesYear,
     memberId: 0,
     month: 0,
@@ -63,6 +65,7 @@ function DefaultTable() {
   const { data: tracks } = useGetTracks();
   const postDuesMutation = usePostDues();
   const putDuesMutation = usePutDues();
+  const deleteDuesMutation = useDeleteDues();
 
   const handleNameChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const searchName = e.target.value;
@@ -114,18 +117,17 @@ function DefaultTable() {
   };
 
   const handleChangeMutationStatusClick = () => {
-    // TODO: 이전 status와 수정하려는 status가 같은 경우 API 호출이 필요 없음
     const prevStatus = allDues.dues.find((row) => row.memberId === requiredData.memberId)?.detail.find((detail) => detail.month === requiredData.month)?.status;
-    if (prevStatus !== status) {
+    if (prevStatus !== status || (prevStatus === status && requiredData.memo !== '')) {
       if (prevStatus === null) {
         postDuesMutation.mutate({
           year: requiredData.year,
           memberId: requiredData.memberId,
           month: requiredData.month,
-          status,
+          status: status === 'NONE' ? null : status,
           memo: requiredData.memo,
         });
-      } else {
+      } else if (status !== 'NONE') {
         putDuesMutation.mutate({
           year: requiredData.year,
           memberId: requiredData.memberId,
@@ -134,25 +136,34 @@ function DefaultTable() {
           memo: requiredData.memo,
         });
       }
+      if (status === 'NONE') {
+        deleteDuesMutation.mutate({
+          year: requiredData.year,
+          memberId: requiredData.memberId,
+          month: requiredData.month,
+        });
+      }
     }
-    if (prevStatus === status) {
+    if (prevStatus === status && requiredData.memo === '') {
       openSnackBar({ type: 'info', message: '이전 상태와 같은 상태로 변경할 수 없습니다.' });
     } else {
       closeEditStatusModal();
     }
   };
 
+  // 연도 변경 시, 데이터를 다시 설정함
   useEffect(() => {
     setDuesYear(page ? currentYear - page + 1 : currentYear);
     setFilteredValue(allDues.dues);
   }, [currentYear, page, allDues.dues]);
 
+  // API 호출 성공 시, 데이터를 다시 불러옴
   useEffect(() => {
-    if (postDuesMutation.isSuccess || putDuesMutation.isSuccess) {
+    if (postDuesMutation.isSuccess || putDuesMutation.isSuccess || deleteDuesMutation.isSuccess) {
       refetch();
       setFilteredValue(allDues.dues);
     }
-  }, [postDuesMutation.isSuccess, putDuesMutation.isSuccess, refetch, allDues.dues]);
+  }, [postDuesMutation.isSuccess, putDuesMutation.isSuccess, deleteDuesMutation.isSuccess, refetch, allDues.dues]);
 
   const goToPrevYear = () => {
     // 재학생 회비 내역이 2021년부터 시작하므로 2021년 이전으로 이동할 수 없음
@@ -185,7 +196,8 @@ function DefaultTable() {
     <>
       <div css={S.searchAndPagination}>
         <div css={S.pagination}>
-          <Button onClick={goToPrevYear} disabled={duesYear === 2021}>
+          {/* 회비 데이터가 2021년이 마지막입니다. */}
+          <Button onClick={goToPrevYear} disabled={duesYear === LAST_DUES_YEAR}>
             <ArrowBackIosNewOutlined />
           </Button>
           <span css={S.paginationTitle}>{duesYear}</span>
@@ -308,8 +320,6 @@ function DefaultTable() {
                       onClick={() => handleEditStatusModalOpen(dueDetail.month, row.memberId)}
                       key={dueDetail.month}
                     >
-                      {/* TODO: detail.status에 따른 UI */}
-                      {/* 미납 X(빨강), 면제 -(초록), 납부 O(초록), null -(default) */}
                       {dueDetail.status !== null ? STATUS_MAPPING[dueDetail.status] : '-'}
                     </TableCell>
                   ))}
@@ -320,7 +330,6 @@ function DefaultTable() {
                 onClose={closeEditStatusModal}
               >
                 <div css={S.editStatusModalContainer}>
-                  {/* TODO: 면제 혹은 미납의 구체적인 사유 */}
                   <h2>회비 내역 수정</h2>
                   <div css={S.editStatusModalContent}>
                     <FormControl css={S.checkboxFieldset} component="fieldset" variant="standard">
@@ -334,6 +343,7 @@ function DefaultTable() {
                           <FormControlLabel value="PAID" control={<Radio />} label="납부" />
                           <FormControlLabel value="NOT_PAID" control={<Radio />} label="미납" />
                           <FormControlLabel value="SKIP" control={<Radio />} label="면제" />
+                          <FormControlLabel value="NONE" control={<Radio />} label="상태 삭제" />
                           {(status === 'NOT_PAID' || status === 'SKIP') && (
                             <Input
                               css={S.memoInput}
