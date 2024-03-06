@@ -136,6 +136,7 @@ export default function FindPassword() {
                 variant="outlined"
                 value={passwordChangeInfo.password}
                 onChange={handlePasswordInput}
+                type="password"
               />
             )}
           {step.password
@@ -145,6 +146,7 @@ export default function FindPassword() {
                 variant="outlined"
                 value={passwordChangeInfo.passwordCheck}
                 onChange={handlePasswordCheckInput}
+                type="password"
               />
             )}
         </div>
