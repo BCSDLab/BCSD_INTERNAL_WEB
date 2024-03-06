@@ -343,7 +343,7 @@ function DefaultTable() {
                           <FormControlLabel value="PAID" control={<Radio />} label="납부" />
                           <FormControlLabel value="NOT_PAID" control={<Radio />} label="미납" />
                           <FormControlLabel value="SKIP" control={<Radio />} label="면제" />
-                          <FormControlLabel value="NONE" control={<Radio />} label="상태 삭제" />
+                          <FormControlLabel value="NONE" control={<Radio />} label="상태 없음" />
                           {(status === 'NOT_PAID' || status === 'SKIP') && (
                             <Input
                               css={S.memoInput}
