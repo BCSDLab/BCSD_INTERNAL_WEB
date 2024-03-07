@@ -1,7 +1,8 @@
 import { useMutation, useSuspenseQuery } from '@tanstack/react-query';
 import {
-  DuesOptions, NewDuesData, getAllDues, postDues, putDues,
-} from 'api/Dues';
+  DeleteDuesProps,
+  DuesOptions, NewDuesData, deleteDues, getAllDues, postDues, putDues,
+} from 'api/dues';
 import { DuesInfo } from 'model/dues/allDues';
 import { useSnackBar } from 'ts/useSnackBar';
 
@@ -35,4 +36,16 @@ export const usePutDues = () => {
     onSuccess: () => openSnackBar({ type: 'success', message: '회비 내역이 수정되었습니다.' }),
   });
   return putDuesMutation;
+};
+
+export const useDeleteDues = () => {
+  const openSnackBar = useSnackBar();
+
+  const deleteDuesMutation = useMutation({
+    mutationKey: ['deleteDues'],
+    mutationFn: (data: DeleteDuesProps) => deleteDues(data),
+    onError: (error) => openSnackBar({ type: 'error', message: error.message }),
+    onSuccess: () => openSnackBar({ type: 'success', message: '회비 내역이 수정되었습니다.' }),
+  });
+  return deleteDuesMutation;
 };

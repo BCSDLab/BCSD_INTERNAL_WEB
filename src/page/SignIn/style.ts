@@ -28,3 +28,8 @@ export const image = css`
 export const input = css`
   width: 200px;
 `;
+
+export const Link = css`
+  text-decoration: none;
+  color: black;
+`;
