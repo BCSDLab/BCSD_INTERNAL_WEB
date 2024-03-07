@@ -4,11 +4,14 @@ import { colors } from 'const/colors/style';
 export const sideBar = css`
   display: flex;
   flex-direction: column;
-  width: 250px;
+  width: 200px;
   height: 100vh;
   background-color: ${colors.gray};
   border-right: 1px solid ${colors.borderGray};
   box-sizing: border-box;
+  position: fixed;
+  left: 0;
+  top: 0;
 `;
 
 export const topBar = css`

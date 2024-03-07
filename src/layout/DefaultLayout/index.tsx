@@ -1,12 +1,17 @@
-import SideBar from 'layout/SideBar';
 import { Outlet } from 'react-router-dom';
+import TopBar from 'layout/TopBar';
+import SideBar from 'layout/SideBar';
 import * as S from './style';
 
 export default function DefaultLayout() {
   return (
-    <div css={S.layout}>
+    <div css={S.Layout}>
       <SideBar />
-      <Outlet />
+      <div css={S.marginRight} />
+      <div>
+        <TopBar />
+        <Outlet />
+      </div>
     </div>
   );
 }
