@@ -155,3 +155,19 @@ export type LoginResponse = {
 export interface MemberResponse {
   content: Member[];
 }
+
+export interface RequestChangePassword {
+  email: string;
+}
+
+export interface CertificationToken extends RequestChangePassword {
+  token: string;
+}
+
+export interface ChangePassword extends CertificationToken {
+  password: string;
+}
+
+export interface ChangePasswordForm extends ChangePassword {
+  passwordCheck: string;
+}
