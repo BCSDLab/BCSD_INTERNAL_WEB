@@ -114,7 +114,6 @@ const regist = async (
   user: Member,
   getValues: UseFormGetValues<Member>) => {
   const hash = SHA256(getValues('password')).toString();
-  console.log(user)
   await register({ ...user, password: hash });
 }
 

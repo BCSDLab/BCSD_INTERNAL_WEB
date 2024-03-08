@@ -23,7 +23,6 @@ const style = {
 };
 
 export default function TrackUpdateModal({ open, onClose, trackId }: MemberInfoModalProps): React.ReactElement {
-  console.log('trackId', trackId);
   const [track, setTrack] = useState({
     name: '',
   });
