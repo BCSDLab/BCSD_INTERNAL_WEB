@@ -178,7 +178,7 @@ export default function MyPage() {
             <div css={S.textGap}>
               <TextField
                 margin="normal"
-                label="직책"
+                label="직위"
                 name="memberType"
                 value={member?.memberType || ''}
                 fullWidth
