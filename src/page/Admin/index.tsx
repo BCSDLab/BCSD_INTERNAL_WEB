@@ -18,7 +18,6 @@ export default function AcceptMember() {
     { field: 'studentNumber', headerName: '학번', width: 130 },
     { field: 'phoneNumber', headerName: '전화번호', width: 150 },
     { field: 'email', headerName: '이메일', width: 220 },
-    { field: 'githubName', headerName: '깃허브', width: 150 },
     {
       field: 'accept',
       headerName: '승인',
