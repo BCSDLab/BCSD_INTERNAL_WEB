@@ -1,10 +1,14 @@
 import {
   Button, Grid, Paper, styled,
 } from '@mui/material';
-import { useTrackStore } from 'store/trackStore';
-import { useGetTracks } from 'query/tracks';
+import { useDeleteTrack, useGetTracks } from 'query/tracks';
 import { Track } from 'model/track';
 import AddIcon from '@mui/icons-material/Add';
+import { urls } from 'const/urls';
+import { useGetMe } from 'query/members';
+import TrackCreateModal from 'component/modal/trackCreateModal';
+import { useState } from 'react';
+import TrackUpdateModal from 'component/modal/trackUpdateModal';
 import * as S from './style';
 
 const Item = styled(Paper)(({ theme }) => ({
@@ -19,8 +23,32 @@ const Item = styled(Paper)(({ theme }) => ({
 }));
 
 export default function TrackInfo() {
-  const { id } = useTrackStore();
   const { data: tracks } = useGetTracks();
+  const { data: getMe } = useGetMe();
+  const [trackCreateModalOpen, setMemberCreateModalOpen] = useState(false);
+  const [trackUpdateModalOpen, setTrackUpdateModalOpen] = useState(false);
+  const [selectedTrackId, setSelectedTrackId] = useState<number | null>(null);
+  const memberAuthority = getMe.authority;
+  const { mutate: deleteTrack } = useDeleteTrack();
+
+  const handleOpenTrackCreateModal = () => {
+    setMemberCreateModalOpen(true);
+  };
+  const handleCloseTrackCreateModal = () => {
+    setMemberCreateModalOpen(false);
+  };
+
+  const handleOpenTrackUpdateModal = () => {
+    setTrackUpdateModalOpen(true);
+  };
+  const handleCloseTrackUpdateModal = () => {
+    setTrackUpdateModalOpen(false);
+    setSelectedTrackId(null);
+  };
+
+  const handleDeleteTrack = (trackId: number) => {
+    deleteTrack(trackId);
+  };
 
   return (
     <div css={S.container}>
@@ -30,31 +58,68 @@ export default function TrackInfo() {
       <div css={S.contentContainer}>
         <Grid container spacing={3}>
           {tracks?.map((track: Track) => (
-            <Grid item xs={4} key={track.id} css={S.gridContainer}>
+            <Grid item xs={3} key={track.id} css={S.gridContainer}>
               <Item css={S.trackContainer}>
                 <div css={S.trackTitle}>{track.name}</div>
+                <img
+                  css={S.leaderProfileImage}
+                  src={track.leader?.profileImageUrl || urls.DEFAULT_PROFILE}
+                  alt="profile"
+                />
                 <div css={S.trackleaderWrapper}>
                   <div css={S.leaderTitle}>트랙장</div>
-                  <div css={S.leaderName}>{track.leader === null ? '공석' : track.leader.name }</div>
+                  <div css={S.leaderName}>
+                    {track.leader === null ? '공석' : track.leader?.name}
+                  </div>
                 </div>
-                <div css={S.trackControlButtonWrapper}>
-                  <Button variant="outlined" color="primary">수정</Button>
-                  <Button variant="outlined" color="secondary">삭제</Button>
+                <div>
+                  {memberAuthority === 'ADMIN' || memberAuthority === 'MANAGER' ? (
+                    <div css={S.trackControlButtonWrapper}>
+                      <Button
+                        variant="outlined"
+                        color="primary"
+                        onClick={() => {
+                          setSelectedTrackId(track.id);
+                          handleOpenTrackUpdateModal();
+                        }}
+                      >
+                        수정
+                      </Button>
+                      <Button
+                        variant="outlined"
+                        color="secondary"
+                        onClick={() => handleDeleteTrack(track.id)}
+                      >
+                        삭제
+                      </Button>
+                    </div>
+                  ) : (
+                    <div />
+                  )}
                 </div>
               </Item>
             </Grid>
           ))}
         </Grid>
+        <TrackCreateModal
+          open={trackCreateModalOpen}
+          onClose={handleCloseTrackCreateModal}
+        />
+        <TrackUpdateModal
+          open={trackUpdateModalOpen}
+          onClose={handleCloseTrackUpdateModal}
+          trackId={selectedTrackId}
+        />
       </div>
       <div css={S.createButtonContainer}>
         <div css={S.createButton}>
-          <Button
-            variant="outlined"
-            color="primary"
-            startIcon={<AddIcon />}
-          >
-            트랙 생성
-          </Button>
+          {memberAuthority === 'ADMIN' || memberAuthority === 'MANAGER' ? (
+            <Button variant="outlined" color="primary" startIcon={<AddIcon />} onClick={handleOpenTrackCreateModal}>
+              트랙 생성
+            </Button>
+          ) : (
+            <div />
+          )}
         </div>
       </div>
     </div>

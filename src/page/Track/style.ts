@@ -44,25 +44,29 @@ export const trackContainer = css`
   align-items: center;
   justify-content: center;
   padding: 20px;
-  width: 300px;
+  width: 250px;
   gap: 20px;
 `;
 
 export const trackTitle = css`
-  display:inline-block;
+  display: inline-block;
   font-size: 24px;
   font-weight: bold;
 `;
 
 export const leaderTitle = css`
-  display:inline-block;
+  display: inline-block;
   font-size: 18px;
   font-weight: bold;
   margin-right: 20px;
 `;
 
+export const leaderProfileImage = css`
+  width: 120px;
+`;
+
 export const leaderName = css`
-  display:inline-block;
+  display: inline-block;
   font-size: 18px;
 `;
 
