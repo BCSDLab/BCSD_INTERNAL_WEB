@@ -5,13 +5,10 @@ export const sideBar = css`
   display: flex;
   flex-direction: column;
   width: 200px;
-  height: 100vh;
+  height: auto;
   background-color: ${colors.gray};
   border-right: 1px solid ${colors.borderGray};
   box-sizing: border-box;
-  position: fixed;
-  left: 0;
-  top: 0;
 `;
 
 export const topBar = css`
@@ -43,4 +40,9 @@ export const logOutButton = css`
   display: flex;
   flex-direction: column;
   align-items: center;
+`;
+
+export const button = (props: string) => css`
+  position: sticky;
+  top: ${props};
 `;

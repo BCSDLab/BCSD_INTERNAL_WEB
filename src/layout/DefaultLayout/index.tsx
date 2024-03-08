@@ -7,7 +7,6 @@ export default function DefaultLayout() {
   return (
     <div css={S.Layout}>
       <SideBar />
-      <div css={S.marginRight} />
       <div>
         <TopBar />
         <Outlet />
