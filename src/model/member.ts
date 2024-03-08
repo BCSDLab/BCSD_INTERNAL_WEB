@@ -58,6 +58,7 @@ export interface AdminMemberUpdate {
   profileImageUrl: string;
   isAuthed: boolean;
   isDeleted: boolean;
+  authority: Authority;
 }
 
 export interface MemberUpdate {
@@ -123,6 +124,7 @@ export const toAdminMemberUpdate = (member: Member): AdminMemberUpdate => {
     joinedMonth: member.joinedMonth,
     isAuthed: member.isAuthed,
     isDeleted: member.isDeleted,
+    authority: member.authority,
   };
 };
 
