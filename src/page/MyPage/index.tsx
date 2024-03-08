@@ -124,9 +124,6 @@ export default function MyPage() {
 
   return (
     <div css={S.container}>
-      <div css={S.topBar}>
-        <h1 css={S.topBarTitle}>마이페이지</h1>
-      </div>
       <div css={S.contentStyle}>
         <Box sx={S.boxStyle}>
           <Typography id="modal-title" variant="h6" component="h2">
