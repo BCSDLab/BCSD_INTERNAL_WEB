@@ -35,6 +35,7 @@ export default function TopBar() {
   const location = useLocation();
   const pages = useQueryParam('page', 'number') as number | null;
   const duesYear = pages ? currentYear - pages + 1 : currentYear;
+
   const { title, path } = pagePath.filter((page) => page.path === location.pathname)[0];
 
   return (
