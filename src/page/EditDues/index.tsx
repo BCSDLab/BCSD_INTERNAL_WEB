@@ -248,7 +248,7 @@ function DefaultTable() {
                                   key={track.id}
                                   control={
                                     <Checkbox checked={trackFilter[index]} onChange={handleTrackFilterChange} name={track.name} />
-                                      }
+                                  }
                                   label={track.name}
                                 />
                               ))}
@@ -373,12 +373,6 @@ export default function EditDues() {
   const duesYear = page ? currentYear - page + 1 : currentYear;
   return (
     <div css={S.container}>
-      <div css={S.topBar}>
-        <h1 css={S.topBarTitle}>
-          {duesYear}
-          년 회비 내역 수정
-        </h1>
-      </div>
       <div css={S.mainContent}>
         <Suspense fallback={<LoadingSpinner />}>
           <DefaultTable />

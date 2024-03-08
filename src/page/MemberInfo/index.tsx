@@ -34,9 +34,6 @@ export default function MemberInfo() {
 
   return (
     <div css={S.container}>
-      <div css={S.topBar}>
-        <h1 css={S.topBarTitle}>회원 정보</h1>
-      </div>
       <div>
         <div css={S.buttonContainer}>
           <FormControlLabel control={<Switch checked={deleteMemberChecked} onChange={handleChangedDeleteMember} />} label="탈퇴 회원" />
