@@ -9,15 +9,15 @@ export const container = css`
   display: flex;
   flex-direction: column;
   background-color: ${colors.gray};
-  width: 100%;
-  height: 100vh;
+  height: calc(100vh - 100px);
+  overflow: scroll;
+  width: calc(100vw - 200px);
 `;
 
 export const contentContainer = css`
   display: flex;
   justify-content: center;
   align-items: center;
-  width: calc(100vw - 300px);
   margin-top: 20px;
 `;
 
@@ -78,13 +78,11 @@ export const trackleaderWrapper = css`
 export const createButtonContainer = css`
   display: flex;
   justify-content: flex-end;
-  margin-top: 50px;
+  height: 100%;
 `;
 
 export const createButton = css`
-  width: 130px;
-  height: 65px;
-  margin-right: 90px;
+  margin-right: 40px;
 `;
 
 export const trackControlButtonWrapper = css`
