@@ -7,9 +7,11 @@ export default function DefaultLayout() {
   return (
     <div css={S.Layout}>
       <SideBar />
-      <div>
+      <div css={S.width}>
         <TopBar />
-        <Outlet />
+        <div css={S.content}>
+          <Outlet />
+        </div>
       </div>
     </div>
   );

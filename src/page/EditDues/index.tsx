@@ -368,9 +368,6 @@ function DefaultTable() {
 }
 
 export default function EditDues() {
-  const page = useQueryParam('page', 'number') as number | null;
-  const currentYear = new Date().getFullYear();
-  const duesYear = page ? currentYear - page + 1 : currentYear;
   return (
     <div css={S.container}>
       <div css={S.mainContent}>

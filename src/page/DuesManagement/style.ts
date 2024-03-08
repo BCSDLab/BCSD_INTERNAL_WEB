@@ -26,7 +26,8 @@ export const mainContent = css`
 export const container = css`
   display: flex;
   flex-direction: column;
-  height: 100%;
+  height: calc(100vh - 100px);
+  overflow: scroll;
   width: calc(100vw - 200px);
   background-color: ${colors.gray};
 `;

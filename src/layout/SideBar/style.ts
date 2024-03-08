@@ -5,7 +5,6 @@ export const sideBar = css`
   display: flex;
   flex-direction: column;
   width: 200px;
-  height: auto;
   background-color: ${colors.gray};
   border-right: 1px solid ${colors.borderGray};
   box-sizing: border-box;
@@ -28,7 +27,7 @@ export const content = css`
 export const container = css`
   display: flex;
   background-color: ${colors.gray};
-  height: 100%;
+  height: 100vh;
 `;
 
 export const logo = css`
