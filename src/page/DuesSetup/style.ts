@@ -5,7 +5,8 @@ export const container = css`
   display: flex;
   flex-direction: column;
   height: 100%;
-  width: 100vw;
+  width: 100%;
+  overflow: scroll;
   background-color: ${colors.gray};
 `;
 

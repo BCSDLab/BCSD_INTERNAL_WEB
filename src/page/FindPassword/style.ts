@@ -42,9 +42,8 @@ export const image = css`
   object-fit: fill;
 `;
 
-export const font = css`
-  position: fixed;
-  top: 260px;
+export const font = css`  
+  margin-top: -40px;
   font-weight: bold;
   height: 20px;
 `;

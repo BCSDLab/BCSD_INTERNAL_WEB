@@ -180,7 +180,7 @@ function DefaultTable() {
                                     key={track.id}
                                     control={
                                       <Checkbox checked={trackFilter[index]} onChange={handleTrackFilterChange} name={track.name} />
-                                      }
+                                    }
                                     label={track.name}
                                   />
                                 );
@@ -286,17 +286,8 @@ function DefaultTable() {
 }
 
 export default function DuesManagement() {
-  const page = useQueryParam('page', 'number') as number | null;
-  const currentYear = new Date().getFullYear();
-  const duesYear = page ? currentYear - page + 1 : currentYear;
   return (
     <div css={S.container}>
-      <div css={S.topBar}>
-        <h1 css={S.topBarTitle}>
-          {duesYear}
-          년 회비 내역
-        </h1>
-      </div>
       <div css={S.mainContent}>
         <Suspense fallback={<LoadingSpinner />}>
           <DefaultTable />

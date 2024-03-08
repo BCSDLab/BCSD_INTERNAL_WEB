@@ -502,19 +502,8 @@ function DefaultTable() {
 }
 
 export default function DuesSetup() {
-  const currentYear = new Date().getFullYear();
-  const prevMonth = new Date().getMonth();
   return (
     <div css={S.container}>
-      <div css={S.topBar}>
-        <h1 css={S.topBarTitle}>
-          {currentYear}
-          년
-          {' '}
-          {prevMonth}
-          월 회비 생성
-        </h1>
-      </div>
       <Suspense fallback={<LoadingSpinner />}>
         <DefaultTable />
       </Suspense>
