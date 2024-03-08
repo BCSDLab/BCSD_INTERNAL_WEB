@@ -5,7 +5,8 @@ export const container = css`
   display: flex;
   flex-direction: column;
   height: 100%;
-  width: 100vw;
+  width: 100%;
+  overflow: scroll;
   background-color: ${colors.gray};
 `;
 
@@ -37,6 +38,10 @@ export const tableCell = (header: string) => {
     width: 100px;
   `;
 };
+
+export const tableNameHeader = css`
+  width: 100px;
+`;
 
 export const mainContent = css`
   display: flex;
@@ -85,4 +90,20 @@ export const modalContainer = css`
 export const modalContent = css`
   display: flex;
   flex-direction: column;
+`;
+
+export const sortPopover = css`
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  padding: 16px;
+  min-width: 150px;
+  min-height: 70px;
+`;
+
+export const sortPopoverButtonGroup = css`
+  margin-top: 8px;
+  display: flex;
+  gap: 8px;
 `;

@@ -2,15 +2,6 @@ import { css } from '@emotion/react';
 import { colors } from 'const/colors/style';
 import { DuesDetail } from 'model/dues/allDues';
 
-export const sidebar = css`
-  display: flex;
-  flex-direction: column;
-  width: 250px;
-  min-height: calc(100vh - 10px);
-  background-color: ${colors.gray};
-  border-right: 1px solid ${colors.borderGray};
-`;
-
 export const topBar = css`
   width: 100%;
   height: 100px;
@@ -24,19 +15,11 @@ export const topBarTitle = css`
   margin-left: 16px;
 `;
 
-export const content = css`
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  width: 100vw;
-`;
-
 export const mainContent = css`
   position: relative;
   display: flex;
   flex-direction: column;
   align-items: center;
-  width: (100vw - 250px);
   min-height: calc(100vh - 250px);
 `;
 
@@ -44,7 +27,8 @@ export const container = css`
   display: flex;
   flex-direction: column;
   height: 100%;
-  width: 100vw;
+  width: 100%;
+  overflow: scroll;
   background-color: ${colors.gray};
 `;
 
@@ -85,7 +69,11 @@ export const tableHeader = css`
 
 export const trackTableCell = css`
   display: flex;
-  justify-content: space-between;
+  align-items: center;
+`;
+
+export const nameTableCell = css`
+  display: flex;
   align-items: center;
 `;
 
@@ -94,13 +82,30 @@ export const dues = css`
   height: 100%;
 `;
 
+export const sortLogo = css`
+  color: #ffffff;
+`;
+
+export const sortPopover = css`
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  padding: 16px;
+  min-width: 150px;
+  min-height: 70px;
+`;
+
+export const sortPopoverButtonGroup = css`
+  margin-top: 8px;
+  display: flex;
+  gap: 8px;
+`;
+
 export const filterModalButton = css`
   padding: 8px 16px;
   border-radius: 8px;
   cursor: pointer;
-  border: 1px solid #eeeeee;
-  color: #212121;
-  box-shadow: 0 1px 2px 0 rgb(0 0 0 / 0.05);
 `;
 
 export const filterModal = css`

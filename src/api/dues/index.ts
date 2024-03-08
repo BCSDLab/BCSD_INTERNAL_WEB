@@ -17,10 +17,12 @@ export interface PutDuesData {
   memo?: string | null;
 }
 
-export interface NewDuesData {
-  memberId: number;
+export interface DeleteDuesProps {
   year: number;
   month: number;
+  memberId: number;
+}
+export interface NewDuesData extends DeleteDuesProps {
   status: 'PAID' | 'SKIP' | 'NOT_PAID' | null;
   memo?: string | null;
 }
@@ -36,4 +38,8 @@ export const postDues = (data: NewDuesData) => {
 
 export const putDues = (data: NewDuesData) => {
   return accessClient.put(`/dues?year=${data.year}&month=${data.month}&memberId=${data.memberId}`, { status: data.status, memo: data.memo });
+};
+
+export const deleteDues = ({ year, month, memberId }: DeleteDuesProps) => {
+  return accessClient.delete(`/dues?year=${year}&month=${month}&memberId=${memberId}`);
 };

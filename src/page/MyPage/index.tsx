@@ -10,6 +10,7 @@ import CloudUploadIcon from '@mui/icons-material/CloudUpload';
 import axios from 'axios';
 import { useForm } from 'react-hook-form';
 import { urls } from 'const/urls';
+import { formatPhoneNumber } from 'ts/common';
 import * as S from './style';
 
 const MEMBER_TYPE_LABEL = {
@@ -58,16 +59,6 @@ export default function MyPage() {
     },
     [getMe, setValue],
   );
-
-  const formatPhoneNumber = (input: string) => {
-    const numbers = input.replace(/[^\d]/g, '');
-    if (numbers.length <= 3) {
-      return numbers;
-    } if (numbers.length <= 7) {
-      return `${numbers.slice(0, 3)}-${numbers.slice(3)}`;
-    }
-    return `${numbers.slice(0, 3)}-${numbers.slice(3, 7)}-${numbers.slice(7, 11)}`;
-  };
 
   const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = event.target;
@@ -133,9 +124,6 @@ export default function MyPage() {
 
   return (
     <div css={S.container}>
-      <div css={S.topBar}>
-        <h1 css={S.topBarTitle}>마이페이지</h1>
-      </div>
       <div css={S.contentStyle}>
         <Box sx={S.boxStyle}>
           <Typography id="modal-title" variant="h6" component="h2">

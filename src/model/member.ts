@@ -59,6 +59,7 @@ export interface AdminMemberUpdate {
   profileImageUrl: string;
   isAuthed: boolean;
   isDeleted: boolean;
+  authority: Authority;
 }
 
 export interface MemberUpdate {
@@ -124,6 +125,7 @@ export const toAdminMemberUpdate = (member: Member): AdminMemberUpdate => {
     joinedMonth: member.joinedMonth,
     isAuthed: member.isAuthed,
     isDeleted: member.isDeleted,
+    authority: member.authority,
   };
 };
 
@@ -155,4 +157,20 @@ export type LoginResponse = {
 
 export interface MemberResponse {
   content: Member[];
+}
+
+export interface RequestChangePassword {
+  email: string;
+}
+
+export interface CertificationToken extends RequestChangePassword {
+  token: string;
+}
+
+export interface ChangePassword extends CertificationToken {
+  password: string;
+}
+
+export interface ChangePasswordForm extends ChangePassword {
+  passwordCheck: string;
 }

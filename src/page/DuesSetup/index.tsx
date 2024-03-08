@@ -1,17 +1,21 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 import {
-  Button, ButtonGroup, Table, TableBody, TableCell, TableHead, TableRow,
+  Button, ButtonGroup, Popover, Table, TableBody, TableCell, TableHead, TableRow,
 } from '@mui/material';
-import { Suspense, useRef, useState } from 'react';
+import {
+  Suspense, useRef, useState, useEffect,
+} from 'react';
 import * as Excel from 'exceljs';
 import { Dues } from 'model/dues/allDues';
 import { useMutation } from '@tanstack/react-query';
 import {
   NewDuesData, postDues, putDues,
-} from 'api/Dues';
+} from 'api/dues';
 import { useGetMe, useGetMembers } from 'query/members';
 import { useGetAllDues } from 'query/dues';
 import { useSnackBar } from 'ts/useSnackBar';
 import LoadingSpinner from 'layout/LoadingSpinner';
+import { ArrowDownward, ArrowUpward, Sort } from '@mui/icons-material';
 import * as S from './style';
 
 interface TableBodyData {
@@ -23,6 +27,8 @@ interface DatesDuesApply {
   currentYearMonth: number[];
   nextYearMonth: number[];
 }
+
+type Column = 'date' | 'category' | 'amount' | 'balance' | 'name' | 'note' | 'month';
 // 회비 생성
 // 매월 1일에 회비 생성 (단 한번만 하는 기능임)
 
@@ -43,6 +49,12 @@ function DefaultTable() {
   ]);
   const [datesDuesApply, setDatesDuesApply] = useState<DatesDuesApply[]>([{ prevYearMonth: [], currentYearMonth: [], nextYearMonth: [] }]);
   const [buttonDisabled, setButtonDisabled] = useState(true);
+  const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
+  const isSortPopoverOpen = Boolean(anchorEl);
+
+  const handlePopoverClick = (e: React.MouseEvent<HTMLElement>) => {
+    setAnchorEl(e.currentTarget);
+  };
 
   const { data: members } = useGetMembers({ pageIndex: 0, pageSize: 1000, trackId: null });
   const { data: me } = useGetMe();
@@ -80,6 +92,65 @@ function DefaultTable() {
     onError: (error) => openSnackBar({ type: 'error', message: error.message }),
     onSuccess: () => onMutationSuccess(),
   });
+
+  const columns: Column[] = ['date', 'category', 'amount', 'balance', 'name', 'note', 'month'];
+  const sortInAscendingOrderByName = () => {
+    const rowData = tableBody[4].value.map((_, index) => {
+      const newRowData: Record<Column, string> = {
+        date: '',
+        category: '',
+        amount: '',
+        balance: '',
+        name: '',
+        note: '',
+        month: '',
+      };
+      columns.forEach((col, colIndex) => {
+        newRowData[col] = tableBody[colIndex].value[index];
+      });
+      return newRowData;
+    });
+    rowData.sort((a, b) => a.name.localeCompare(b.name));
+    rowData.forEach((value, index) => {
+      setTableBody((prev) => {
+        const newTableBody = [...prev];
+        columns.forEach((col, colIndex) => {
+          newTableBody[colIndex].value[index] = value[col];
+        });
+        return newTableBody;
+      });
+    });
+    setAnchorEl(null);
+  };
+
+  const sortInDescendingOrderByName = () => {
+    const rowData = tableBody[4].value.map((_, index) => {
+      const newRowData: Record<Column, string> = {
+        date: '',
+        category: '',
+        amount: '',
+        balance: '',
+        name: '',
+        note: '',
+        month: '',
+      };
+      columns.forEach((col, colIndex) => {
+        newRowData[col] = tableBody[colIndex].value[index];
+      });
+      return newRowData;
+    });
+    rowData.sort((a, b) => b.name.localeCompare(a.name));
+    rowData.forEach((value, index) => {
+      setTableBody((prev) => {
+        const newTableBody = [...prev];
+        columns.forEach((col, colIndex) => {
+          newTableBody[colIndex].value[index] = value[col];
+        });
+        return newTableBody;
+      });
+    });
+    setAnchorEl(null);
+  };
 
   const findUnpaidMonth = (dues: Dues[], name: string) => {
     const unpaidPeople = dues.filter((value) => name !== '' && value.name === name && value.unpaidCount > 0);
@@ -134,7 +205,7 @@ function DefaultTable() {
         const updatedMonths = unpaidMonthsInPrevYear.slice(0, count);
         prevResult.push(...updatedMonths);
       }
-      // 작년에 미납된 회비가 null일 경우(현재 월이 1월인 경우에만 적용됨)
+      // 작년에 미납된 회비가 null일 경우
       if (prevResult.length < count && prevMonth === 12) {
         const inAdvanceMonths = Array.from({ length: count - prevResult.length }).map((_, monthIndex) => {
           if (memberId) {
@@ -155,7 +226,7 @@ function DefaultTable() {
         const updatedMonths = unpaidMonthsInCurrentYear.slice(0, count - prevResult.length);
         currentResult.push(...updatedMonths);
       }
-      // 이번 해에 미리 납부할 회비가 있을 경우 (반복해서 null인 값을 찾아야 함)
+      // 이번 해에 미리 납부할 회비가 있을 경우
       if (currentResult.length < count) {
         const inAdvanceMonths = Array.from({ length: count - prevResult.length - currentResult.length }).map((_, monthIndex) => {
           if (memberId) {
@@ -340,6 +411,16 @@ function DefaultTable() {
     });
     updateNullToNotPaid();
   };
+  const mix = async () => {
+    handleExcelFileChange();
+  };
+
+  useEffect(() => {
+    if (tableBody[4].value.length > 0) {
+      findDuesMonths();
+    }
+  }, [tableBody]);
+
   return (
     <form css={S.mainContent}>
       <ButtonGroup css={S.buttonGroup}>
@@ -352,53 +433,77 @@ function DefaultTable() {
               accept=".xlsx"
               css={S.fileUpload}
               ref={excelFileRef}
-              onChange={handleExcelFileChange}
+              onChange={mix}
             />
           </Button>
         </label>
-        <Button variant="contained" color="primary" onClick={findDuesMonths}>회비가 적용되는 날짜 찾기</Button>
         <Button variant="contained" color="primary" disabled={buttonDisabled} onClick={handleCreateDuesClick}>회비 생성</Button>
       </ButtonGroup>
       <Table>
         <TableHead>
           <TableRow>
-            {tableHead.map((head) => (
-              <TableCell css={S.tableCell(head)} key={head}>{head}</TableCell>
-            ))}
+            {tableHead.map((head) => {
+              if (head === '이름') {
+                return (
+                  <TableCell css={S.tableNameHeader} key={head}>
+                    {head}
+                    <Button onClick={(e) => handlePopoverClick(e)} disabled={tableBody[0].value.length === 0}><Sort /></Button>
+                  </TableCell>
+                );
+              }
+              return (
+                <TableCell css={S.tableCell(head)} key={head}>{head}</TableCell>
+              );
+            })}
           </TableRow>
         </TableHead>
         <TableBody>
-          {tableBody[4].value.map((name, index) => (
-            <TableRow key={name}>
-              <TableCell>{tableBody[0].value[index]}</TableCell>
-              <TableCell>{tableBody[1].value[index]}</TableCell>
-              <TableCell>{tableBody[2].value[index]}</TableCell>
-              <TableCell>{tableBody[3].value[index]}</TableCell>
-              <TableCell>{tableBody[4].value[index]}</TableCell>
-              <TableCell>{tableBody[5].value[index]}</TableCell>
-              <TableCell>{tableBody[6].value[index]}</TableCell>
-            </TableRow>
-          ))}
+          {tableBody[4].value.map((date, index) => {
+            return (
+              <TableRow key={date}>
+                {tableBody.map((dues) => {
+                  return (
+                    <TableCell key={dues.value[index]}>{dues.value[index]}</TableCell>
+                  );
+                })}
+              </TableRow>
+            );
+          })}
         </TableBody>
       </Table>
+      <Popover
+        id="simple-popover"
+        open={isSortPopoverOpen}
+        anchorEl={anchorEl}
+        onClose={() => setAnchorEl(null)}
+        anchorOrigin={{
+          vertical: 'bottom',
+          horizontal: 'left',
+        }}
+      >
+        <div css={S.sortPopover}>
+          <h3>
+            이름순 정렬
+          </h3>
+          <div css={S.sortPopoverButtonGroup}>
+            <Button variant="contained" color="primary" onClick={sortInAscendingOrderByName}>
+              <ArrowDownward />
+              오름차순
+            </Button>
+            <Button variant="contained" color="primary" onClick={sortInDescendingOrderByName}>
+              <ArrowUpward />
+              내림차순
+            </Button>
+          </div>
+        </div>
+      </Popover>
     </form>
   );
 }
 
 export default function DuesSetup() {
-  const currentYear = new Date().getFullYear();
-  const prevMonth = new Date().getMonth();
   return (
     <div css={S.container}>
-      <div css={S.topBar}>
-        <h1 css={S.topBarTitle}>
-          {currentYear}
-          년
-          {' '}
-          {prevMonth}
-          월 회비 생성
-        </h1>
-      </div>
       <Suspense fallback={<LoadingSpinner />}>
         <DefaultTable />
       </Suspense>

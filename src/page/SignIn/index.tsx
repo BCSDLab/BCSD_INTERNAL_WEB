@@ -6,7 +6,7 @@ import {
   TextField, Button, InputAdornment, OutlinedInput, IconButton, FormControl, InputLabel, Paper,
 } from '@mui/material';
 import { Visibility, VisibilityOff } from '@mui/icons-material';
-import { useNavigate } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import * as S from './style';
 
 const DemoPaper = styled(Paper)(({ theme }) => ({
@@ -89,6 +89,7 @@ export default function SignIn() {
               회원가입
             </Button>
           </div>
+          <Link to="find-password" css={S.Link}>비밀번호를 잊으셨나요?</Link>
         </form>
       </DemoPaper>
     </div>

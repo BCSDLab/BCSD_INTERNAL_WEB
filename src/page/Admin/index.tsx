@@ -40,7 +40,6 @@ export default function AcceptMember() {
   ];
   return (
     <div css={S.container}>
-      <h1 css={S.image}>회원가입 승인</h1>
       <div style={{
         height: '70vh', paddingLeft: 20, paddingRight: 20,
       }}

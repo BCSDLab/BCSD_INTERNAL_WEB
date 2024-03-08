@@ -12,12 +12,14 @@ import DuesSetup from 'page/DuesSetup';
 import EditDues from 'page/EditDues';
 import LoadingSpinner from 'layout/LoadingSpinner';
 import TrackInfo from 'page/Track';
+import FindPassword from 'page/FindPassword';
 
 function App() {
   return (
     <Routes>
       <Route element={<AuthRoute needAuth={false} redirectRoute="/member" />}>
         <Route path="/" element={<SignIn />} />
+        <Route path="/find-password" element={<FindPassword />} />
       </Route>
       <Route
         path="/register"
