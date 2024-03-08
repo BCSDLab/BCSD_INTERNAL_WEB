@@ -52,9 +52,6 @@ export default function TrackInfo() {
 
   return (
     <div css={S.container}>
-      <div css={S.topBar}>
-        <h1 css={S.topBarTitle}>트랙정보</h1>
-      </div>
       <div css={S.contentContainer}>
         <Grid container spacing={3}>
           {tracks?.map((track: Track) => (

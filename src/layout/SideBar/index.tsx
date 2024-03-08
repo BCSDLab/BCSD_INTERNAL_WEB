@@ -19,6 +19,7 @@ export default function SideBar() {
         <Button color="secondary" sx={{ marginTop: '20px' }} size="large" onClick={() => navigate('dues')} css={S.button('140px')}>회비납부</Button>
         <Button color="secondary" sx={{ marginTop: '20px' }} size="large" onClick={() => navigate('dues-setup')} css={S.button('180px')}>회비생성</Button>
         <Button color="secondary" sx={{ marginTop: '20px' }} size="large" onClick={() => navigate('edit-dues')} css={S.button('220px')}>회비수정</Button>
+        <Button color="secondary" sx={{ marginTop: '20px' }} size="large" onClick={() => navigate('track')} css={S.button('220px')}>트랙정보</Button>
         <div css={S.logOutButton}>
           <Button variant="contained" color="secondary" sx={{ marginTop: '20vh', width: '100px' }} onClick={logOut}>로그아웃</Button>
         </div>
