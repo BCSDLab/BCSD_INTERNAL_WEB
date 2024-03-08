@@ -25,7 +25,7 @@ const MEMBER_TYPE_LABEL = {
   MENTOR: '멘토',
 } as const;
 
-const AUTHORITY_LIST = ['NORMAL', 'MANAGER', 'ADMIN'] as const;
+const AUTHORITY_LIST = ['NORMAL', 'MANAGER'] as const;
 
 const MEMBER_TYPE_LIST = ['BEGINNER', 'REGULAR', 'MENTOR'] as const;
 
