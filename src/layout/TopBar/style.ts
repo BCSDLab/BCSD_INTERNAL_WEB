@@ -8,4 +8,5 @@ export const top = css`
   align-items: center;
   padding-left: 30px;
   border-bottom: 1px solid ${colors.borderGray};
+  box-sizing: border-box;
 `;
