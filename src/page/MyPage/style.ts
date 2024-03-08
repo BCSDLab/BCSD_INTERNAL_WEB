@@ -10,7 +10,8 @@ export const container = css`
   flex-direction: column;
   background-color: ${colors.gray};
   width: 100%;
-  height: 100vh;
+  height: 100%;
+  overflow: scroll;
 `;
 
 export const topBar = css`
