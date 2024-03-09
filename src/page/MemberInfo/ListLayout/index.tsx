@@ -32,7 +32,7 @@ export default function ListLayout({ deleteMemberChecked }: ListLayoutProps) {
   const columns: GridColDef[] = [
     { field: 'name', headerName: '이름', width: 95 },
     { field: 'trackName', headerName: '트랙', width: 120 },
-    { field: 'memberType', headerName: '직책', width: 120 },
+    { field: 'memberType', headerName: '직위', width: 120 },
     { field: 'status', headerName: '상태', width: 100 },
     { field: 'company', headerName: '소속', width: 170 },
     { field: 'department', headerName: '학부', width: 140 },
