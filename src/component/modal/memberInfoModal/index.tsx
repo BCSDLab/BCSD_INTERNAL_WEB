@@ -10,7 +10,9 @@ import { useGetTracks } from 'query/tracks';
 import { FileResponse, getPresignedUrl } from 'api/image';
 import CloudUploadIcon from '@mui/icons-material/CloudUpload';
 import axios from 'axios';
+import { useGetJobs } from 'query/jobs';
 import * as S from './style';
+import UpdateJobModal from '../updateJobModal';
 
 interface MemberInfoModalProps {
   open: boolean;
@@ -68,6 +70,7 @@ export default function MemberInfoModal({
   const { mutate: updateMember } = useUpdateMember();
   const { mutate: deleteMember } = useDeleteMember();
   const { data: tracks } = useGetTracks();
+  const { data: jobInfo } = useGetJobs(new Date().getFullYear());
   const [imageInfo, setImageInfo] = useState<FileInfo>();
 
   useEffect(() => {
@@ -343,9 +346,14 @@ export default function MemberInfoModal({
             </TextField>
           </div>
           <div css={S.buttonContainer}>
-            <Button sx={{ mt: 2, mb: 2 }} variant="contained" color="error" onClick={handleDelete}>
-              회원 삭제
-            </Button>
+            <div css={S.buttonWrapper}>
+              <Button sx={{ mt: 2, mb: 2 }} variant="contained" color="error" onClick={handleDelete}>
+                회원 삭제
+              </Button>
+              {member && member.id && (jobInfo?.jobs.filter((job) => job.memberId === member?.id).length) > 0 && (
+              <UpdateJobModal memberId={member.id} />
+              )}
+            </div>
             <div css={S.buttonWrapper}>
               <Button
                 sx={{ mt: 2, mb: 2 }}
@@ -362,7 +370,6 @@ export default function MemberInfoModal({
                 닫기
               </Button>
             </div>
-
           </div>
         </Box>
       </Box>
