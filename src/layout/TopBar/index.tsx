@@ -2,7 +2,7 @@ import { useLocation } from 'react-router-dom';
 import useQueryParam from 'util/hooks/useQueryParam';
 import * as S from './style';
 
-const pagePath = [
+export const pagePath = [
   {
     path: '/accept',
     title: '회원가입 승인',
@@ -17,7 +17,7 @@ const pagePath = [
   },
   {
     path: '/dues',
-    title: '회비 내역',
+    title: '회비 납부 내역',
   },
   {
     path: '/dues-setup',
