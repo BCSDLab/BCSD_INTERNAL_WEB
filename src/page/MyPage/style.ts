@@ -5,9 +5,8 @@ export const container = css`
   display: flex;
   flex-direction: column;
   background-color: ${colors.gray};
-  height: calc(100vh - 100px);
-  overflow: scroll;
-  width: calc(100vw - 200px);
+  width: 100%;
+  height: 100%;
 `;
 
 export const boxStyle = {
