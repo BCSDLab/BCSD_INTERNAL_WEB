@@ -36,12 +36,22 @@ export const jobSelection = css`
   margin: 10px;
 `;
 
+export const buttonContainer = css`
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-top: 50px;
+`;
+
 export const buttonWrapper = css`
-  width: 100%;
   display: flex;
   justify-content: end;
-  margin-top: 50px;
   gap: 20px;
+`;
+
+export const deleteButtonWrapper = css`
+  display: flex;
+  margin-left: 10px;
 `;
 
 export const closeButton = css`

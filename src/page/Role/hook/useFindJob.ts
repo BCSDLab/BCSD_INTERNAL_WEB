@@ -6,7 +6,7 @@ interface UseFindJobProps {
 }
 
 export default function useFindJob({ year }: UseFindJobProps) {
-  const { data } = useGetJobs(year);
+  const { data, refetch } = useGetJobs(year);
   const { data: members } = useGetMembers({ pageIndex: 0, pageSize: 1000, trackId: null });
   const chairMen = data.jobs.filter((job) => job.type === '회장');
   const viceChairMen = data.jobs.filter((job) => job.type === '부회장');
@@ -19,6 +19,6 @@ export default function useFindJob({ year }: UseFindJobProps) {
   const educationLeadersInfo = educationLeaders.map((educationLeader) => members?.content.find((member) => member.id === educationLeader.memberId));
   const etcInfo = etc.map((etcMember) => members?.content.find((member) => member.id === etcMember.memberId));
   return {
-    chairMen, viceChairMen, trackLeaders, educationLeaders, etc, chairMenInfo, viceChairMenInfo, trackLeadersInfo, educationLeadersInfo, etcInfo,
+    chairMen, viceChairMen, trackLeaders, educationLeaders, etc, chairMenInfo, viceChairMenInfo, trackLeadersInfo, educationLeadersInfo, etcInfo, refetch,
   };
 }

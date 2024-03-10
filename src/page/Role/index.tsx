@@ -1,10 +1,11 @@
 import { ArrowBackIosNewOutlined, ArrowForwardIosOutlined } from '@mui/icons-material';
 import { Button, Grid } from '@mui/material';
-import { Suspense, useState } from 'react';
+import { Suspense, useEffect, useState } from 'react';
 import LoadingSpinner from 'layout/LoadingSpinner';
 import { Item } from 'page/MemberInfo/GridLayout';
 import useBooleanState from 'util/hooks/useBooleanState';
 import CreateJobModal from 'component/modal/createJobModal';
+import UpdateJobModal from 'component/modal/updateJobModal';
 import * as S from './style';
 import useFindJob from './hook/useFindJob';
 
@@ -17,9 +18,13 @@ function ViewOfRole() {
   const currentYear = new Date().getFullYear();
   const [selectedYear, setSelectedYear] = useState(currentYear);
   const {
-    chairMen, viceChairMen, trackLeaders, educationLeaders, etc, chairMenInfo, viceChairMenInfo, trackLeadersInfo, educationLeadersInfo, etcInfo,
+    chairMen, viceChairMen, trackLeaders, educationLeaders, etc, chairMenInfo, viceChairMenInfo, trackLeadersInfo, educationLeadersInfo, etcInfo, refetch,
   } = useFindJob({ year: selectedYear });
-  const { value: isCreateJobOpen, setTrue: openCreateJobModal, setFalse: closeCreateJobModal } = useBooleanState(false);
+  const { value: isCreateJobModalOpen, setTrue: openCreateJobModal, setFalse: closeCreateJobModal } = useBooleanState(false);
+  const { value: isUpdateJobModalOpen, setTrue: openUpdateJobModal, setFalse: closeUpdateJobModal } = useBooleanState(false);
+  const [selectedMemberId, setSelectedMemberId] = useState<number>(0);
+  const [isSuccess, setIsSuccess] = useState(false);
+  const [selectedJobId, setSelectedJobId] = useState<number>(0);
 
   const goToPrevYear = () => {
     setSelectedYear(selectedYear - 1);
@@ -29,12 +34,27 @@ function ViewOfRole() {
     setSelectedYear(selectedYear + 1);
   };
 
+  const handleUpdateJobModalOpen = (memberId: number | undefined, jobId: number) => {
+    if (memberId) {
+      setSelectedJobId(jobId);
+      setSelectedMemberId(memberId);
+      openUpdateJobModal();
+    }
+  };
+
+  useEffect(() => {
+    if (isSuccess) {
+      refetch();
+      setIsSuccess(false);
+    }
+  }, [isSuccess, refetch]);
+
   return (
     <>
       <div css={S.pagination}>
         <div css={S.createButton}>
           <Button variant="contained" onClick={openCreateJobModal}>직책 생성</Button>
-          <CreateJobModal open={isCreateJobOpen} onClose={closeCreateJobModal} />
+          <CreateJobModal open={isCreateJobModalOpen} onClose={closeCreateJobModal} setIsSuccess={setIsSuccess} />
         </div>
         <Button onClick={goToPrevYear}>
           <ArrowBackIosNewOutlined />
@@ -50,7 +70,7 @@ function ViewOfRole() {
         </h3>
         <Grid css={S.gridWrapper(chairMen.length + viceChairMen.length)}>
           {chairMenInfo.map((chairManInfo, index) => (
-            <Item css={S.memberContainer} key={chairManInfo?.name}>
+            <Item css={S.memberContainer} key={chairManInfo?.name} onClick={() => handleUpdateJobModalOpen(chairManInfo?.id, chairMen[index].id)}>
               <div css={S.memberWrapper}>
                 <div css={S.imageNameWrapper}>
                   <img css={S.image} src={chairManInfo?.profileImageUrl || defaultImageUrl} alt="profile" />
@@ -77,8 +97,8 @@ function ViewOfRole() {
               </div>
             </Item>
           ))}
-          {viceChairMenInfo.map((viceChairManInfo, index) => (
-            <Item css={S.memberContainer} key={viceChairManInfo?.name}>
+          {viceChairMenInfo && viceChairMenInfo.map((viceChairManInfo, index) => (
+            <Item css={S.memberContainer} key={viceChairManInfo?.name} onClick={() => handleUpdateJobModalOpen(viceChairManInfo?.id, viceChairMen[index].id)}>
               <div css={S.memberWrapper}>
                 <div css={S.imageNameWrapper}>
                   <img css={S.image} src={viceChairManInfo?.profileImageUrl || defaultImageUrl} alt="profile" />
@@ -111,7 +131,7 @@ function ViewOfRole() {
         </h3>
         <Grid css={S.gridWrapper(trackLeaders.length)}>
           {trackLeadersInfo && trackLeadersInfo.map((trackLeader, index) => (
-            <Item css={S.memberContainer} key={trackLeader?.name}>
+            <Item css={S.memberContainer} key={trackLeader?.name} onClick={() => handleUpdateJobModalOpen(trackLeader?.id, trackLeaders[index].id)}>
               <div css={S.memberWrapper}>
                 <div css={S.imageNameWrapper}>
                   <img css={S.image} src={trackLeader?.profileImageUrl || defaultImageUrl} alt="profile" />
@@ -144,7 +164,7 @@ function ViewOfRole() {
         </h3>
         <Grid css={S.gridWrapper(educationLeaders.length)}>
           {educationLeadersInfo.map((educationLeader, index) => (
-            <Item css={S.memberContainer} key={educationLeader?.name}>
+            <Item css={S.memberContainer} key={educationLeader?.name} onClick={() => handleUpdateJobModalOpen(educationLeader?.id, educationLeaders[index].id)}>
               <div css={S.memberWrapper}>
                 <div css={S.imageNameWrapper}>
                   <img css={S.image} src={educationLeader?.profileImageUrl || defaultImageUrl} alt="profile" />
@@ -177,7 +197,7 @@ function ViewOfRole() {
         </h3>
         <Grid css={S.gridWrapper(etc.length)}>
           {etcInfo.map((member, index) => (
-            <Item css={S.memberContainer} key={member?.name}>
+            <Item css={S.memberContainer} key={member?.name} onClick={() => handleUpdateJobModalOpen(member?.id, etc[index].id)}>
               <div css={S.memberWrapper}>
                 <div css={S.imageNameWrapper}>
                   <img css={S.image} src={member?.profileImageUrl || defaultImageUrl} alt="profile" />
@@ -206,6 +226,7 @@ function ViewOfRole() {
           ))}
         </Grid>
       </div>
+      <UpdateJobModal open={isUpdateJobModalOpen} onClose={closeUpdateJobModal} memberId={selectedMemberId} setIsSuccess={setIsSuccess} jobId={selectedJobId} />
     </>
   );
 }

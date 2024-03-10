@@ -1,5 +1,5 @@
 import { Button, Modal, TextField } from '@mui/material';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { usePostJobs } from 'query/jobs';
 import { useGetMembers } from 'query/members';
 import * as S from './style';
@@ -7,9 +7,10 @@ import * as S from './style';
 interface CreateJobModalProps {
   open: boolean;
   onClose: () => void;
+  setIsSuccess: React.Dispatch<React.SetStateAction<boolean>>;
 }
 
-export default function CreateJobModal({ open, onClose }: CreateJobModalProps) {
+export default function CreateJobModal({ open, onClose, setIsSuccess }: CreateJobModalProps) {
   const initialInfo = {
     name: '',
     type: '',
@@ -41,8 +42,14 @@ export default function CreateJobModal({ open, onClose }: CreateJobModalProps) {
         endMonth: Number(info.endMonth),
       });
     }
-    onClose();
   };
+
+  useEffect(() => {
+    if (postJobsMutation.isSuccess) {
+      setIsSuccess(true);
+      onClose();
+    }
+  }, [postJobsMutation.isSuccess, onClose, setIsSuccess]);
   return (
     <Modal
       open={open}
