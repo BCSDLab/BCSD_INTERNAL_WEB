@@ -5,7 +5,7 @@ import Grid from '@mui/material/Grid';
 import { useState } from 'react';
 import MemberInfoModal from 'component/modal/memberInfoModal';
 import { Paper, styled } from '@mui/material';
-import { urls } from 'const/urls';
+import { URLS } from 'const/urls';
 import * as S from './style';
 
 const Item = styled(Paper)(({ theme }) => ({
@@ -60,7 +60,7 @@ export default function GridLayout({ deleteMemberChecked }: ListLayoutProps) {
                 >
                   <div css={S.memberWrapper}>
                     <div css={S.imageNameWrapper}>
-                      <img css={S.image} src={member.profileImageUrl || urls.DEFAULT_PROFILE} alt="profile" />
+                      <img css={S.image} src={member.profileImageUrl || URLS.defaultProfile} alt="profile" />
                       <div css={S.name}>{member.name}</div>
                     </div>
                     <div>
@@ -126,7 +126,7 @@ export default function GridLayout({ deleteMemberChecked }: ListLayoutProps) {
                 >
                   <div css={S.memberWrapper}>
                     <div css={S.imageNameWrapper}>
-                      <img css={S.image} src={member.profileImageUrl || urls.DEFAULT_PROFILE} alt="profile" />
+                      <img css={S.image} src={member.profileImageUrl || URLS.defaultProfile} alt="profile" />
                       <div css={S.name}>{member.name}</div>
                     </div>
                     <div>

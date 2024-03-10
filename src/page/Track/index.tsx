@@ -4,7 +4,7 @@ import {
 import { useDeleteTrack, useGetTracks } from 'query/tracks';
 import { Track } from 'model/track';
 import AddIcon from '@mui/icons-material/Add';
-import { urls } from 'const/urls';
+import { URLS } from 'const/urls';
 import { useGetMe } from 'query/members';
 import TrackCreateModal from 'component/modal/trackCreateModal';
 import { useState } from 'react';
@@ -60,7 +60,7 @@ export default function TrackInfo() {
                 <div css={S.trackTitle}>{track.name}</div>
                 <img
                   css={S.leaderProfileImage}
-                  src={track.leader?.profileImageUrl || urls.DEFAULT_PROFILE}
+                  src={track.leader?.profileImageUrl || URLS.defaultProfile}
                   alt="profile"
                 />
                 <div css={S.trackleaderWrapper}>

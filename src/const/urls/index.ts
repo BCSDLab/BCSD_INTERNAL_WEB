@@ -1,3 +1,3 @@
-export const urls = {
-  DEFAULT_PROFILE: 'https://image.bcsdlab.com/default-profile.png',
+export const URLS = {
+  defaultProfile: 'https://image.bcsdlab.com/default-profile.png',
 };
