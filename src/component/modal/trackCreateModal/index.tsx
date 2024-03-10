@@ -22,32 +22,23 @@ const style = {
 };
 
 export default function TrackCreateModal({ open, onClose }: MemberInfoModalProps): React.ReactElement {
-  const [track, setTrack] = useState({
-    name: '',
-  });
+  const [trackName, setTrackName] = useState('');
   const { mutate: createTrack } = useCreateTrack();
 
   const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    const { name, value } = event.target;
-    setTrack({
-      ...track,
-      [name]: value,
-    });
+    const { value } = event.target;
+    setTrackName(value);
   };
 
   const handleSave = () => {
-    createTrack(track);
+    createTrack({ name: trackName });
     onClose();
-    setTrack({
-      name: '',
-    });
+    setTrackName('');
   };
 
   const handleClose = () => {
     onClose();
-    setTrack({
-      name: '',
-    });
+    setTrackName('');
   };
 
   return (
@@ -66,7 +57,7 @@ export default function TrackCreateModal({ open, onClose }: MemberInfoModalProps
             margin="normal"
             label="트랙명"
             name="name"
-            value={track.name}
+            value={trackName}
             fullWidth
             onChange={handleChange}
           />
