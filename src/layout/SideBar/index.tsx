@@ -20,7 +20,7 @@ export default function SideBar() {
   return (
     <div css={S.container}>
       <div css={S.sideBar}>
-        <img src="https://image.bcsdlab.com/banner.png" alt="logo" css={S.logo} onClick={() => navigate('member')} />
+        <img src="https://image.bcsdlab.com/banner.png" alt="logo" css={S.logo} onClick={() => navigate('/')} />
         <Button
           color="secondary"
           sx={{ marginTop: '20px' }}
