@@ -1,5 +1,5 @@
 import { accessClient } from 'api';
-import { Job, JobsResponse } from 'model/job';
+import { Job, JobsResponse, PostJob } from 'model/job';
 
 interface JobsProps {
   year: number;
@@ -18,9 +18,9 @@ export const putJobs = ({
 };
 
 export const postJobs = ({
-  id, memberId, type, startYear, startMonth, endYear, endMonth,
-}: Job) => {
-  return accessClient.post<Job>(`/jobs?id=${id}&memberId=${memberId}&type=${type}&startYear=${startYear}&startMonth=${startMonth}&endYear=${endYear}&endMonth=${endMonth}`);
+  memberId, type, startYear, startMonth, endYear, endMonth,
+}: PostJob) => {
+  return accessClient.post<PostJob>(`/jobs?memberId=${memberId}&type=${type}&startYear=${startYear}&startMonth=${startMonth}&endYear=${endYear}&endMonth=${endMonth}`);
 };
 
 export const deleteJobs = (jobId: number) => {

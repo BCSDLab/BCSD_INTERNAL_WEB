@@ -12,6 +12,7 @@ import DuesSetup from 'page/DuesSetup';
 import EditDues from 'page/EditDues';
 import LoadingSpinner from 'layout/LoadingSpinner';
 import FindPassword from 'page/FindPassword';
+import Role from 'page/Role';
 
 function App() {
   return (
@@ -59,6 +60,7 @@ function App() {
           <Route path="/dues" element={<DuesManagement />} />
           <Route path="/dues-setup" element={<DuesSetup />} />
           <Route path="/edit-dues" element={<EditDues />} />
+          <Route path="/role" element={<Role />} />
         </Route>
       </Route>
       <Route path="/login" element={<SignIn />} />

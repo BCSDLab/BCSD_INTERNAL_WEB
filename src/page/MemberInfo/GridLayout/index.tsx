@@ -7,7 +7,7 @@ import MemberInfoModal from 'component/modal/memberInfoModal';
 import { Paper, styled } from '@mui/material';
 import * as S from './style';
 
-const Item = styled(Paper)(({ theme }) => ({
+export const Item = styled(Paper)(({ theme }) => ({
   backgroundColor: theme.palette.mode === 'dark' ? '#1A2027' : '#fff',
   ...theme.typography.body2,
   padding: theme.spacing(1),
@@ -131,7 +131,7 @@ export default function GridLayout({ deleteMemberChecked }: ListLayoutProps) {
                     </div>
                     <div>
                       <div css={S.memberInfoLabel}>
-                        직책
+                        직위
                       </div>
                       {member.memberType}
                     </div>
@@ -141,7 +141,6 @@ export default function GridLayout({ deleteMemberChecked }: ListLayoutProps) {
                       </div>
                       {member.track.name}
                     </div>
-
                     <div>
                       <div css={S.memberInfoLabel}>
                         학번

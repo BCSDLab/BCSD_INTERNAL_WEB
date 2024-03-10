@@ -1,6 +1,8 @@
 import { useMutation, useSuspenseQuery } from '@tanstack/react-query';
-import { Job, JobsResponse } from 'model/job';
-import { deleteJobs, getJobs, putJobs } from 'api/jobs';
+import { Job, JobsResponse, PostJob } from 'model/job';
+import {
+  deleteJobs, getJobs, postJobs, putJobs,
+} from 'api/jobs';
 import { useSnackBar } from 'ts/useSnackBar';
 
 export const useGetJobs = (year: number, trackId?: number) => {
@@ -28,7 +30,7 @@ export const usePostJobs = () => {
 
   const postJobsMutation = useMutation({
     mutationKey: ['postJobs'],
-    mutationFn: (data: Job) => putJobs(data),
+    mutationFn: (data: PostJob) => postJobs(data),
     onError: (error) => openSnackBar({ type: 'error', message: error.message }),
     onSuccess: () => openSnackBar({ type: 'success', message: '직책이 추가되었습니다.' }),
   });

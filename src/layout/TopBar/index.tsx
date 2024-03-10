@@ -27,6 +27,10 @@ const pagePath = [
     path: '/edit-dues',
     title: '회비 내역 수정',
   },
+  {
+    path: '/role',
+    title: '직책 정보',
+  },
 ];
 
 const currentYear = new Date().getFullYear();
