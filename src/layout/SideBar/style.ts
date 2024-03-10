@@ -41,9 +41,8 @@ export const logOutButton = css`
   left: 50px;
 `;
 
-export const button = (props: string) => css`
-  position: sticky;
-  top: ${props};
+export const button = (props: boolean) => css`
+  background-color: ${props ? '#ffeeff' : 'none'};
 `;
 
 export const duesButton = () => css`
