@@ -15,21 +15,13 @@ export const getMembersDeleted = (pageIndex: number, pageSize: number, trackId?:
   return accessClient.get<Pagination<Member>>(`/members?page=${pageIndex}&size=${pageSize}&trackId=${trackId}&deleted=true`);
 };
 
-export const getMember = (id: number) => {
-  return accessClient.get<Member>(`/members/${id}`);
-};
+export const getMember = (id: number) => accessClient.get<Member>(`/members/${id}`);
 
-export const updateMember = (memberId: number, member: AdminMemberUpdate) => {
-  return accessClient.put<Member>(`/admin/members/${memberId}`, member);
-};
+export const updateMember = (memberId: number, member: AdminMemberUpdate) => accessClient.put<Member>(`/admin/members/${memberId}`, member);
 
-export const deleteMember = (memberId: number) => {
-  return accessClient.delete<Member>(`/admin/members/${memberId}`);
-};
+export const deleteMember = (memberId: number) => accessClient.delete<Member>(`/admin/members/${memberId}`);
 
-export const createMember = (member: MemberCreate) => {
-  return accessClient.post<Member>('/admin/members', member);
-};
+export const createMember = (member: MemberCreate) => accessClient.post<Member>('/admin/members', member);
 
 export const login = (studentNumber: string, password: string) => accessClient.post<LoginResponse>('/members/login', { studentNumber, password });
 
