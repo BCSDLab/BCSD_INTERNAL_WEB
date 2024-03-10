@@ -29,7 +29,7 @@ export const pagePath = [
   },
   {
     path: '/track',
-    title: '트랙정보',
+    title: '트랙 정보',
   },
 ];
 
