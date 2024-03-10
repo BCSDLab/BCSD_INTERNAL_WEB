@@ -36,12 +36,23 @@ export const logo = css`
 `;
 
 export const logOutButton = css`
-  display: flex;
-  flex-direction: column;
-  align-items: center;
+  position: absolute;
+  bottom: 30px;
+  left: 50px;
 `;
 
 export const button = (props: string) => css`
   position: sticky;
   top: ${props};
+`;
+
+export const duesButton = () => css`
+  display: flex;
+  align-items: center;
+`;
+
+export const duesGroup = css`
+  display: flex;
+  flex-direction: column;
+
 `;
