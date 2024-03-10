@@ -46,6 +46,7 @@ export default function SideBar() {
         >
           회원 승인
         </Button>
+        <Button color="secondary" sx={{ marginTop: '20px' }} size="large" onClick={() => navigate('track')} css={S.button(currentPage === '/track')}>트랙정보</Button>
         <Button
           color="secondary"
           sx={{ marginTop: '20px' }}

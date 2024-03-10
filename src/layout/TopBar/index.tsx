@@ -27,6 +27,10 @@ export const pagePath = [
     path: '/edit-dues',
     title: '회비 내역 수정',
   },
+  {
+    path: '/track',
+    title: '트랙정보',
+  },
 ];
 
 const currentYear = new Date().getFullYear();

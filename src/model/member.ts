@@ -1,3 +1,4 @@
+// eslint-disable-next-line import/no-cycle
 import { Track } from './track';
 
 export type StatusType = 'ATTEND' | 'OFF' | 'IPP' | 'ARMY' | 'COMPLETION' | 'GRADUATE';
