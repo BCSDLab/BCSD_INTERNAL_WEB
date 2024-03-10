@@ -11,6 +11,7 @@ import MyPage from 'page/MyPage';
 import DuesSetup from 'page/DuesSetup';
 import EditDues from 'page/EditDues';
 import LoadingSpinner from 'layout/LoadingSpinner';
+import TrackInfo from 'page/Track';
 import FindPassword from 'page/FindPassword';
 
 function App() {
@@ -59,6 +60,14 @@ function App() {
           <Route path="/dues" element={<DuesManagement />} />
           <Route path="/dues-setup" element={<DuesSetup />} />
           <Route path="/edit-dues" element={<EditDues />} />
+          <Route
+            path="/track"
+            element={(
+              <Suspense fallback={<LoadingSpinner />}>
+                <TrackInfo />
+              </Suspense>
+            )}
+          />
         </Route>
       </Route>
       <Route path="/login" element={<SignIn />} />

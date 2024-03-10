@@ -32,7 +32,7 @@ export default function ListLayout({ deleteMemberChecked }: ListLayoutProps) {
   const columns: GridColDef[] = [
     { field: 'name', headerName: '이름', width: 95 },
     { field: 'trackName', headerName: '트랙', width: 120 },
-    { field: 'memberType', headerName: '직책', width: 120 },
+    { field: 'memberType', headerName: '직위', width: 120 },
     { field: 'status', headerName: '상태', width: 100 },
     { field: 'company', headerName: '소속', width: 170 },
     { field: 'department', headerName: '학부', width: 140 },
@@ -41,10 +41,10 @@ export default function ListLayout({ deleteMemberChecked }: ListLayoutProps) {
     { field: 'email', headerName: '이메일', width: 225 },
     {
       field: 'update',
-      headerName: memberAuthority === ('ADMIN' || 'MANAGER') ? '정보수정' : '',
-      width: memberAuthority === ('ADMIN' || 'MANAGER') ? 100 : 0,
+      headerName: (memberAuthority === 'ADMIN') || (memberAuthority === 'MANAGER') ? '정보수정' : '',
+      width: (memberAuthority === 'ADMIN') || (memberAuthority === 'MANAGER') ? 100 : 0,
       renderCell: (data) => (
-        memberAuthority === ('ADMIN' || 'MANAGER') && (
+        ((memberAuthority === 'ADMIN') || (memberAuthority === 'MANAGER')) && (
         <Button
           variant="contained"
           color="primary"
