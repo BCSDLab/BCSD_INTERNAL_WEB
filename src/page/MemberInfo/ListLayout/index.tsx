@@ -41,10 +41,10 @@ export default function ListLayout({ deleteMemberChecked }: ListLayoutProps) {
     { field: 'email', headerName: '이메일', width: 225 },
     {
       field: 'update',
-      headerName: memberAuthority === ('ADMIN' || 'MANAGER') ? '정보수정' : '',
-      width: memberAuthority === ('ADMIN' || 'MANAGER') ? 100 : 0,
+      headerName: (memberAuthority === 'ADMIN') || (memberAuthority === 'MANAGER') ? '정보수정' : '',
+      width: (memberAuthority === 'ADMIN') || (memberAuthority === 'MANAGER') ? 100 : 0,
       renderCell: (data) => (
-        memberAuthority === ('ADMIN' || 'MANAGER') && (
+        ((memberAuthority === 'ADMIN') || (memberAuthority === 'MANAGER')) && (
         <Button
           variant="contained"
           color="primary"

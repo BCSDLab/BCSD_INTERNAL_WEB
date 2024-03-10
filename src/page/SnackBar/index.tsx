@@ -9,7 +9,6 @@ export default function SnackBar() {
 
   return (
     <div>
-      {showSnackBar && message}
       <Snackbar
         open={showSnackBar}
         anchorOrigin={{ vertical: 'top', horizontal: 'center' }}

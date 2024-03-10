@@ -33,15 +33,26 @@ export const container = css`
 export const logo = css`
   width: 100%;
   margin-top: -10px;
+  cursor: pointer;
 `;
 
 export const logOutButton = css`
+  position: absolute;
+  bottom: 30px;
+  left: 50px;
+`;
+
+export const button = (props: boolean) => css`
+  background-color: ${props ? '#ffeeff' : 'none'};
+`;
+
+export const duesButton = () => css`
   display: flex;
-  flex-direction: column;
   align-items: center;
 `;
 
-export const button = (props: string) => css`
-  position: sticky;
-  top: ${props};
+export const duesGroup = css`
+  display: flex;
+  flex-direction: column;
+
 `;

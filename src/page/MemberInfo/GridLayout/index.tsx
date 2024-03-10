@@ -5,6 +5,7 @@ import Grid from '@mui/material/Grid';
 import { useState } from 'react';
 import MemberInfoModal from 'component/modal/memberInfoModal';
 import { Paper, styled } from '@mui/material';
+import { URLS } from 'const/urls';
 import * as S from './style';
 
 export const Item = styled(Paper)(({ theme }) => ({
@@ -24,7 +25,6 @@ interface ListLayoutProps {
 }
 
 export default function GridLayout({ deleteMemberChecked }: ListLayoutProps) {
-  const defaultImageUrl = 'https://image.bcsdlab.com/default-profile.png';
   const { id } = useTrackStore();
   const { data: members } = useGetMembers({ pageIndex: 0, pageSize: 1000, trackId: id });
   const [modalOpen, setModalOpen] = useState(false);
@@ -60,7 +60,7 @@ export default function GridLayout({ deleteMemberChecked }: ListLayoutProps) {
                 >
                   <div css={S.memberWrapper}>
                     <div css={S.imageNameWrapper}>
-                      <img css={S.image} src={member.profileImageUrl || defaultImageUrl} alt="profile" />
+                      <img css={S.image} src={member.profileImageUrl || URLS.defaultProfile} alt="profile" />
                       <div css={S.name}>{member.name}</div>
                     </div>
                     <div>
@@ -74,6 +74,12 @@ export default function GridLayout({ deleteMemberChecked }: ListLayoutProps) {
                         직책
                       </div>
                       {member.memberType}
+                    </div>
+                    <div>
+                      <div css={S.memberInfoLabel}>
+                        트랙
+                      </div>
+                      {member.track.name}
                     </div>
                     <div>
                       <div css={S.memberInfoLabel}>
@@ -120,7 +126,7 @@ export default function GridLayout({ deleteMemberChecked }: ListLayoutProps) {
                 >
                   <div css={S.memberWrapper}>
                     <div css={S.imageNameWrapper}>
-                      <img css={S.image} src={member.profileImageUrl || defaultImageUrl} alt="profile" />
+                      <img css={S.image} src={member.profileImageUrl || URLS.defaultProfile} alt="profile" />
                       <div css={S.name}>{member.name}</div>
                     </div>
                     <div>

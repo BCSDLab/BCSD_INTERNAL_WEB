@@ -25,6 +25,8 @@ const MEMBER_TYPE_LABEL = {
   MENTOR: '멘토',
 } as const;
 
+const AUTHORITY_LIST = ['NORMAL', 'MANAGER'] as const;
+
 const MEMBER_TYPE_LIST = ['BEGINNER', 'REGULAR', 'MENTOR'] as const;
 
 const STATUS_LIST = ['ATTEND', 'OFF', 'IPP', 'ARMY', 'COMPLETION', 'GRADUATE'] as const;
@@ -287,8 +289,14 @@ export default function MemberInfoModal({
               value={member?.authority || ''}
               fullWidth
               onChange={handleChange}
-              disabled
-            />
+              select
+            >
+              {AUTHORITY_LIST.map((authority) => (
+                <MenuItem key={authority} value={authority}>
+                  {authority}
+                </MenuItem>
+              ))}
+            </TextField>
           </div>
           <div css={S.textGap}>
             <TextField
