@@ -9,6 +9,7 @@ import { FileResponse, getPresignedUrl } from 'api/image';
 import CloudUploadIcon from '@mui/icons-material/CloudUpload';
 import axios from 'axios';
 import { useForm } from 'react-hook-form';
+import { URLS } from 'const/urls';
 import { formatPhoneNumber } from 'ts/common';
 import * as S from './style';
 
@@ -41,7 +42,6 @@ export default function MyPage() {
   const { mutate: updateMe } = useUpdateMe();
   const { data: getMe } = useGetMe();
   const DEFAULT_URL = 'https://image.bcsdlab.com/';
-  const DEFAULT_PROFILE = 'https://image.bcsdlab.com/default-profile.png';
   const { watch, setValue } = useForm();
   const imageUrl = watch('profileImage');
 
@@ -54,7 +54,7 @@ export default function MyPage() {
     () => {
       if (getMe) {
         setMember(getMe);
-        setValue('profileImage', getMe.profileImageUrl || DEFAULT_PROFILE);
+        setValue('profileImage', getMe.profileImageUrl || URLS.defaultProfile);
       }
     },
     [getMe, setValue],
