@@ -95,6 +95,7 @@ export interface MemberCreate {
   profileImageUrl?: string;
   isAuthed?: boolean;
   isDeleted?: boolean;
+  authority?: Authority;
 }
 
 const REVERSE_STATUS_LABEL = Object.entries(STATUS_LABEL).reduce((acc, [key, value]) => {
@@ -148,6 +149,7 @@ export const toMemberCreate = (member: MemberCreate): MemberCreate => {
     password: member.password,
     isAuthed: true,
     isDeleted: false,
+    authority: Authority.NORMAL,
   };
 };
 
