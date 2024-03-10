@@ -33,6 +33,7 @@ export const container = css`
 export const logo = css`
   width: 100%;
   margin-top: -10px;
+  cursor: pointer;
 `;
 
 export const logOutButton = css`

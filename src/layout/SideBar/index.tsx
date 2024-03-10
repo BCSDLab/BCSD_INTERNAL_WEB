@@ -1,3 +1,5 @@
+/* eslint-disable jsx-a11y/no-noninteractive-element-interactions */
+/* eslint-disable jsx-a11y/click-events-have-key-events */
 import { Button } from '@mui/material';
 import { useNavigate } from 'react-router-dom';
 import * as S from './style';
@@ -12,7 +14,7 @@ export default function SideBar() {
   return (
     <div css={S.container}>
       <div css={S.sideBar}>
-        <img src="https://image.bcsdlab.com/banner.png" alt="logo" css={S.logo} />
+        <img src="https://image.bcsdlab.com/banner.png" alt="logo" css={S.logo} onClick={() => navigate('member')} />
         <Button color="secondary" sx={{ marginTop: '20px' }} size="large" onClick={() => navigate('member')} css={S.button('20px')}>회원정보</Button>
         <Button color="secondary" sx={{ marginTop: '20px' }} size="large" onClick={() => navigate('mypage')} css={S.button('60px')}>마이페이지</Button>
         <Button color="secondary" sx={{ marginTop: '20px' }} size="large" onClick={() => navigate('accept')} css={S.button('100px')}>회원승인</Button>
