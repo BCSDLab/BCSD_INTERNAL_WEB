@@ -37,8 +37,8 @@ export default function UpdateJobModal({
   const currentYear = new Date().getFullYear();
   const openSnackBar = useSnackBar();
   const { data } = useGetJobs(currentYear);
-  const putJobsMutation = usePutJobs();
-  const deleteJobsMutation = useDeleteJobs();
+  const putJobsMutation = usePutJobs({ setIsSuccess, onClose });
+  const deleteJobsMutation = useDeleteJobs({ setIsSuccess, onClose });
 
   const jobTypes = data?.jobs.filter((job) => job.memberId === memberId).map((job) => job.type);
   const selectedJob = data?.jobs.find((job) => job.id === jobId);
@@ -114,13 +114,6 @@ export default function UpdateJobModal({
       deleteJobsMutation.mutate(jobIds[index]);
     }
   };
-
-  useEffect(() => {
-    if (putJobsMutation.isSuccess || deleteJobsMutation.isSuccess) {
-      setIsSuccess(true);
-      onClose();
-    }
-  }, [putJobsMutation.isSuccess, deleteJobsMutation.isSuccess, onClose, setIsSuccess]);
   return (
     <Modal
       open={open}

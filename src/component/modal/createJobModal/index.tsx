@@ -1,5 +1,5 @@
 import { Button, Modal, TextField } from '@mui/material';
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 import { usePostJobs } from 'query/jobs';
 import { useGetMembers } from 'query/members';
 import * as S from './style';
@@ -21,7 +21,7 @@ export default function CreateJobModal({ open, onClose, setIsSuccess }: CreateJo
   };
   const [info, setInfo] = useState(initialInfo);
   const { data: members } = useGetMembers({ pageIndex: 0, pageSize: 1000, trackId: null });
-  const postJobsMutation = usePostJobs();
+  const postJobsMutation = usePostJobs({ setIsSuccess, onClose });
 
   const handleInfoChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setInfo({
@@ -43,13 +43,6 @@ export default function CreateJobModal({ open, onClose, setIsSuccess }: CreateJo
       });
     }
   };
-
-  useEffect(() => {
-    if (postJobsMutation.isSuccess) {
-      setIsSuccess(true);
-      onClose();
-    }
-  }, [postJobsMutation.isSuccess, onClose, setIsSuccess]);
   return (
     <Modal
       open={open}
