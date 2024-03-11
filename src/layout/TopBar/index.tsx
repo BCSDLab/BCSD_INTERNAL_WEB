@@ -31,6 +31,10 @@ export const pagePath = [
     path: '/track',
     title: '트랙 정보',
   },
+  {
+    path: '/role',
+    title: '직책 정보',
+  },
 ];
 
 const currentYear = new Date().getFullYear();

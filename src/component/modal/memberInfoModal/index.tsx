@@ -351,9 +351,11 @@ export default function MemberInfoModal({
             </TextField>
           </div>
           <div css={S.buttonContainer}>
-            <Button sx={{ mt: 2, mb: 2 }} variant="contained" color="error" onClick={handleDelete}>
-              회원 삭제
-            </Button>
+            <div css={S.buttonWrapper}>
+              <Button sx={{ mt: 2, mb: 2 }} variant="contained" color="error" onClick={handleDelete}>
+                회원 삭제
+              </Button>
+            </div>
             <div css={S.buttonWrapper}>
               <Button
                 sx={{ mt: 2, mb: 2 }}
@@ -370,7 +372,6 @@ export default function MemberInfoModal({
                 닫기
               </Button>
             </div>
-
           </div>
         </Box>
       </Box>

@@ -7,11 +7,13 @@ export const textGap = css`
 
 export const buttonContainer = css`
   display: flex;
+  align-items: center;
   justify-content: space-between;
 `;
 
 export const buttonWrapper = css`
   display: flex;
+  align-items: center;
   gap: 20px;
 `;
 

@@ -13,6 +13,7 @@ import EditDues from 'page/EditDues';
 import LoadingSpinner from 'layout/LoadingSpinner';
 import TrackInfo from 'page/Track';
 import FindPassword from 'page/FindPassword';
+import Role from 'page/Role';
 
 function App() {
   return (
@@ -68,6 +69,7 @@ function App() {
               </Suspense>
             )}
           />
+          <Route path="/role" element={<Role />} />
         </Route>
       </Route>
       <Route path="/login" element={<SignIn />} />
