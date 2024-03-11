@@ -14,6 +14,7 @@ export const pagination = css`
   display: flex;
   justify-content: center;
   width: 100%;
+  margin-top: 20px;
 `;
 
 export const createButton = css`
