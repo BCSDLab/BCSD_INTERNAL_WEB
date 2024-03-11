@@ -10,8 +10,17 @@ interface CreateJobModalProps {
   setIsSuccess: React.Dispatch<React.SetStateAction<boolean>>;
 }
 
+interface InitialInfo {
+  name: string;
+  type: string;
+  startYear: string;
+  startMonth: string;
+  endYear: string;
+  endMonth: string;
+}
+
 export default function CreateJobModal({ open, onClose, setIsSuccess }: CreateJobModalProps) {
-  const initialInfo = {
+  const initialInfo: InitialInfo = {
     name: '',
     type: '',
     startYear: '',
@@ -19,7 +28,7 @@ export default function CreateJobModal({ open, onClose, setIsSuccess }: CreateJo
     endYear: '',
     endMonth: '',
   };
-  const [info, setInfo] = useState(initialInfo);
+  const [info, setInfo] = useState<InitialInfo>(initialInfo);
   const { data: members } = useGetMembers({ pageIndex: 0, pageSize: 1000, trackId: null });
   const postJobsMutation = usePostJobs({ setIsSuccess, onClose });
 
