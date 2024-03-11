@@ -6,6 +6,7 @@ import { Item } from 'page/MemberInfo/GridLayout';
 import useBooleanState from 'util/hooks/useBooleanState';
 import CreateJobModal from 'component/modal/createJobModal';
 import UpdateJobModal from 'component/modal/updateJobModal';
+import { URLS } from 'const/urls';
 import * as S from './style';
 import useFindJob from './hook/useFindJob';
 
@@ -14,7 +15,6 @@ import useFindJob from './hook/useFindJob';
 // 교육장
 // 그 외(TF 공통 교육 담당 등)
 function ViewOfRole() {
-  const defaultImageUrl = 'https://image.bcsdlab.com/default-profile.png';
   const currentYear = new Date().getFullYear();
   const [selectedYear, setSelectedYear] = useState(currentYear);
   const {
@@ -73,7 +73,7 @@ function ViewOfRole() {
             <Item css={S.memberContainer} key={chairManInfo?.name} onClick={() => handleUpdateJobModalOpen(chairManInfo?.id, chairMen[index].id)}>
               <div css={S.memberWrapper}>
                 <div css={S.imageNameWrapper}>
-                  <img css={S.image} src={chairManInfo?.profileImageUrl || defaultImageUrl} alt="profile" />
+                  <img css={S.image} src={chairManInfo?.profileImageUrl || URLS.defaultProfile} alt="profile" />
                   <div css={S.name}>{chairManInfo?.name}</div>
                 </div>
                 <div>
@@ -101,7 +101,7 @@ function ViewOfRole() {
             <Item css={S.memberContainer} key={viceChairManInfo?.name} onClick={() => handleUpdateJobModalOpen(viceChairManInfo?.id, viceChairMen[index].id)}>
               <div css={S.memberWrapper}>
                 <div css={S.imageNameWrapper}>
-                  <img css={S.image} src={viceChairManInfo?.profileImageUrl || defaultImageUrl} alt="profile" />
+                  <img css={S.image} src={viceChairManInfo?.profileImageUrl || URLS.defaultProfile} alt="profile" />
                   <div css={S.name}>{viceChairManInfo?.name}</div>
                 </div>
                 <div>
@@ -134,7 +134,7 @@ function ViewOfRole() {
             <Item css={S.memberContainer} key={trackLeader?.name} onClick={() => handleUpdateJobModalOpen(trackLeader?.id, trackLeaders[index].id)}>
               <div css={S.memberWrapper}>
                 <div css={S.imageNameWrapper}>
-                  <img css={S.image} src={trackLeader?.profileImageUrl || defaultImageUrl} alt="profile" />
+                  <img css={S.image} src={trackLeader?.profileImageUrl || URLS.defaultProfile} alt="profile" />
                   <div css={S.name}>{trackLeader?.name}</div>
                 </div>
                 <div>
@@ -167,7 +167,7 @@ function ViewOfRole() {
             <Item css={S.memberContainer} key={educationLeader?.name} onClick={() => handleUpdateJobModalOpen(educationLeader?.id, educationLeaders[index].id)}>
               <div css={S.memberWrapper}>
                 <div css={S.imageNameWrapper}>
-                  <img css={S.image} src={educationLeader?.profileImageUrl || defaultImageUrl} alt="profile" />
+                  <img css={S.image} src={educationLeader?.profileImageUrl || URLS.defaultProfile} alt="profile" />
                   <div css={S.name}>{educationLeader?.name}</div>
                 </div>
                 <div>
@@ -200,7 +200,7 @@ function ViewOfRole() {
             <Item css={S.memberContainer} key={member?.name} onClick={() => handleUpdateJobModalOpen(member?.id, etc[index].id)}>
               <div css={S.memberWrapper}>
                 <div css={S.imageNameWrapper}>
-                  <img css={S.image} src={member?.profileImageUrl || defaultImageUrl} alt="profile" />
+                  <img css={S.image} src={member?.profileImageUrl || URLS.defaultProfile} alt="profile" />
                   <div css={S.name}>{member?.name}</div>
                 </div>
                 <div>
