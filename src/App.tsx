@@ -6,7 +6,7 @@ import AcceptMember from 'page/Admin';
 import AuthRoute from 'components/common/AuthRoute';
 import DuesManagement from 'page/DuesManagement';
 import DefaultLayout from 'layout/DefaultLayout';
-import { Suspense } from 'react';
+import { Suspense, useEffect } from 'react';
 import MyPage from 'page/MyPage';
 import DuesSetup from 'page/DuesSetup';
 import EditDues from 'page/EditDues';
@@ -14,8 +14,15 @@ import LoadingSpinner from 'layout/LoadingSpinner';
 import TrackInfo from 'page/Track';
 import FindPassword from 'page/FindPassword';
 import Role from 'page/Role';
+import { useLoginState } from 'store/loginStore';
 
 function App() {
+  const { setMe } = useLoginState();
+
+  useEffect(() => {
+    setMe();
+    /* eslint-disable react-hooks/exhaustive-deps */
+  }, []);
   return (
     <Routes>
       <Route element={<AuthRoute needAuth={false} redirectRoute="/member" />}>
@@ -30,7 +37,7 @@ function App() {
           </Suspense>
         )}
       />
-      <Route element={<AuthRoute needAuth redirectRoute="/login" />}>
+      <Route element={<AuthRoute needAuth redirectRoute="/" />}>
         <Route element={<DefaultLayout />}>
           <Route
             path="/accept"
@@ -56,8 +63,6 @@ function App() {
               </Suspense>
             )}
           />
-          <Route path="/accept" element={<AcceptMember />} />
-          <Route path="/member" element={<MemberInfo />} />
           <Route path="/dues" element={<DuesManagement />} />
           <Route path="/dues-setup" element={<DuesSetup />} />
           <Route path="/edit-dues" element={<EditDues />} />
@@ -72,7 +77,6 @@ function App() {
           <Route path="/role" element={<Role />} />
         </Route>
       </Route>
-      <Route path="/login" element={<SignIn />} />
     </Routes>
   );
 }
