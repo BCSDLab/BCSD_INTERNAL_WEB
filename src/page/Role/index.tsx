@@ -226,7 +226,7 @@ function ViewOfRole() {
           ))}
         </Grid>
       </div>
-      <UpdateJobModal open={isUpdateJobModalOpen} onClose={closeUpdateJobModal} memberId={selectedMemberId} setIsSuccess={setIsSuccess} jobId={selectedJobId} />
+      <UpdateJobModal open={isUpdateJobModalOpen} onClose={closeUpdateJobModal} memberId={selectedMemberId} setIsSuccess={setIsSuccess} jobId={selectedJobId} selectedYear={selectedYear} />
     </>
   );
 }

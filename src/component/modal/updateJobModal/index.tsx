@@ -20,10 +20,11 @@ interface UpdateJobModalProps {
   open: boolean;
   onClose: () => void;
   setIsSuccess: React.Dispatch<React.SetStateAction<boolean>>;
+  selectedYear: number;
 }
 
 export default function UpdateJobModal({
-  memberId, jobId, open, onClose, setIsSuccess,
+  memberId, jobId, open, onClose, setIsSuccess, selectedYear,
 }: UpdateJobModalProps) {
   const initialJob: InitialJob = useMemo(() => ({
     type: '',
@@ -34,9 +35,8 @@ export default function UpdateJobModal({
   }), []);
   const [info, setInfo] = useState<InitialJob | null>(initialJob);
   const [type, setType] = useState<string>('');
-  const currentYear = new Date().getFullYear();
   const openSnackBar = useSnackBar();
-  const { data } = useGetJobs(currentYear);
+  const { data } = useGetJobs(selectedYear);
   const putJobsMutation = usePutJobs({ setIsSuccess, onClose });
   const deleteJobsMutation = useDeleteJobs({ setIsSuccess, onClose });
 
