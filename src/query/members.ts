@@ -7,6 +7,7 @@ import { AdminMemberUpdate, MemberCreate, MemberUpdate } from 'model/member';
 import { AxiosError } from 'axios';
 import { useNavigate } from 'react-router-dom';
 import { useSnackBar } from 'ts/useSnackBar';
+import { useLoginState } from 'store/loginStore';
 
 interface GetMembers {
   pageIndex: number;
@@ -106,10 +107,12 @@ export const useCreateMember = () => {
 export const useLogin = () => {
   const openSnackBar = useSnackBar();
   const navigate = useNavigate();
+  const { setMe } = useLoginState();
   const { mutate, isPending } = useMutation({
     mutationFn: ({ studentNumber, password }: LoginRequest) => login(studentNumber, password),
     onSuccess: (response) => {
       localStorage.setItem('accessToken', response.accessToken);
+      setMe();
       openSnackBar({ type: 'success', message: '로그인에 성공했습니다.' });
       navigate('/member');
     },
