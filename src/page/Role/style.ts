@@ -46,6 +46,7 @@ export const gridWrapper = (itemCount: number) => {
   return css`
   display: grid;
   grid-template-columns: repeat(${columnCount}, 1fr);
+  gap: 20px;
   min-height: 200px;
   margin: 20px 0;
   padding: 10px;
@@ -63,13 +64,12 @@ export const memberContainer = css`
 
 export const memberWrapper = css`
   width: 280px;
-  height: 100%;
   display: flex;
   flex-direction: column;
   justify-content: flex-start;
   align-items: flex-start;
-  padding-top: 10px;
-  padding-bottom: 10px;
+  padding-top: 15px;
+  padding-bottom: 20px;
   gap: 15px;
   font-size: 15px;
 `;

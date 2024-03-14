@@ -6,6 +6,7 @@ import { Item } from 'page/MemberInfo/GridLayout';
 import useBooleanState from 'util/hooks/useBooleanState';
 import CreateJobModal from 'component/modal/createJobModal';
 import UpdateJobModal from 'component/modal/updateJobModal';
+import AddIcon from '@mui/icons-material/Add';
 import { URLS } from 'const/urls';
 import * as S from './style';
 import useFindJob from './hook/useFindJob';
@@ -53,7 +54,14 @@ function ViewOfRole() {
     <>
       <div css={S.pagination}>
         <div css={S.createButton}>
-          <Button variant="contained" onClick={openCreateJobModal}>직책 생성</Button>
+          <Button
+            variant="outlined"
+            color="primary"
+            startIcon={<AddIcon />}
+            onClick={openCreateJobModal}
+          >
+            직책 생성
+          </Button>
           <CreateJobModal open={isCreateJobModalOpen} onClose={closeCreateJobModal} setIsSuccess={setIsSuccess} />
         </div>
         <Button onClick={goToPrevYear}>
