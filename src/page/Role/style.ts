@@ -1,4 +1,21 @@
 import { css } from '@emotion/react';
+import { Paper, PaperProps, styled } from '@mui/material';
+
+interface ItemProps extends PaperProps {
+  authority?: 'ADMIN' | 'MANAGER' | 'NORMAL';
+}
+
+export const Item = styled(Paper)<ItemProps>(({ theme, authority }) => ({
+  backgroundColor: theme.palette.mode === 'dark' ? '#1A2027' : '#fff',
+  ...theme.typography.body2,
+  padding: theme.spacing(1),
+  textAlign: 'center',
+  color: theme.palette.text.secondary,
+  ':hover': {
+    cursor: authority === 'ADMIN' || authority === 'MANAGER' ? 'pointer' : 'default',
+    boxShadow: authority === 'ADMIN' || authority === 'MANAGER' ? theme.shadows[4] : 'default',
+  },
+}));
 
 export const container = css`
   height: 100%;
@@ -30,6 +47,7 @@ export const paginationTitle = css`
 
 export const content = css`
   margin-top: 10px;
+  width: 100%;
   display: flex;
   flex-direction: column;
   align-items: center;
