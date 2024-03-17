@@ -60,5 +60,5 @@ export const memberInfoLabel = css`
 
 export const memberInfoLabelSmall = css`
   display: inline-block;
-  font-size: 14px;
+  font-size: 13px;
 `;
