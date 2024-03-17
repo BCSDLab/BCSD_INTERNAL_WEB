@@ -272,7 +272,7 @@ export default function SignUp() {
           render={({ field }) =>
             <TextField
               select
-              label="학적"
+              label="학적상태"
               variant="outlined"
               fullWidth
               {...field}
@@ -317,7 +317,7 @@ export default function SignUp() {
           render={({ field }) =>
             <TextField
               select
-              label="멤버"
+              label="직위"
               variant="outlined"
               fullWidth
               {...field}
@@ -384,7 +384,7 @@ export default function SignUp() {
           }}
           render={({ field }) =>
             <TextField
-              label="부서"
+              label="학부"
               variant="outlined"
               helperText='ex) 컴퓨터공학부'
               fullWidth
@@ -424,7 +424,7 @@ export default function SignUp() {
           }}
           render={({ field }) =>
             <TextField
-              label="깃허브 이름"
+              label="깃허브 아이디"
               variant="outlined"
               fullWidth
               {...field}
