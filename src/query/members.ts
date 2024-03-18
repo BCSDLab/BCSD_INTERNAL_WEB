@@ -116,7 +116,7 @@ export const useLogin = () => {
       const me = await getMe();
       openSnackBar({ type: 'success', message: '로그인에 성공했습니다.' });
       if (me.memberType === 'BEGINNER') navigate('/track');
-      else navigate('/login');
+      else navigate('/');
     },
     onError: (e) => {
       if (e instanceof AxiosError) {
