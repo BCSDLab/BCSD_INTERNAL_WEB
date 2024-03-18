@@ -12,10 +12,6 @@ import * as S from './style';
 import { Item } from './style';
 import useFindJob from './hook/useFindJob';
 
-// 회장, 부회장
-// 트랙장
-// 교육장
-// 그 외(TF 공통 교육 담당 등)
 function ViewOfRole() {
   const currentYear = new Date().getFullYear();
   const [selectedYear, setSelectedYear] = useState(currentYear);
@@ -28,6 +24,7 @@ function ViewOfRole() {
   const [isSuccess, setIsSuccess] = useState(false);
   const [selectedJobId, setSelectedJobId] = useState<number>(0);
   const { data: myInfo } = useGetMe();
+  const accessAuthority = ['ADMIN', 'MANAGER'];
 
   const goToPrevYear = () => {
     setSelectedYear(selectedYear - 1);
@@ -38,7 +35,7 @@ function ViewOfRole() {
   };
 
   const handleUpdateJobModalOpen = (memberId: number | undefined, jobId: number) => {
-    if (memberId && (myInfo?.authority === 'ADMIN' || myInfo?.authority === 'MANAGER')) {
+    if (memberId && accessAuthority.includes(myInfo?.authority)) {
       setSelectedJobId(jobId);
       setSelectedMemberId(memberId);
       openUpdateJobModal();
@@ -55,7 +52,7 @@ function ViewOfRole() {
   return (
     <>
       <div css={S.pagination}>
-        {(myInfo?.authority === 'ADMIN' || myInfo?.authority === 'MANAGER')
+        {accessAuthority.includes(myInfo?.authority)
         && (
         <div css={S.createButton}>
           <Button
