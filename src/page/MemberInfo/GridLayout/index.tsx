@@ -175,7 +175,7 @@ export default function GridLayout({ deleteMemberChecked }: ListLayoutProps) {
                       <div css={S.memberInfoLabel}>
                         이메일
                       </div>
-                      {member.email}
+                      <div css={S.memberInfoLabelSmall}>{member.email}</div>
                     </div>
                   </div>
                 </Item>
