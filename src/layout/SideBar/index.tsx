@@ -5,12 +5,14 @@ import { useLocation, useNavigate } from 'react-router-dom';
 import { useState } from 'react';
 import { KeyboardDoubleArrowDown, KeyboardDoubleArrowUp } from '@mui/icons-material';
 import { pagePath } from 'layout/TopBar';
+import { useLoginState } from 'store/loginStore';
 import * as S from './style';
 
 export default function SideBar() {
   const navigate = useNavigate();
+  const { deleteMe } = useLoginState();
   const logOut = () => {
-    localStorage.removeItem('accessToken');
+    deleteMe();
     navigate('/');
   };
   const [isClicked, setIsClicked] = useState(false);
