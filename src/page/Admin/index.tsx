@@ -40,7 +40,7 @@ export default function AcceptMember() {
   return (
     <div css={S.container}>
       <div style={{
-        height: '70vh', paddingLeft: 20, paddingRight: 20,
+        height: '70vh', paddingLeft: 20, paddingRight: 20, paddingTop: 30,
       }}
       >
         <DataGrid

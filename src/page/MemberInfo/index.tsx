@@ -36,7 +36,6 @@ export default function MemberInfo() {
     <div css={S.container}>
       <div>
         <div css={S.buttonContainer}>
-          <FormControlLabel control={<Switch checked={deleteMemberChecked} onChange={handleChangedDeleteMember} />} label="탈퇴 회원" />
           <Suspense fallback={<div />}>
             <TrackFilter />
           </Suspense>
@@ -62,6 +61,7 @@ export default function MemberInfo() {
             {layout === 'list' ? <ListLayout deleteMemberChecked={deleteMemberChecked} /> : <GridLayout deleteMemberChecked={deleteMemberChecked} />}
           </Suspense>
           <div css={S.createButtonContainer}>
+            <FormControlLabel control={<Switch checked={deleteMemberChecked} onChange={handleChangedDeleteMember} />} label="탈퇴 회원" />
             {memberAuthority === 'ADMIN' || memberAuthority === 'MANAGER' ? (
               <div css={S.createButton}>
                 <Button

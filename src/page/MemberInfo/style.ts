@@ -83,4 +83,8 @@ export const createButtonContainer = css`
 export const createButton = css`
   width: 130px;
   height: 65px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin-right: 10px;
 `;
