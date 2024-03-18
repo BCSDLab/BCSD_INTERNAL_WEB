@@ -35,10 +35,6 @@ export const pagePath = [
     path: '/role',
     title: '직책 정보',
   },
-  {
-    path: '/reservation',
-    title: '동방 예약',
-  },
 ];
 
 const currentYear = new Date().getFullYear();
