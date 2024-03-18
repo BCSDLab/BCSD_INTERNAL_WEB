@@ -14,6 +14,7 @@ import LoadingSpinner from 'layout/LoadingSpinner';
 import TrackInfo from 'page/Track';
 import FindPassword from 'page/FindPassword';
 import Role from 'page/Role';
+import Reservation from 'page/Reservation';
 import { useLoginState } from 'store/loginStore';
 
 function App() {
@@ -74,6 +75,7 @@ function App() {
             )}
           />
           <Route path="/role" element={<Role />} />
+          <Route path="/reservation" element={<Reservation />} />
         </Route>
       </Route>
     </Routes>
