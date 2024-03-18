@@ -21,8 +21,7 @@ function App() {
 
   useEffect(() => {
     setMe();
-    /* eslint-disable react-hooks/exhaustive-deps */
-  }, []);
+  }, [setMe]);
   return (
     <Routes>
       <Route element={<AuthRoute needAuth={false} redirectRoute="/member" />}>
