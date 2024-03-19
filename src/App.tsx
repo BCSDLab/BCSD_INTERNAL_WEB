@@ -16,6 +16,7 @@ import FindPassword from 'page/FindPassword';
 import Role from 'page/Role';
 import { useLoginState } from 'store/loginStore';
 import { PATHS } from 'util/constants/path';
+import Reservation from 'page/Reservation';
 
 function App() {
   const { setMe } = useLoginState();
@@ -75,6 +76,7 @@ function App() {
             )}
           />
           <Route path={PATHS.role} element={<Role />} />
+          <Route path={PATHS.reservation} element={<Reservation />} />
         </Route>
       </Route>
     </Routes>
