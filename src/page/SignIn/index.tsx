@@ -7,6 +7,7 @@ import {
 } from '@mui/material';
 import { Visibility, VisibilityOff } from '@mui/icons-material';
 import { Link, useNavigate } from 'react-router-dom';
+import { PATHS } from 'util/constants/path';
 import * as S from './style';
 
 const DemoPaper = styled(Paper)(({ theme }) => ({
@@ -84,7 +85,7 @@ export default function SignIn() {
             <Button
               variant="contained"
               sx={{ width: '100px' }}
-              onClick={() => navigate('/register')}
+              onClick={() => navigate(PATHS.register)}
             >
               회원가입
             </Button>
