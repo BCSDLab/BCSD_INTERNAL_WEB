@@ -8,6 +8,7 @@ import { AxiosError } from 'axios';
 import { useNavigate } from 'react-router-dom';
 import { useSnackBar } from 'ts/useSnackBar';
 import { useLoginState } from 'store/loginStore';
+import { PATHS } from 'util/constants/path';
 
 interface GetMembers {
   pageIndex: number;
@@ -115,8 +116,8 @@ export const useLogin = () => {
       setMe();
       const me = await getMe();
       openSnackBar({ type: 'success', message: '로그인에 성공했습니다.' });
-      if (me.memberType === 'BEGINNER') navigate('/track');
-      else navigate('/login');
+      if (me.memberType === 'BEGINNER') navigate(PATHS.track);
+      else navigate(PATHS.member);
     },
     onError: (e) => {
       if (e instanceof AxiosError) {

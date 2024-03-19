@@ -1,43 +1,40 @@
 import { useLocation } from 'react-router-dom';
 import useQueryParam from 'util/hooks/useQueryParam';
+import { PATHS } from 'util/constants/path';
 import * as S from './style';
 
 export const pagePath = [
   {
-    path: '/accept',
+    path: PATHS.accept,
     title: '회원가입 승인',
   },
   {
-    path: '/member',
+    path: PATHS.member,
     title: '회원 정보',
   },
   {
-    path: '/mypage',
+    path: PATHS.myPage,
     title: '마이페이지',
   },
   {
-    path: '/dues',
+    path: PATHS.dues,
     title: '회비 납부 내역',
   },
   {
-    path: '/dues-setup',
+    path: PATHS.duesSetup,
     title: '회비 생성',
   },
   {
-    path: '/edit-dues',
+    path: PATHS.editDues,
     title: '회비 내역 수정',
   },
   {
-    path: '/track',
+    path: PATHS.track,
     title: '트랙 정보',
   },
   {
-    path: '/role',
+    path: PATHS.role,
     title: '직책 정보',
-  },
-  {
-    path: '/reservation',
-    title: '동방 예약',
   },
 ];
 

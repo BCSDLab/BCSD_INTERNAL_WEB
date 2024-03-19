@@ -14,8 +14,8 @@ import LoadingSpinner from 'layout/LoadingSpinner';
 import TrackInfo from 'page/Track';
 import FindPassword from 'page/FindPassword';
 import Role from 'page/Role';
-import Reservation from 'page/Reservation';
 import { useLoginState } from 'store/loginStore';
+import { PATHS } from 'util/constants/path';
 
 function App() {
   const { setMe } = useLoginState();
@@ -25,22 +25,22 @@ function App() {
   }, [setMe]);
   return (
     <Routes>
-      <Route element={<AuthRoute needAuth={false} redirectRoute="/member" />}>
-        <Route path="/" element={<SignIn />} />
-        <Route path="/find-password" element={<FindPassword />} />
+      <Route element={<AuthRoute needAuth={false} redirectRoute={PATHS.member} />}>
+        <Route path={PATHS.home} element={<SignIn />} />
+        <Route path={PATHS.findPassword} element={<FindPassword />} />
       </Route>
       <Route
-        path="/register"
+        path={PATHS.register}
         element={(
           <Suspense fallback={<LoadingSpinner />}>
             <SignUp />
           </Suspense>
         )}
       />
-      <Route element={<AuthRoute needAuth redirectRoute="/" />}>
+      <Route element={<AuthRoute needAuth redirectRoute={PATHS.accept} />}>
         <Route element={<DefaultLayout />}>
           <Route
-            path="/accept"
+            path={PATHS.accept}
             element={(
               <Suspense fallback={<LoadingSpinner />}>
                 <AcceptMember />
@@ -48,7 +48,7 @@ function App() {
             )}
           />
           <Route
-            path="/member"
+            path={PATHS.member}
             element={(
               <Suspense fallback={<LoadingSpinner />}>
                 <MemberInfo />
@@ -56,26 +56,25 @@ function App() {
             )}
           />
           <Route
-            path="/mypage"
+            path={PATHS.myPage}
             element={(
               <Suspense fallback={<LoadingSpinner />}>
                 <MyPage />
               </Suspense>
             )}
           />
-          <Route path="/dues" element={<DuesManagement />} />
-          <Route path="/dues-setup" element={<DuesSetup />} />
-          <Route path="/edit-dues" element={<EditDues />} />
+          <Route path={PATHS.dues} element={<DuesManagement />} />
+          <Route path={PATHS.duesSetup} element={<DuesSetup />} />
+          <Route path={PATHS.editDues} element={<EditDues />} />
           <Route
-            path="/track"
+            path={PATHS.track}
             element={(
               <Suspense fallback={<LoadingSpinner />}>
                 <TrackInfo />
               </Suspense>
             )}
           />
-          <Route path="/role" element={<Role />} />
-          <Route path="/reservation" element={<Reservation />} />
+          <Route path={PATHS.role} element={<Role />} />
         </Route>
       </Route>
     </Routes>

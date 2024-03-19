@@ -3,9 +3,10 @@ import TopBar from 'layout/TopBar';
 import SideBar from 'layout/SideBar';
 import { useLoginState } from 'store/loginStore';
 import { useSnackBar } from 'ts/useSnackBar';
+import { PATHS } from 'util/constants/path';
 import * as S from './style';
 
-const beginnerPage = ['/track', '/role', '/mypage'];
+const beginnerPage = [PATHS.track, PATHS.role, PATHS.myPage];
 
 export default function DefaultLayout() {
   const { me } = useLoginState();
