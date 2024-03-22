@@ -2,6 +2,7 @@ import { Button, Modal, TextField } from '@mui/material';
 import { useState } from 'react';
 import { usePostJobs } from 'query/jobs';
 import { useGetMembers } from 'query/members';
+import { useSnackBar } from 'ts/useSnackBar';
 import * as S from './style';
 
 interface CreateJobModalProps {
@@ -31,6 +32,7 @@ export default function CreateJobModal({ open, onClose, setIsSuccess }: CreateJo
   const [info, setInfo] = useState<InitialInfo>(initialInfo);
   const { data: members } = useGetMembers({ pageIndex: 0, pageSize: 1000, trackId: null });
   const postJobsMutation = usePostJobs({ setIsSuccess, onClose });
+  const openSnackBar = useSnackBar();
 
   const handleInfoChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setInfo({
@@ -42,22 +44,36 @@ export default function CreateJobModal({ open, onClose, setIsSuccess }: CreateJo
   const handleCreateInfoClick = () => {
     const memberId = members?.content.find((member) => member.name === info.name)?.id;
     if (memberId) {
-      postJobsMutation.mutate({
-        memberId,
-        type: info.type,
-        startYear: Number(info.startYear),
-        startMonth: Number(info.startMonth),
-        endYear: Number(info.endYear),
-        endMonth: Number(info.endMonth),
-      });
+      if (info.startYear === '' || info.startMonth === '' || info.endYear === '' || info.endMonth === '') {
+        openSnackBar({ type: 'error', message: '빈 칸을 채워주세요.' });
+      } else if (Number.isNaN(Number(info.startYear)) || Number.isNaN(Number(info.startMonth)) || Number.isNaN(Number(info.endYear)) || Number.isNaN(Number(info.endMonth))) {
+        openSnackBar({ type: 'error', message: '숫자만 입력 가능합니다.' });
+      } else if (Number(info.startYear) > Number(info.endYear)) {
+        openSnackBar({ type: 'error', message: '시작 연도가 종료 연도보다 늦을 수 없습니다.' });
+      } else if (Number(info.startYear) === Number(info.endYear) && Number(info.startMonth) > Number(info.endMonth)) {
+        openSnackBar({ type: 'error', message: '시작 월이 종료 월보다 늦을 수 없습니다.' });
+      } else {
+        postJobsMutation.mutate({
+          memberId,
+          type: info.type,
+          startYear: Number(info.startYear),
+          startMonth: Number(info.startMonth),
+          endYear: Number(info.endYear),
+          endMonth: Number(info.endMonth),
+        });
+      }
     }
   };
+
+  const handleCloseModal = () => {
+    onClose();
+    setInfo(initialInfo);
+  };
+
   return (
     <Modal
       open={open}
-      onClose={onClose}
-      aria-labelledby="child-modal-title"
-      aria-describedby="child-modal-description"
+      onClose={handleCloseModal}
     >
       <div css={S.modal}>
         <h2 css={S.modalTitle}>직책 생성</h2>
@@ -107,7 +123,7 @@ export default function CreateJobModal({ open, onClose, setIsSuccess }: CreateJo
         </div>
         <div css={S.buttonWrapper}>
           <Button variant="contained" onClick={handleCreateInfoClick}>저장</Button>
-          <Button variant="outlined" onClick={onClose} css={S.closeButton}>닫기</Button>
+          <Button variant="outlined" onClick={handleCloseModal} css={S.closeButton}>닫기</Button>
         </div>
       </div>
     </Modal>

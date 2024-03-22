@@ -7,6 +7,8 @@ import { AdminMemberUpdate, MemberCreate, MemberUpdate } from 'model/member';
 import { AxiosError } from 'axios';
 import { useNavigate } from 'react-router-dom';
 import { useSnackBar } from 'ts/useSnackBar';
+import { useLoginState } from 'store/loginStore';
+import { PATHS } from 'util/constants/path';
 
 interface GetMembers {
   pageIndex: number;
@@ -106,12 +108,16 @@ export const useCreateMember = () => {
 export const useLogin = () => {
   const openSnackBar = useSnackBar();
   const navigate = useNavigate();
+  const { setMe } = useLoginState();
   const { mutate, isPending } = useMutation({
     mutationFn: ({ studentNumber, password }: LoginRequest) => login(studentNumber, password),
-    onSuccess: (response) => {
+    onSuccess: async (response) => {
       localStorage.setItem('accessToken', response.accessToken);
+      setMe();
+      const me = await getMe();
       openSnackBar({ type: 'success', message: '로그인에 성공했습니다.' });
-      navigate('/member');
+      if (me.memberType === 'BEGINNER') navigate(PATHS.track);
+      else navigate(PATHS.member);
     },
     onError: (e) => {
       if (e instanceof AxiosError) {
