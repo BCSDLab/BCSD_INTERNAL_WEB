@@ -38,26 +38,27 @@ export default function ListLayout({ deleteMemberChecked }: ListLayoutProps) {
     { field: 'department', headerName: '학부', width: 140 },
     { field: 'studentNumber', headerName: '학번', width: 130 },
     { field: 'phoneNumber', headerName: '전화번호', width: 150 },
-    { field: 'email', headerName: '이메일', width: 225 },
+    { field: 'email', headerName: '이메일', width: 210 },
     {
       field: 'update',
-      headerName: (memberAuthority === 'ADMIN') || (memberAuthority === 'MANAGER') ? '정보수정' : '',
-      width: (memberAuthority === 'ADMIN') || (memberAuthority === 'MANAGER') ? 120 : 0,
+      // eslint-disable-next-line no-nested-ternary
+      headerName: (memberAuthority === 'ADMIN') || (memberAuthority === 'MANAGER') ? '정보수정' : (deleteMemberChecked ? '탈퇴사유' : ''),
+      width: (memberAuthority === 'ADMIN') || (memberAuthority === 'MANAGER') ? 120 : 180,
       renderCell: (data) => (
-        ((memberAuthority === 'ADMIN') || (memberAuthority === 'MANAGER')) && (
-        <Button
-          variant="contained"
-          color="primary"
-          size="small"
-          onClick={(event) => {
-            event.stopPropagation();
-            setMemberInfo(data.row);
-            handleOpenModal();
-          }}
-        >
-          수정
-        </Button>
-        )
+        ((memberAuthority === 'ADMIN') || (memberAuthority === 'MANAGER')) ? (
+          <Button
+            variant="contained"
+            color="primary"
+            size="small"
+            onClick={(event) => {
+              event.stopPropagation();
+              setMemberInfo(data.row);
+              handleOpenModal();
+            }}
+          >
+            수정
+          </Button>
+        ) : data.row.deleteReason
       ),
     },
   ];

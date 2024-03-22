@@ -77,7 +77,7 @@ export const useDeleteMember = () => {
   const queryClient = useQueryClient();
   const openSnackBar = useSnackBar();
   return useMutation({
-    mutationFn: (member: MemberDelete) => deleteMember(member),
+    mutationFn: (member: MemberDelete) => deleteMember(member.id, member.reason),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['members'] });
       openSnackBar({ type: 'success', message: '회원 삭제에 성공했습니다.' });
