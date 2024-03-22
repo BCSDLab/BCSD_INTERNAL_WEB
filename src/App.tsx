@@ -16,6 +16,7 @@ import FindPassword from 'page/FindPassword';
 import Role from 'page/Role';
 import { useLoginState } from 'store/loginStore';
 import { PATHS } from 'util/constants/path';
+import Team from 'page/Team';
 
 function App() {
   const { setMe } = useLoginState();
@@ -74,6 +75,7 @@ function App() {
               </Suspense>
             )}
           />
+          <Route path={PATHS.team} element={<Team />} />
           <Route path={PATHS.role} element={<Role />} />
         </Route>
       </Route>

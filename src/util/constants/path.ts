@@ -10,5 +10,6 @@ export const PATHS = {
   duesSetup: '/dues-setup',
   editDues: '/edit-dues',
   track: '/track',
+  team: '/team',
   role: '/role',
 };
