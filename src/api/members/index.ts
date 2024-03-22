@@ -1,7 +1,7 @@
 import { accessClient } from 'api';
 import {
   AdminMemberUpdate, LoginResponse, Member, MemberCreate, MemberResponse, MemberUpdate,
-  CertificationToken, RequestChangePassword, ChangePassword,
+  CertificationToken, RequestChangePassword, ChangePassword, MemberDelete,
 } from 'model/member';
 import { Pagination } from 'model/page';
 
@@ -19,7 +19,7 @@ export const getMember = (id: number) => accessClient.get<Member>(`/members/${id
 
 export const updateMember = (memberId: number, member: AdminMemberUpdate) => accessClient.put<Member>(`/admin/members/${memberId}`, member);
 
-export const deleteMember = (memberId: number) => accessClient.delete<Member>(`/admin/members/${memberId}`);
+export const deleteMember = (member: MemberDelete) => accessClient.delete<Member>('/admin/members', { data: member });
 
 export const createMember = (member: MemberCreate) => accessClient.post<Member>('/admin/members', member);
 
