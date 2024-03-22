@@ -4,7 +4,6 @@ import {
 import { TIME_LIST } from 'util/constants/time';
 
 export default function Week() {
-  
   return (
     <Table>
       <TableHead>

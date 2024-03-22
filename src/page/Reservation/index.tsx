@@ -2,6 +2,7 @@ import { Button, ButtonGroup } from '@mui/material';
 import LoadingSpinner from 'layout/LoadingSpinner';
 import { Suspense } from 'react';
 import Week from './view/Week';
+import Month from './view/Month';
 
 function ReservationOutlet() {
   const currentYear = new Date().getFullYear();
@@ -13,7 +14,7 @@ function ReservationOutlet() {
         <Button>주</Button>
       </ButtonGroup>
       {/* 주를 만들자 */}
-      <Week />
+      <Month />
     </div>
   );
 }
