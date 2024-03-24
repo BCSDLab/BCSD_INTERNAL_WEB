@@ -1,14 +1,16 @@
 import { Button, Modal, TextField } from '@mui/material';
 import { useEffect, useState } from 'react';
 import { useDeleteReservations, useGetReservations, usePutReservations } from 'query/reservations';
-import { Reservations } from 'model/reservations';
+import { GetReservationsResponse, Reservations } from 'model/reservations';
 import { useSnackBar } from 'ts/useSnackBar';
+import { QueryObserverResult, RefetchOptions } from '@tanstack/react-query';
 import * as S from './style';
 
 interface CreateReservationModalProps {
   open: boolean;
   onClose: () => void;
   reservationInfoIndex: number;
+  refetch: (options?: RefetchOptions | undefined) => Promise<QueryObserverResult<GetReservationsResponse[], Error>>
 }
 
 const initialReservationInfo = {
@@ -20,12 +22,12 @@ const initialReservationInfo = {
 };
 
 export default function ModifyReservationModal({
-  open, onClose, reservationInfoIndex,
+  open, onClose, reservationInfoIndex, refetch,
 }: CreateReservationModalProps) {
   const openSnackBar = useSnackBar();
   const { data: reservationsInfo } = useGetReservations();
-  const { mutate: putReservations } = usePutReservations();
-  const { mutate: deleteReservations } = useDeleteReservations();
+  const { mutate: putReservations, isSuccess: isPutReservationsSuccess } = usePutReservations();
+  const { mutate: deleteReservations, isSuccess: isDeleteReservationsSuccess } = useDeleteReservations();
   const [reservationInfo, setReservationInfo] = useState<Reservations>(initialReservationInfo);
 
   useEffect(() => {
@@ -33,6 +35,12 @@ export default function ModifyReservationModal({
       setReservationInfo(reservationsInfo[reservationInfoIndex]);
     }
   }, [reservationsInfo, reservationInfoIndex]);
+
+  useEffect(() => {
+    if (isPutReservationsSuccess || isDeleteReservationsSuccess) {
+      refetch();
+    }
+  }, [isPutReservationsSuccess, isDeleteReservationsSuccess, refetch]);
 
   const handleReservationInfoChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setReservationInfo({
@@ -50,13 +58,13 @@ export default function ModifyReservationModal({
     } else if (reservationInfo.detailedReason === '') {
       openSnackBar({ type: 'error', message: '상세 사용 목적을 입력해주세요.' });
     } else {
-      putReservations({ id: reservationInfoIndex, data: reservationInfo });
+      putReservations({ id: reservationsInfo[reservationInfoIndex].id, data: reservationInfo });
       onClose();
     }
   };
 
   const handleDeleteReservationClick = () => {
-    deleteReservations(reservationInfoIndex);
+    deleteReservations(reservationsInfo[reservationInfoIndex].id);
     onClose();
   };
 

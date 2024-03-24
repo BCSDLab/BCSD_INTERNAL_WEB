@@ -52,7 +52,7 @@ export default function Week() {
   const [selectedIndex, setSelectedIndex] = useState<number>(-1);
   const { value: isReservationModalOpen, setTrue: openReservationModal, setFalse: closeReservationModal } = useBooleanState();
   const { value: isModifyReservationModalOpen, setTrue: openModifyReservationModal, setFalse: closeModifyReservationModal } = useBooleanState();
-  const { data: reservationInfo } = useGetReservations();
+  const { data: reservationInfo, refetch } = useGetReservations();
   const startDateTime = useRef<string>('');
   const endDateTime = useRef<string>('');
 
@@ -174,7 +174,6 @@ export default function Week() {
       openModifyReservationModal();
     }
   };
-  // TODO: 드래그 중에 마우스가 밖으로 나가면 드래그가 종료되지 않는 문제
   return (
     <div>
       {currentWeekStart.getFullYear()}
@@ -251,10 +250,10 @@ export default function Week() {
         </TableBody>
       </Table>
       {startDateTime.current && endDateTime.current && !dragging && (
-        <CreateReservationModal open={isReservationModalOpen} onClose={handleReservationModalClose} startDateTime={startDateTime.current} endDateTime={endDateTime.current} />
+        <CreateReservationModal open={isReservationModalOpen} onClose={handleReservationModalClose} startDateTime={startDateTime.current} endDateTime={endDateTime.current} refetch={refetch} />
       )}
       {!dragging && (
-        <ModifyReservationModal open={isModifyReservationModalOpen} onClose={closeModifyReservationModal} reservationInfoIndex={selectedIndex} />
+        <ModifyReservationModal open={isModifyReservationModalOpen} onClose={closeModifyReservationModal} reservationInfoIndex={selectedIndex} refetch={refetch} />
       )}
     </div>
   );

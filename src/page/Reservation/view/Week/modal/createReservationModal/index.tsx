@@ -1,8 +1,9 @@
 import { Button, Modal, TextField } from '@mui/material';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useCreateReservations } from 'query/reservations';
-import { Reservations } from 'model/reservations';
+import { GetReservationsResponse, Reservations } from 'model/reservations';
 import { useSnackBar } from 'ts/useSnackBar';
+import { QueryObserverResult, RefetchOptions } from '@tanstack/react-query';
 import * as S from './style';
 
 interface CreateReservationModalProps {
@@ -10,10 +11,11 @@ interface CreateReservationModalProps {
   onClose: () => void;
   startDateTime: string;
   endDateTime: string;
+  refetch: (options?: RefetchOptions | undefined) => Promise<QueryObserverResult<GetReservationsResponse[], Error>>
 }
 
 export default function CreateReservationModal({
-  open, onClose, startDateTime, endDateTime,
+  open, onClose, startDateTime, endDateTime, refetch,
 }: CreateReservationModalProps) {
   const [reservationInfo, setReservationInfo] = useState<Reservations>({
     memberCount: 0,
@@ -23,7 +25,13 @@ export default function CreateReservationModal({
     endDateTime,
   });
   const openSnackBar = useSnackBar();
-  const { mutate: postReservations } = useCreateReservations();
+  const { mutate: postReservations, isSuccess: isPostReservationsSuccess } = useCreateReservations();
+
+  useEffect(() => {
+    if (isPostReservationsSuccess) {
+      refetch();
+    }
+  }, [isPostReservationsSuccess, refetch]);
 
   const handleReservationInfoChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setReservationInfo({

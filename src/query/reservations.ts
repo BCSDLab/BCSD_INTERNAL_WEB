@@ -12,16 +12,16 @@ interface PutReservations {
 }
 
 export const useGetReservations = () => {
-  const { data } = useSuspenseQuery({
+  const { data, refetch } = useSuspenseQuery({
     queryKey: ['reservations'],
     queryFn: () => getReservations(),
   });
-  return { data };
+  return { data, refetch };
 };
 
 export const useCreateReservations = () => {
   const openSnackBar = useSnackBar();
-  const { mutate } = useMutation({
+  const { mutate, isSuccess } = useMutation({
     mutationKey: ['postReservations'],
     mutationFn: (data: Reservations) => postReservations(data),
     onSuccess: () => {
@@ -33,12 +33,12 @@ export const useCreateReservations = () => {
       }
     },
   });
-  return { mutate };
+  return { mutate, isSuccess };
 };
 
 export const useDeleteReservations = () => {
   const openSnackBar = useSnackBar();
-  const { mutate } = useMutation({
+  const { mutate, isSuccess } = useMutation({
     mutationKey: ['deleteReservations'],
     mutationFn: (id: number) => deleteReservations(id),
     onSuccess: () => {
@@ -50,12 +50,12 @@ export const useDeleteReservations = () => {
       }
     },
   });
-  return { mutate };
+  return { mutate, isSuccess };
 };
 
 export const usePutReservations = () => {
   const openSnackBar = useSnackBar();
-  const { mutate } = useMutation({
+  const { mutate, isSuccess } = useMutation({
     mutationKey: ['putReservations'],
     mutationFn: ({ id, data }: PutReservations) => putReservations(id, data),
     onSuccess: () => {
@@ -67,5 +67,5 @@ export const usePutReservations = () => {
       }
     },
   });
-  return { mutate };
+  return { mutate, isSuccess };
 };
