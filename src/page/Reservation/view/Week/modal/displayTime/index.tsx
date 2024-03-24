@@ -6,9 +6,8 @@ interface DisplayTimeProps {
 }
 
 export default function DisplayTime({ startDateTime, endDateTime }: DisplayTimeProps) {
-  const [endHourStr, endMinuteStr] = endDateTime.split(':');
-  let endHour = Number(endHourStr);
-  let endMinute = Number(endMinuteStr);
+  const [startHour, startMinute] = startDateTime.split(':').map(Number);
+  let [endHour, endMinute] = endDateTime.split(':').map(Number);
   endMinute += 10;
   if (endMinute >= 60) {
     endMinute -= 60;
@@ -17,10 +16,21 @@ export default function DisplayTime({ startDateTime, endDateTime }: DisplayTimeP
   if (endHour >= 24) {
     endHour = 0;
   }
-  const endTime = `${String(endHour).padStart(2, '0')}:${String(endMinute).padStart(2, '0')}`;
+  const startTimeStr = `${String(startHour).padStart(2, '0')}:${String(startMinute).padStart(2, '0')}`;
+  const endTimeStr = `${String(endHour).padStart(2, '0')}:${String(endMinute).padStart(2, '0')}`;
+  const startTime = startHour * 60 + startMinute;
+  const endTime = endHour * 60 + endMinute;
+  if (startTime >= endTime) {
+    return (
+      <div css={S.displayTime}>
+        <span>{`${endTimeStr}~${startTimeStr}`}</span>
+      </div>
+    );
+  }
+
   return (
     <div css={S.displayTime}>
-      <span>{`${startDateTime}~${endTime}`}</span>
+      <span>{`${startTimeStr}~${endTimeStr}`}</span>
     </div>
   );
 }

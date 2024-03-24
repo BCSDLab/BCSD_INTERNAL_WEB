@@ -88,13 +88,15 @@ export default function Week() {
     if (endHour >= 24) {
       endHour = 0;
     }
+    const startTime = startHour * 60 + startMinute;
+    const endTime = endHour * 60 + endMinute;
     const newEndTime = `${String(endHour).padStart(2, '0')}:${String(endMinute).padStart(2, '0')}`;
-    if (startHour < endHour || (startHour === endHour && startMinute <= endMinute)) {
+    if (startTime <= endTime) {
       startDateTime.current = `${currentYear}-${dragStart.day} ${dragStart.time}`;
       endDateTime.current = `${currentYear}-${dragEnd.day} ${newEndTime}`;
     } else {
-      startDateTime.current = `${currentYear}-${dragEnd.day} ${dragEnd.time}`;
-      endDateTime.current = `${currentYear}-${dragStart.day} ${newEndTime}`;
+      startDateTime.current = `${currentYear}-${dragEnd.day} ${newEndTime}`;
+      endDateTime.current = `${currentYear}-${dragStart.day} ${dragStart.time}`;
     }
   }, [dragStart, dragEnd, currentYear]);
 
@@ -172,7 +174,6 @@ export default function Week() {
       openModifyReservationModal();
     }
   };
-  // TODO: 거꾸로 드래그할 때 예약이 제대로 생성되지 않는 문제
   // TODO: 드래그 중에 마우스가 밖으로 나가면 드래그가 종료되지 않는 문제
   return (
     <div>
