@@ -1,0 +1,99 @@
+import { Button, Modal, TextField } from '@mui/material';
+import { useState } from 'react';
+import { useCreateReservations } from 'query/reservations';
+import { Reservations } from 'model/reservations';
+import { useSnackBar } from 'ts/useSnackBar';
+import * as S from './style';
+
+interface CreateReservationModalProps {
+  open: boolean;
+  onClose: () => void;
+  startDateTime: string;
+  endDateTime: string;
+}
+
+export default function CreateReservationModal({
+  open, onClose, startDateTime, endDateTime,
+}: CreateReservationModalProps) {
+  const [reservationInfo, setReservationInfo] = useState<Reservations>({
+    memberCount: 0,
+    reason: '',
+    detailedReason: '',
+    startDateTime,
+    endDateTime,
+  });
+  const openSnackBar = useSnackBar();
+  const { mutate: postReservations } = useCreateReservations();
+
+  const handleReservationInfoChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setReservationInfo({
+      ...reservationInfo,
+      [e.target.name]: e.target.value,
+    });
+  };
+
+  const handleCreateReservationClick = () => {
+    // 입력 에러 핸들링
+    if (reservationInfo.memberCount === 0) {
+      openSnackBar({ type: 'error', message: '사용 인원 수를 입력해주세요.' });
+    } else if (reservationInfo.reason === '') {
+      openSnackBar({ type: 'error', message: '사용 목적을 입력해주세요.' });
+    } else if (reservationInfo.detailedReason === '') {
+      openSnackBar({ type: 'error', message: '상세 사용 목적을 입력해주세요.' });
+    } else {
+      postReservations(reservationInfo);
+      onClose();
+    }
+  };
+  return (
+    <Modal
+      open={open}
+      onClose={onClose}
+    >
+      <div css={S.reservationModal}>
+        <h2 css={S.reservationModalTitle}>동방 예약 신청</h2>
+        <div css={S.reservationTextFieldWrapper}>
+          <TextField
+            label="시작 시간"
+            name="startDateTime"
+            value={reservationInfo.startDateTime}
+            onChange={handleReservationInfoChange}
+            css={S}
+          />
+          <TextField
+            label="종료 시간"
+            name="endDateTime"
+            value={reservationInfo.endDateTime}
+            onChange={handleReservationInfoChange}
+            css={S}
+          />
+          <TextField
+            label="사용 인원 수"
+            name="memberCount"
+            value={reservationInfo.memberCount === 0 ? '' : reservationInfo.memberCount}
+            onChange={handleReservationInfoChange}
+            css={S}
+          />
+          <TextField
+            label="사용 목적"
+            name="reason"
+            value={reservationInfo.reason}
+            onChange={handleReservationInfoChange}
+            css={S}
+          />
+          <TextField
+            label="상세 사용 목적"
+            name="detailedReason"
+            value={reservationInfo.detailedReason}
+            onChange={handleReservationInfoChange}
+            css={S}
+          />
+        </div>
+        <div css={S.buttonGroup}>
+          <Button variant="contained" onClick={handleCreateReservationClick}>신청</Button>
+          <Button variant="contained" onClick={onClose}>취소</Button>
+        </div>
+      </div>
+    </Modal>
+  );
+}
