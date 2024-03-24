@@ -253,8 +253,8 @@ export default function Week() {
       {startDateTime.current && endDateTime.current && !dragging && (
         <CreateReservationModal open={isReservationModalOpen} onClose={handleReservationModalClose} startDateTime={startDateTime.current} endDateTime={endDateTime.current} />
       )}
-      {startDateTime.current && endDateTime.current && !dragging && (
-        <ModifyReservationModal open={isModifyReservationModalOpen} onClose={closeModifyReservationModal} startDateTime={startDateTime.current} endDateTime={endDateTime.current} reservationInfoIndex={selectedIndex} />
+      {!dragging && (
+        <ModifyReservationModal open={isModifyReservationModalOpen} onClose={closeModifyReservationModal} reservationInfoIndex={selectedIndex} />
       )}
     </div>
   );

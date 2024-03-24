@@ -8,26 +8,25 @@ import * as S from './style';
 interface CreateReservationModalProps {
   open: boolean;
   onClose: () => void;
-  startDateTime: string;
-  endDateTime: string;
   reservationInfoIndex: number;
 }
 
+const initialReservationInfo = {
+  memberCount: 0,
+  reason: '',
+  detailedReason: '',
+  startDateTime: '',
+  endDateTime: '',
+};
+
 export default function ModifyReservationModal({
-  open, onClose, startDateTime, endDateTime, reservationInfoIndex,
+  open, onClose, reservationInfoIndex,
 }: CreateReservationModalProps) {
   const openSnackBar = useSnackBar();
   const { data: reservationsInfo } = useGetReservations();
   const { mutate: putReservations } = usePutReservations();
   const { mutate: deleteReservations } = useDeleteReservations();
-  const [reservationInfo, setReservationInfo] = useState<Reservations>({
-    memberCount: 0,
-    reason: '',
-    detailedReason: '',
-    startDateTime,
-    endDateTime,
-  });
-  console.log(reservationsInfo[reservationInfoIndex]);
+  const [reservationInfo, setReservationInfo] = useState<Reservations>(initialReservationInfo);
 
   useEffect(() => {
     if (reservationsInfo) {
@@ -62,13 +61,7 @@ export default function ModifyReservationModal({
   };
 
   const handleModalClose = () => {
-    setReservationInfo({
-      memberCount: 0,
-      reason: '',
-      detailedReason: '',
-      startDateTime,
-      endDateTime,
-    });
+    setReservationInfo(initialReservationInfo);
     onClose();
   };
   return (
@@ -82,35 +75,35 @@ export default function ModifyReservationModal({
           <TextField
             label="시작 시간"
             name="startDateTime"
-            value={reservationInfo.startDateTime}
+            value={reservationInfo?.startDateTime}
             onChange={handleReservationInfoChange}
             css={S}
           />
           <TextField
             label="종료 시간"
             name="endDateTime"
-            value={reservationInfo.endDateTime}
+            value={reservationInfo?.endDateTime}
             onChange={handleReservationInfoChange}
             css={S}
           />
           <TextField
             label="사용 인원 수"
             name="memberCount"
-            value={reservationInfo.memberCount === 0 ? '' : reservationInfo.memberCount}
+            value={reservationInfo?.memberCount === 0 ? '' : reservationInfo?.memberCount}
             onChange={handleReservationInfoChange}
             css={S}
           />
           <TextField
             label="사용 목적"
             name="reason"
-            value={reservationInfo.reason}
+            value={reservationInfo?.reason}
             onChange={handleReservationInfoChange}
             css={S}
           />
           <TextField
             label="상세 사용 목적"
             name="detailedReason"
-            value={reservationInfo.detailedReason}
+            value={reservationInfo?.detailedReason}
             onChange={handleReservationInfoChange}
             css={S}
           />
