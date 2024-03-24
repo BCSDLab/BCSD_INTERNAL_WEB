@@ -40,6 +40,15 @@ export default function CreateReservationModal({
     });
   };
 
+  const validateDateTimeFormat = (dateTimeString: string) => {
+    const regex = /^(\d{4})-(\d{2})-(\d{2})T(\d{2}):(\d{2})$/;
+
+    if (!regex.test(dateTimeString)) {
+      return false;
+    }
+    return true;
+  };
+
   const handleCreateReservationClick = () => {
     // 입력 에러 핸들링
     if (reservationInfo.memberCount === 0) {
@@ -48,6 +57,8 @@ export default function CreateReservationModal({
       openSnackBar({ type: 'error', message: '사용 목적을 입력해주세요.' });
     } else if (reservationInfo.detailedReason === '') {
       openSnackBar({ type: 'error', message: '상세 사용 목적을 입력해주세요.' });
+    } else if (!validateDateTimeFormat(reservationInfo.startDateTime) && !validateDateTimeFormat(reservationInfo.endDateTime)) {
+      openSnackBar({ type: 'error', message: '날짜 형식이 올바르지 않습니다.' });
     } else {
       postReservations(reservationInfo);
       onClose();
