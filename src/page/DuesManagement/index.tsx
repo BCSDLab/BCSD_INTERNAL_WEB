@@ -23,6 +23,8 @@ import {
 } from '@mui/icons-material';
 import useQueryParam from 'util/hooks/useQueryParam';
 import makeNumberArray from 'util/hooks/makeNumberArray';
+import { useGetMembers } from 'query/members';
+import { useSnackBar } from 'ts/useSnackBar';
 import * as S from './style';
 
 function DefaultTable() {
@@ -40,9 +42,11 @@ function DefaultTable() {
     setTrue: openFilterModal,
     setFalse: closeFilterModal,
   } = useBooleanState(false);
+  const openSnackBar = useSnackBar();
 
   const { data: allDues } = useGetAllDues({ year: duesYear });
-  const [filteredValue, setFilteredValue] = useState(allDues.dues);
+  const { data: members } = useGetMembers({ pageIndex: 0, pageSize: 1000, trackId: null });
+  const [filteredValue, setFilteredValue] = useState(allDues.dues.filter((row) => members?.content.some((member) => member.memberType === 'REGULAR' && member.id === row.memberId)));
 
   const { data: tracks } = useGetTracks();
   const [trackFilter, setTrackFilter] = useState(tracks.map(() => true));
@@ -51,9 +55,9 @@ function DefaultTable() {
     const searchName = e.target.value;
     if (searchName === '') {
       if (trackFilter.every((value) => value)) {
-        setFilteredValue(allDues.dues);
+        setFilteredValue(allDues.dues.filter((row) => members?.content.some((member) => member.memberType === 'REGULAR' && member.id === row.memberId)));
       } else {
-        setFilteredValue(allDues.dues.filter((row) => trackFilter[tracks.map((track) => track.name).indexOf(row.track.name)]));
+        setFilteredValue(allDues.dues.filter((row) => members?.content.some((member) => member.memberType === 'REGULAR' && member.id === row.memberId) && trackFilter[tracks.map((track) => track.name).indexOf(row.track.name)]));
       }
     }
     setName(searchName);
@@ -61,7 +65,9 @@ function DefaultTable() {
 
   const handleNameSearchClick = () => {
     if (filteredValue.some((row) => row.name.includes(name))) {
-      setFilteredValue(allDues.dues.filter((row) => row.name.includes(name)));
+      setFilteredValue(allDues.dues.filter((row) => row.name.includes(name) && members?.content.some((member) => member.memberType === 'REGULAR' && member.id === row.memberId)));
+    } else {
+      openSnackBar({ type: 'error', message: '해당 이름을 가진 회원이 없습니다.' });
     }
   };
 
@@ -77,9 +83,8 @@ function DefaultTable() {
     setTrackFilter((prevTrack) => {
       const updatedTrack = [...prevTrack];
       updatedTrack[trackIndex] = !updatedTrack[trackIndex];
-      setFilteredValue(allDues.dues.filter(
-        (row) => updatedTrack[tracks.map((track) => track.name).indexOf(row.track.name)],
-      ));
+      setFilteredValue(allDues.dues.filter((row) => updatedTrack[tracks.map((track) => track.name).indexOf(row.track.name)]
+      && members?.content.some((member) => member.memberType === 'REGULAR' && member.id === row.memberId)));
       return updatedTrack;
     });
   };
@@ -107,8 +112,10 @@ function DefaultTable() {
 
   useEffect(() => {
     setDuesYear(page ? currentYear - page + 1 : currentYear);
-    setFilteredValue(allDues.dues);
-  }, [currentYear, page, allDues.dues]);
+    if (allDues.dues) {
+      setFilteredValue(allDues.dues.filter((row) => members?.content.some((member) => member.memberType === 'REGULAR' && member.id === row.memberId)));
+    }
+  }, [currentYear, page, allDues.dues, members?.content]);
 
   const goToPrevYear = () => {
     // 재학생 회비 내역이 2021년부터 시작하므로 2021년 이전으로 이동할 수 없음
