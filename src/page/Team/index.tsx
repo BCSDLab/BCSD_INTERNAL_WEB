@@ -2,7 +2,7 @@ import {
   Button, Grid, Paper, styled,
 } from '@mui/material';
 import AddIcon from '@mui/icons-material/Add';
-import { useGetTeamMembers, useGetTeams, useGetTeamsMembers } from 'query/teams';
+import { useGetTeams, useGetTeamsMembers } from 'query/teams';
 import { Team } from 'model/team';
 import { useState } from 'react';
 import TeamInfoModal from 'component/modal/teamUpdateModal';
@@ -26,7 +26,8 @@ export default function TeamInfo() {
   const { data: teams } = useGetTeams();
   const { data: teamMembers } = useGetTeamsMembers();
   const [teamCreateModalOpen, setTeamCreateModalOpen] = useState(false);
-  const [teamMemberModalOpen, setTeamMemberModalOpen] = useState(false);
+  // TODO: 팀원 관리 모달 추가
+  // const [teamMemberModalOpen, setTeamMemberModalOpen] = useState(false);
   const [teamInfoModalOpen, setTeamInfoModalOpen] = useState(false);
   const [selectedTeamId, setSelectedTeamId] = useState<number | null>(null);
   const { data: getMe } = useGetMe();
@@ -38,12 +39,13 @@ export default function TeamInfo() {
   const handleCloseTeamCreateModal = () => {
     setTeamCreateModalOpen(false);
   };
-  const handleOpenTeamMemberModal = () => {
-    setTeamMemberModalOpen(true);
-  };
-  const handleCloseTeamMemberModal = () => {
-    setTeamMemberModalOpen(false);
-  };
+  // TODO: 팀원 관리 모달 추가
+  // const handleOpenTeamMemberModal = () => {
+  //   setTeamMemberModalOpen(true);
+  // };
+  // const handleCloseTeamMemberModal = () => {
+  //   setTeamMemberModalOpen(false);
+  // };
   const handleOpenTeamInfoModal = () => {
     setTeamInfoModalOpen(true);
   };
