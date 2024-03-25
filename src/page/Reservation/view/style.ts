@@ -2,7 +2,7 @@ import { css } from '@emotion/react';
 import { colors } from 'const/colors/style';
 
 const background = [
-  '#FCB9AA', '#FFDBCC', '#C6DBDA', 'A2E1DB', '55CBCD',
+  '#FCB9AA', '#A2E1DB', '#FFDBCC', '#55CBCD', '#C6DBDA', '#FFFFB5', '#BFC8D7',
 ];
 
 export const layout = css`
@@ -13,10 +13,8 @@ export const layout = css`
 export const Cell = (isToday: boolean) => css`
   border: 1px solid ${colors.borderGray};
   box-sizing: border-box;
-  height: 100px;
   width: calc(100% / 7);
   position: relative;
-  overflow: hidden;
   background-color: ${isToday && '#ECEAE4'};
 `;
 
@@ -50,4 +48,12 @@ export const AlignItems = css`
 export const current = css`
   width: 100px;
   text-align: center;
+`;
+
+export const scheduleContent = css`
+  height: 80px;
+  overflow: scroll;
+  &::-webkit-scrollbar {
+    display: none; /* 크롬, 사파리, 오페라 */
+  }
 `;
