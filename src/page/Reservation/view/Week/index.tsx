@@ -175,16 +175,17 @@ export default function Week() {
     }
   };
   return (
-    <div>
-      {currentWeekStart.getFullYear()}
-      <Button onClick={goToPrevWeek}>이전 주</Button>
-      <Button onClick={goToNextWeek}>다음 주</Button>
+    <div css={S.weekContainer}>
+      <div css={S.buttonGroup}>
+        <Button onClick={goToPrevWeek}>이전 주</Button>
+        <Button onClick={goToNextWeek}>다음 주</Button>
+      </div>
       <Table>
         <TableHead>
           <TableRow>
-            <TableCell>시간</TableCell>
+            <TableCell css={S.notDraggableArea}>시간</TableCell>
             {weekDates.map((weekDay) => (
-              <TableCell key={weekDay.dayOfWeek} css={S.draggableArea}>
+              <TableCell key={weekDay.dayOfWeek} css={S.notDraggableArea}>
                 {weekDay.dayOfWeek}
                 <br />
                 {weekDay.date}
@@ -200,7 +201,7 @@ export default function Week() {
                   if (minuteIndex === 0) {
                     return (
                       <TableRow key={hour}>
-                        <TableCell css={S.draggableArea} rowSpan={6}>
+                        <TableCell css={S.notDraggableArea} rowSpan={6}>
                           {hour}
                           :00
                         </TableCell>

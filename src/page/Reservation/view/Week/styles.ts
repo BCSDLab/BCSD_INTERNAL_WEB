@@ -18,10 +18,20 @@ interface SelectedCellProps {
   day: string
 }
 
-export const draggableArea = css`
+export const weekContainer = css`
+  width: 100%;
+`;
+
+export const buttonGroup = css`
+  width: 100%;
+  margin-left: 10px;
+`;
+
+export const notDraggableArea = css`
   width: 50px;
   user-select: none;
   draggable: false;
+  text-align: center;
 `;
 
 export const reservationTableRow = css`
