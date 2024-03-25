@@ -22,7 +22,7 @@ export const memberWrapper = css`
   flex-direction: column;
   justify-content: flex-start;
   align-items: flex-start;
-  padding: 10px;
+  padding: 10px 10px 10px 20px;
   gap: 13px;
   font-size: 15px;
   flex-shrink: 0;
@@ -54,7 +54,7 @@ export const memberInfoLabel = css`
   font-weight: bold;
   display: inline-block;
   justify-content: flex-start;
-  width: 60px;
+  width: 65px;
   margin-right: 10px;
 `;
 
