@@ -35,7 +35,11 @@ interface ModifyReservationModalProps {
   dayIndex: number;
 }
 
-export default function Week() {
+interface WeekProps {
+  setDate: (date: { year: number; month: number }) => void;
+}
+
+export default function Week({ setDate }: WeekProps) {
   const [currentWeekStart, setCurrentWeekStart] = useState<Date>(() => {
     const today = new Date();
     const dayOfWeek = today.getDay();
@@ -110,7 +114,9 @@ export default function Week() {
         date: `${String(date.getMonth() + 1).padStart(2, '0')}-${String(date.getDate()).padStart(2, '0')}`,
       };
     });
+    setDate({ year: currentWeekStart.getFullYear(), month: Number(dates[0].date.split('-')[0]) });
     setWeekDates(dates);
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [currentWeekStart]);
 
   const goToPrevWeek = () => {
