@@ -11,4 +11,5 @@ export const PATHS = {
   editDues: '/edit-dues',
   track: '/track',
   role: '/role',
+  reservation: '/reservation',
 };
