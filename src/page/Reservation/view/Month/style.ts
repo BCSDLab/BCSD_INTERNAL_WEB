@@ -65,3 +65,8 @@ export const ReserveContainer = css`
   border: 1px solid ${colors.borderGray};
   padding: 7px;
 `;
+
+export const DetailContainer = css`
+  display: flex;
+  justify-content: space-between;
+`;

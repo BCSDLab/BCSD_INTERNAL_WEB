@@ -8,6 +8,7 @@ import { useEffect, useState } from 'react';
 import * as S from './style';
 // eslint-disable-next-line import/no-cycle
 import MonthModal from './Month/MonthModal';
+import MyReservation from './Month/MyReservation';
 
 type Calendar = {
   day: number | null,
@@ -81,7 +82,9 @@ export default function Month() {
   const [currentYear, setCurrentYear] = useState(new Date().getFullYear());
   const [currentMonth, setCurrentMonth] = useState(new Date().getMonth());
   const [currentCalendar, setCurrentCalendar] = useState<Calendars[]>([]);
+  const [open, setOpen] = useState<boolean>(false);
 
+  const handleClose = () => setOpen(false);
   const nextYear = () => setCurrentYear((prev) => prev + 1);
   const nextMonth = () => setCurrentMonth((prev) => prev + 1);
   const previousYear = () => setCurrentYear((prev) => prev - 1);
@@ -125,6 +128,9 @@ export default function Month() {
         <Button onClick={nextMonth}>
           <ArrowForwardIosOutlined />
         </Button>
+        <Button onClick={() => setOpen(true)}>
+          예약 확인
+        </Button>
       </div>
       <Table>
         <TableHead>
@@ -148,6 +154,7 @@ export default function Month() {
           ))}
         </TableBody>
       </Table>
+      <MyReservation open={open} handleClose={handleClose} />
     </TableContainer>
   );
 }
