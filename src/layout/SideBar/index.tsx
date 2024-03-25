@@ -54,6 +54,7 @@ export default function SideBar() {
         <Button color="secondary" sx={{ marginTop: '20px' }} size="large" onClick={() => navigate('track')} css={S.button(currentPage === PATHS.track)}>트랙 정보</Button>
         <Button color="secondary" sx={{ marginTop: '20px' }} size="large" onClick={() => navigate('team')} css={S.button(currentPage === PATHS.team)}>팀 정보</Button>
         <Button color="secondary" sx={{ marginTop: '20px' }} size="large" onClick={() => navigate('role')} css={S.button(currentPage === PATHS.role)}>직책 정보</Button>
+        <Button color="secondary" sx={{ marginTop: '20px' }} size="large" onClick={() => navigate('reservation')} css={S.button(currentPage === PATHS.reservation)}>예약 정보</Button>
 
         <Button
           color="secondary"

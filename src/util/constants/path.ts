@@ -12,4 +12,5 @@ export const PATHS = {
   track: '/track',
   team: '/team',
   role: '/role',
+  reservation: '/reservation',
 };

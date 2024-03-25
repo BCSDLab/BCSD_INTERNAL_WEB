@@ -40,6 +40,10 @@ export const pagePath = [
     path: PATHS.role,
     title: '직책 정보',
   },
+  {
+    path: PATHS.reservation,
+    title: '동방 예약',
+  },
 ];
 
 const currentYear = new Date().getFullYear();
