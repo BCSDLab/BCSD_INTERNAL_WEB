@@ -3,12 +3,13 @@ import LoadingSpinner from 'layout/LoadingSpinner';
 import { Suspense } from 'react';
 import Week from './view/Week';
 import Month from './view/Month';
+import * as S from './style';
 
 function ReservationOutlet() {
   const currentYear = new Date().getFullYear();
   const currentMonth = new Date().getMonth() + 1;
   return (
-    <div>
+    <div css={S.Layout}>
       <ButtonGroup>
         <Button>월</Button>
         <Button>주</Button>

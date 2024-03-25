@@ -21,7 +21,7 @@ export const useCreateReservations = () => {
     },
     onError: (e) => {
       if (e instanceof AxiosError) {
-        openSnackBar({ type: 'error', message: e.response?.data });
+        openSnackBar({ type: 'error', message: e.response?.data.message });
       }
     },
   });
