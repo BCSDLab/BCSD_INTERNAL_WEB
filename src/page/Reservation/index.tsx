@@ -2,6 +2,7 @@ import { Button, ButtonGroup } from '@mui/material';
 import LoadingSpinner from 'layout/LoadingSpinner';
 import { Suspense, useState } from 'react';
 import Week from './view/Week';
+import Month from './view/Month';
 import * as S from './style';
 
 interface CurrentPageDate {
@@ -38,7 +39,7 @@ function ReservationOutlet() {
       </ButtonGroup>
       {/* 주를 만들자 */}
       {mode === 'week' && <Week setDate={setDate} />}
-      {mode === 'month' && <div>월</div>}
+      {mode === 'month' && <Month /> }
     </div>
   );
 }
