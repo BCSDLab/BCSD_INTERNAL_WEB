@@ -1,13 +1,14 @@
 import {
   Box, Button, Modal, TextField, Typography,
 } from '@mui/material';
-import { useState } from 'react';
-import { useCreateTrack } from 'query/tracks';
+import { useEffect, useState } from 'react';
+import { useDeleteTeam, useUpdateTeam } from 'query/teams';
 import * as S from './style';
 
-interface ModalProps {
+interface MemberInfoModalProps {
   open: boolean;
   onClose: () => void;
+  teamId: number | null;
 }
 
 const style = {
@@ -21,25 +22,55 @@ const style = {
   p: 4,
 };
 
-export default function TrackCreateModal({ open, onClose }: ModalProps): React.ReactElement {
-  const [trackName, setTrackName] = useState('');
-  const { mutate: createTrack } = useCreateTrack();
+export default function TeamInfoModal({ open, onClose, teamId }: MemberInfoModalProps): React.ReactElement {
+  const [team, setTeam] = useState({
+    name: '',
+  });
+  const { mutate: updateTeam } = useUpdateTeam();
+  const { mutate: deleteTeam } = useDeleteTeam();
 
   const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    const { value } = event.target;
-    setTrackName(value);
+    const { name, value } = event.target;
+    setTeam({
+      ...team,
+      [name]: value,
+    });
   };
 
   const handleSave = () => {
-    createTrack({ name: trackName });
+    if (team && teamId) {
+      updateTeam({ id: teamId, name: team.name, isDeleted: false });
+    }
     onClose();
-    setTrackName('');
+    setTeam({
+      name: '',
+    });
   };
 
   const handleClose = () => {
     onClose();
-    setTrackName('');
+    setTeam({
+      name: '',
+    });
   };
+
+  const handleDeleteTeam = (id: number) => {
+    if (id) {
+      deleteTeam(id);
+    }
+    onClose();
+  };
+
+  useEffect(
+    () => {
+      if (teamId) {
+        setTeam({
+          name: team.name,
+        });
+      }
+    },
+    [team.name, teamId],
+  );
 
   return (
     <Modal
@@ -50,18 +81,28 @@ export default function TrackCreateModal({ open, onClose }: ModalProps): React.R
     >
       <Box sx={style}>
         <Typography id="modal-title" variant="h6" component="h2">
-          트랙 생성
+          팀명 수정
         </Typography>
         <Box component="form" noValidate autoComplete="off" sx={{ mt: 2 }}>
           <TextField
             margin="normal"
-            label="트랙명"
+            label="팀명"
             name="name"
-            value={trackName}
+            value={team.name}
             fullWidth
             onChange={handleChange}
           />
           <div css={S.buttonContainer}>
+            <div css={S.buttonWrapper}>
+              <Button
+                sx={{ mt: 2, mb: 2 }}
+                variant="outlined"
+                color="secondary"
+                onClick={() => handleDeleteTeam(teamId!)}
+              >
+                삭제
+              </Button>
+            </div>
             <div css={S.buttonWrapper}>
               <Button
                 sx={{ mt: 2, mb: 2 }}
@@ -83,6 +124,5 @@ export default function TrackCreateModal({ open, onClose }: ModalProps): React.R
         </Box>
       </Box>
     </Modal>
-
   );
 }

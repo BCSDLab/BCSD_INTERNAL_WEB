@@ -2,7 +2,7 @@ import {
   Box, Button, Modal, TextField, Typography,
 } from '@mui/material';
 import { useState } from 'react';
-import { useCreateTrack } from 'query/tracks';
+import { useCreateTeam } from 'query/teams';
 import * as S from './style';
 
 interface ModalProps {
@@ -21,24 +21,24 @@ const style = {
   p: 4,
 };
 
-export default function TrackCreateModal({ open, onClose }: ModalProps): React.ReactElement {
-  const [trackName, setTrackName] = useState('');
-  const { mutate: createTrack } = useCreateTrack();
+export default function TeamCreateModal({ open, onClose }: ModalProps): React.ReactElement {
+  const [teamName, setTeamName] = useState('');
+  const { mutate: createTeam } = useCreateTeam();
 
   const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const { value } = event.target;
-    setTrackName(value);
+    setTeamName(value);
   };
 
   const handleSave = () => {
-    createTrack({ name: trackName });
+    createTeam(teamName);
     onClose();
-    setTrackName('');
+    setTeamName('');
   };
 
   const handleClose = () => {
     onClose();
-    setTrackName('');
+    setTeamName('');
   };
 
   return (
@@ -50,14 +50,14 @@ export default function TrackCreateModal({ open, onClose }: ModalProps): React.R
     >
       <Box sx={style}>
         <Typography id="modal-title" variant="h6" component="h2">
-          트랙 생성
+          팀 생성
         </Typography>
         <Box component="form" noValidate autoComplete="off" sx={{ mt: 2 }}>
           <TextField
             margin="normal"
-            label="트랙명"
+            label="팀명"
             name="name"
-            value={trackName}
+            value={teamName}
             fullWidth
             onChange={handleChange}
           />

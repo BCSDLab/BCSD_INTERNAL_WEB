@@ -22,6 +22,7 @@ enum Authority {
 }
 
 export interface Member {
+  [x: string]: any;
   id: number;
   joinedYear: number;
   joinedMonth: number;
