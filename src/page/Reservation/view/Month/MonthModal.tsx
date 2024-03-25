@@ -39,11 +39,17 @@ const initialState = {
 };
 
 export default function MonthModal({
-  date, today, data, open, handleClose,
+  date, today, data, open, handleClose, currentMonth,
 }: ModalContent) {
   const currentDate = new Date().getDate();
+  const nowMonth = new Date().getMonth();
   const { mutate: reservation } = useCreateReservations();
   const [reserve, setReserve] = useState(initialState);
+  const canReserve = () => {
+    if (currentMonth > nowMonth) return true;
+    if (date && nowMonth === currentMonth && date >= currentDate) return true;
+    return false;
+  };
 
   const changeMemberCount = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => setReserve({ ...reserve, memberCount: parseInt(e.target.value, 10) });
   const changeReason = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => setReserve({ ...reserve, reason: e.target.value });
@@ -75,7 +81,7 @@ export default function MonthModal({
           </div>
         ) : <div css={S.DetailLayout}>예약정보가 없습니다.</div>}
 
-        {date && date >= currentDate
+        {date && canReserve()
           && (
             <div css={S.ReserveContainer}>
               <h2>예약하기</h2>

@@ -39,7 +39,7 @@ function CalendarCell({
         <div css={S.Date(currentMonth === new Date().getMonth() && date === new Date().getDate())}>
           {date}
         </div>
-        <div>
+        <div css={S.scheduleContent}>
           {date && filteredData.map((item, index) => (
             <p css={S.schedule(index)}>
               {item.startDateTime.slice(10, 20)}
