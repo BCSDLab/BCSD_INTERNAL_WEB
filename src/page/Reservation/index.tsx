@@ -30,7 +30,7 @@ function ReservationOutlet() {
       </ButtonGroup>
       {/* 주를 만들자 */}
       {mode === 'week' && <Week />}
-      {mode === 'month' && <div>월</div>}
+      {mode === 'month' && <Month />}
     </div>
   );
 }

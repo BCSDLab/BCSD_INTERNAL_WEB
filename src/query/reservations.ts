@@ -1,4 +1,4 @@
-import { useMutation, useSuspenseQuery } from '@tanstack/react-query';
+import { useMutation, useQueryClient, useSuspenseQuery } from '@tanstack/react-query';
 import {
   deleteReservations, getReservations, postReservations, putReservations,
 } from 'api/reservations';
@@ -21,11 +21,14 @@ export const useGetReservations = () => {
 
 export const useCreateReservations = () => {
   const openSnackBar = useSnackBar();
+  const queryClient = useQueryClient();
+
   const { mutate, isSuccess } = useMutation({
     mutationKey: ['postReservations'],
     mutationFn: (data: Reservations) => postReservations(data),
     onSuccess: () => {
       openSnackBar({ type: 'success', message: '예약이 완료되었습니다.' });
+      queryClient.invalidateQueries({ queryKey: ['reservations'] });
     },
     onError: (e) => {
       if (e instanceof AxiosError) {
