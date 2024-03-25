@@ -71,16 +71,22 @@ export default function MemberInfoModal({
   const { mutate: deleteMember } = useDeleteMember();
   const { data: tracks } = useGetTracks();
   const [imageInfo, setImageInfo] = useState<FileInfo>();
+  const [deleteModalOpen, setDeleteModalOpen] = useState(false);
+  const [deleteReason, setDeleteReason] = useState(member?.deleteReason || '');
 
   useEffect(() => {
     if (isList) {
       setMember(initialMember);
+      if (initialMember) {
+        setDeleteReason(initialMember.deleteReason || '');
+      }
     } else
       if (initialMember) {
         setMember({
           ...initialMember,
           status: STATUS_LABEL[initialMember.status as keyof typeof STATUS_LABEL],
         });
+        setDeleteReason(initialMember.deleteReason || '');
       }
   }, [initialMember, isList]);
 
@@ -125,6 +131,11 @@ export default function MemberInfoModal({
     }); // 헤더에 authrization을 담으면 안된다
   };
 
+  const handleDeleteReasonChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const { value } = event.target;
+    setDeleteReason(value);
+  };
+
   const handleSave = () => {
     if (member && member.id) {
       if (imageInfo?.presignedUrl) {
@@ -143,17 +154,24 @@ export default function MemberInfoModal({
     onClose();
   };
 
-  const handleDelete = () => {
+  const handleOpenDeleteModal = () => {
     if (member && member.id) {
-      deleteMember(member.id, {
-        onSuccess: () => {
-          onClose();
-        },
-        onError: () => {
-          // TODO: 에러 처리
-        },
-      });
+      setDeleteModalOpen(true);
     }
+  };
+
+  const handleDeleteLogic = () => {
+    if (member && member.id) {
+      deleteMember({
+        id: member.id,
+        reason: deleteReason,
+      });
+      setDeleteModalOpen(false);
+      onClose();
+      setDeleteReason('');
+    }
+    setDeleteModalOpen(false);
+    onClose();
   };
 
   const handleImage = async (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -169,212 +187,252 @@ export default function MemberInfoModal({
   };
 
   return (
-    <Modal
-      open={open}
-      onClose={onClose}
-      aria-labelledby="modal-modal-title"
-      aria-describedby="modal-modal-description"
-    >
-      <Box sx={S.style}>
-        <Typography id="modal-title" variant="h6" component="h2">
-          회원 정보 수정
-        </Typography>
-        <Box component="form" noValidate autoComplete="off" sx={{ mt: 2 }}>
-          <div css={S.textGap}>
-            <TextField
-              margin="normal"
-              label="이름"
-              name="name"
-              value={member?.name || ''}
-              fullWidth
-              onChange={handleChange}
-            />
-            <TextField
-              margin="normal"
-              label="트랙"
-              name="track"
-              value={member?.track?.id || ''}
-              fullWidth
-              onChange={handleTrackChange}
-              select
-            >
-              {tracks.map((track) => (
-                <MenuItem key={track.id} value={track.id}>
-                  {track.name}
-                </MenuItem>
-              ))}
-            </TextField>
-          </div>
-          <div css={S.textGap}>
-            <TextField
-              margin="normal"
-              label="직책"
-              name="memberType"
-              value={member?.memberType || ''}
-              fullWidth
-              onChange={handleChange}
-              select
-            >
-              {MEMBER_TYPE_LIST.map((memberType) => (
-                <MenuItem key={memberType} value={memberType}>
-                  {MEMBER_TYPE_LABEL[memberType]}
-                </MenuItem>
-              ))}
-            </TextField>
-            <TextField
-              margin="normal"
-              label="상태"
-              name="status"
-              value={member?.status || ''}
-              fullWidth
-              onChange={handleChange}
-              select
-            >
-              {STATUS_LIST.map((statusType) => (
-                <MenuItem key={statusType} value={STATUS_LABEL[statusType]}>
-                  {STATUS_LABEL[statusType]}
-                </MenuItem>
-              ))}
-            </TextField>
-          </div>
-          <div css={S.textGap}>
-            <TextField
-              margin="normal"
-              label="소속"
-              name="company"
-              value={member?.company || ''}
-              fullWidth
-              onChange={handleChange}
-            />
-            <TextField
-              margin="normal"
-              label="학부"
-              name="department"
-              value={member?.department || ''}
-              fullWidth
-              onChange={handleChange}
-            />
-          </div>
-          <div css={S.textGap}>
-            <TextField
-              margin="normal"
-              label="학번"
-              name="studentNumber"
-              value={member?.studentNumber || ''}
-              fullWidth
-              onChange={handleChange}
-            />
-            <TextField
-              margin="normal"
-              label="전화번호"
-              name="phoneNumber"
-              value={member?.phoneNumber || ''}
-              fullWidth
-              onChange={handlePhoneNumberChange}
-            />
-          </div>
-          <div css={S.textGap}>
-            <TextField
-              margin="normal"
-              label="이메일"
-              name="email"
-              value={member?.email || ''}
-              fullWidth
-              onChange={handleChange}
-            />
-            <TextField
-              margin="normal"
-              label="권한"
-              name="authority"
-              value={member?.authority || ''}
-              fullWidth
-              onChange={handleChange}
-              select
-            >
-              {AUTHORITY_LIST.map((authority) => (
-                <MenuItem key={authority} value={authority}>
-                  {authority}
-                </MenuItem>
-              ))}
-            </TextField>
-          </div>
-          <div css={S.textGap}>
-            <TextField
-              margin="normal"
-              label="깃허브 이름"
-              name="githubName"
-              value={member?.githubName || ''}
-              fullWidth
-              onChange={handleChange}
-            />
-            <Button
-              component="label"
-              fullWidth
-              variant="outlined"
-              startIcon={<CloudUploadIcon />}
-              sx={{ height: '60px', marginTop: '15px', padding: '0px' }}
-            >
-              프로필 이미지
-              <VisuallyHiddenInput type="file" accept="image/jpeg, image/png" onChange={(e) => handleImage(e)} />
-            </Button>
-          </div>
-          <div css={S.textGap}>
-            <TextField
-              margin="normal"
-              label="인증 여부"
-              name="isAuthed"
-              value={member?.isAuthed.toString() || ''}
-              fullWidth
-              onChange={handleChange}
-              select
-            >
-              {isAuthedList.map((isAuthed) => (
-                <MenuItem key={isAuthed.toString()} value={isAuthed.toString()}>
-                  {isAuthed ? IS_AUTHED.true : IS_AUTHED.false}
-                </MenuItem>
-              ))}
-            </TextField>
-            <TextField
-              margin="normal"
-              label="탈퇴 여부"
-              name="isDeleted"
-              value={member?.isDeleted.toString() || ''}
-              fullWidth
-              onChange={handleChange}
-              select
-            >
-              {isDeletedList.map((isDeleted) => (
-                <MenuItem key={isDeleted.toString()} value={isDeleted.toString()}>
-                  {isDeleted ? IS_DELETED.true : IS_DELETED.false}
-                </MenuItem>
-              ))}
-            </TextField>
-          </div>
-          <div css={S.buttonContainer}>
-            <div css={S.buttonWrapper}>
-              <Button sx={{ mt: 2, mb: 2 }} variant="contained" color="error" onClick={handleDelete}>
-                회원 삭제
-              </Button>
-            </div>
-            <div css={S.buttonWrapper}>
-              <Button
-                sx={{ mt: 2, mb: 2 }}
-                variant="contained"
-                onClick={handleSave}
+    <>
+      <Modal
+        open={open}
+        onClose={onClose}
+        aria-labelledby="modal-modal-title"
+        aria-describedby="modal-modal-description"
+      >
+        <Box sx={S.style}>
+          <Typography id="modal-title" variant="h6" component="h2">
+            회원 정보 수정
+          </Typography>
+          <Box component="form" noValidate autoComplete="off" sx={{ mt: 2 }}>
+            <div css={S.textGap}>
+              <TextField
+                margin="normal"
+                label="이름"
+                name="name"
+                value={member?.name || ''}
+                fullWidth
+                onChange={handleChange}
+              />
+              <TextField
+                margin="normal"
+                label="트랙"
+                name="track"
+                value={member?.track?.id || ''}
+                fullWidth
+                onChange={handleTrackChange}
+                select
               >
-                저장
-              </Button>
+                {tracks.map((track) => (
+                  <MenuItem key={track.id} value={track.id}>
+                    {track.name}
+                  </MenuItem>
+                ))}
+              </TextField>
+            </div>
+            <div css={S.textGap}>
+              <TextField
+                margin="normal"
+                label="직책"
+                name="memberType"
+                value={member?.memberType || ''}
+                fullWidth
+                onChange={handleChange}
+                select
+              >
+                {MEMBER_TYPE_LIST.map((memberType) => (
+                  <MenuItem key={memberType} value={memberType}>
+                    {MEMBER_TYPE_LABEL[memberType]}
+                  </MenuItem>
+                ))}
+              </TextField>
+              <TextField
+                margin="normal"
+                label="상태"
+                name="status"
+                value={member?.status || ''}
+                fullWidth
+                onChange={handleChange}
+                select
+              >
+                {STATUS_LIST.map((statusType) => (
+                  <MenuItem key={statusType} value={STATUS_LABEL[statusType]}>
+                    {STATUS_LABEL[statusType]}
+                  </MenuItem>
+                ))}
+              </TextField>
+            </div>
+            <div css={S.textGap}>
+              <TextField
+                margin="normal"
+                label="소속"
+                name="company"
+                value={member?.company || ''}
+                fullWidth
+                onChange={handleChange}
+              />
+              <TextField
+                margin="normal"
+                label="학부"
+                name="department"
+                value={member?.department || ''}
+                fullWidth
+                onChange={handleChange}
+              />
+            </div>
+            <div css={S.textGap}>
+              <TextField
+                margin="normal"
+                label="학번"
+                name="studentNumber"
+                value={member?.studentNumber || ''}
+                fullWidth
+                onChange={handleChange}
+              />
+              <TextField
+                margin="normal"
+                label="전화번호"
+                name="phoneNumber"
+                value={member?.phoneNumber || ''}
+                fullWidth
+                onChange={handlePhoneNumberChange}
+              />
+            </div>
+            <div css={S.textGap}>
+              <TextField
+                margin="normal"
+                label="이메일"
+                name="email"
+                value={member?.email || ''}
+                fullWidth
+                onChange={handleChange}
+              />
+              <TextField
+                margin="normal"
+                label="권한"
+                name="authority"
+                value={member?.authority || ''}
+                fullWidth
+                onChange={handleChange}
+                select
+              >
+                {AUTHORITY_LIST.map((authority) => (
+                  <MenuItem key={authority} value={authority}>
+                    {authority}
+                  </MenuItem>
+                ))}
+              </TextField>
+            </div>
+            <div css={S.textGap}>
+              <TextField
+                margin="normal"
+                label="깃허브 이름"
+                name="githubName"
+                value={member?.githubName || ''}
+                fullWidth
+                onChange={handleChange}
+              />
               <Button
-                sx={{ mt: 2, mb: 2 }}
+                component="label"
+                fullWidth
                 variant="outlined"
-                onClick={onClose}
+                startIcon={<CloudUploadIcon />}
+                sx={{ height: '60px', marginTop: '15px', padding: '0px' }}
               >
-                닫기
+                프로필 이미지
+                <VisuallyHiddenInput type="file" accept="image/jpeg, image/png" onChange={(e) => handleImage(e)} />
               </Button>
             </div>
-          </div>
+            <div css={S.textGap}>
+              <TextField
+                margin="normal"
+                label="인증 여부"
+                name="isAuthed"
+                value={member?.isAuthed.toString() || ''}
+                fullWidth
+                onChange={handleChange}
+                select
+              >
+                {isAuthedList.map((isAuthed) => (
+                  <MenuItem key={isAuthed.toString()} value={isAuthed.toString()}>
+                    {isAuthed ? IS_AUTHED.true : IS_AUTHED.false}
+                  </MenuItem>
+                ))}
+              </TextField>
+              <TextField
+                margin="normal"
+                label="탈퇴 여부"
+                name="isDeleted"
+                value={member?.isDeleted.toString() || ''}
+                fullWidth
+                onChange={handleChange}
+                select
+              >
+                {isDeletedList.map((isDeleted) => (
+                  <MenuItem key={isDeleted.toString()} value={isDeleted.toString()}>
+                    {isDeleted ? IS_DELETED.true : IS_DELETED.false}
+                  </MenuItem>
+                ))}
+              </TextField>
+            </div>
+            <div css={S.buttonContainer}>
+              <div css={S.buttonWrapper}>
+                <Button sx={{ mt: 2, mb: 2 }} variant="contained" color="error" onClick={handleOpenDeleteModal}>
+                  회원 삭제
+                </Button>
+              </div>
+              <div css={S.buttonWrapper}>
+                <Button
+                  sx={{ mt: 2, mb: 2 }}
+                  variant="contained"
+                  onClick={handleSave}
+                >
+                  저장
+                </Button>
+                <Button
+                  sx={{ mt: 2, mb: 2 }}
+                  variant="outlined"
+                  onClick={onClose}
+                >
+                  닫기
+                </Button>
+              </div>
+            </div>
+          </Box>
         </Box>
-      </Box>
-    </Modal>
+      </Modal>
+      <Modal open={deleteModalOpen} onClose={() => setDeleteModalOpen(false)}>
+        <Box sx={S.style}>
+          <Typography id="modal-title" variant="h6" component="h2">
+            회원 삭제
+          </Typography>
+          <Box component="form" noValidate autoComplete="off" sx={{ mt: 2 }}>
+            <TextField
+              margin="normal"
+              label="탈퇴 사유"
+              name="deleteReason"
+              fullWidth
+              value={deleteReason}
+              onChange={handleDeleteReasonChange}
+            />
+            <div css={S.buttonContainer}>
+              <div css={S.buttonWrapper}>
+                <Button
+                  sx={{ mt: 2, mb: 2 }}
+                  variant="contained"
+                  color="error"
+                  onClick={() => handleDeleteLogic()}
+                >
+                  삭제
+                </Button>
+              </div>
+              <div css={S.buttonWrapper}>
+                <Button
+                  sx={{ mt: 2, mb: 2 }}
+                  variant="outlined"
+                  onClick={() => setDeleteModalOpen(false)}
+                >
+                  닫기
+                </Button>
+              </div>
+            </div>
+          </Box>
+        </Box>
+      </Modal>
+    </>
   );
 }

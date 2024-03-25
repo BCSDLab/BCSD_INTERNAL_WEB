@@ -33,6 +33,10 @@ export const pagePath = [
     title: '트랙 정보',
   },
   {
+    path: PATHS.team,
+    title: '팀 정보',
+  },
+  {
     path: PATHS.role,
     title: '직책 정보',
   },

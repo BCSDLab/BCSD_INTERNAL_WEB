@@ -3,7 +3,9 @@ import {
   createMember,
   deleteMember, getMember, getMembers, getMembersDeleted, login, updateMember, getNotAuthedMembers, getMe, updateMe,
 } from 'api/members';
-import { AdminMemberUpdate, MemberCreate, MemberUpdate } from 'model/member';
+import {
+  AdminMemberUpdate, MemberCreate, MemberDelete, MemberUpdate,
+} from 'model/member';
 import { AxiosError } from 'axios';
 import { useNavigate } from 'react-router-dom';
 import { useSnackBar } from 'ts/useSnackBar';
@@ -75,7 +77,7 @@ export const useDeleteMember = () => {
   const queryClient = useQueryClient();
   const openSnackBar = useSnackBar();
   return useMutation({
-    mutationFn: (id: number) => deleteMember(id),
+    mutationFn: (member: MemberDelete) => deleteMember(member.id, member.reason),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['members'] });
       openSnackBar({ type: 'success', message: '회원 삭제에 성공했습니다.' });
