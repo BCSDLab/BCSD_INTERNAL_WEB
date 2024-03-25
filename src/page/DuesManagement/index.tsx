@@ -30,7 +30,6 @@ function DefaultTable() {
   const page = useQueryParam('page', 'number') as number | null;
   const currentYear = new Date().getFullYear();
   const [duesYear, setDuesYear] = useState(page ? currentYear - page + 1 : currentYear);
-  const [trackFilter, setTrackFilter] = useState([true, true, true, true, true, true]);
   const [name, setName] = useState('');
   const [detail, setDetail] = useState<DuesDetail>({ month: 0, status: null });
   const [memoAnchorEl, setMemoAnchorEl] = useState<null | HTMLElement>(null);
@@ -46,6 +45,7 @@ function DefaultTable() {
   const [filteredValue, setFilteredValue] = useState(allDues.dues);
 
   const { data: tracks } = useGetTracks();
+  const [trackFilter, setTrackFilter] = useState(tracks.map(() => true));
 
   const handleNameChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const searchName = e.target.value;

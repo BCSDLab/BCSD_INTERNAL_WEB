@@ -35,7 +35,6 @@ function DefaultTable() {
   const page = useQueryParam('page', 'number') as number | null;
   const currentYear = new Date().getFullYear();
   const [duesYear, setDuesYear] = useState(page ? currentYear - page + 1 : currentYear);
-  const [trackFilter, setTrackFilter] = useState([true, true, true, true, true, true]);
   const [name, setName] = useState('');
   const {
     value: isFilterModalOpen,
@@ -63,6 +62,7 @@ function DefaultTable() {
   const [filteredValue, setFilteredValue] = useState(allDues.dues);
 
   const { data: tracks } = useGetTracks();
+  const [trackFilter, setTrackFilter] = useState(tracks.map(() => true));
   const postDuesMutation = usePostDues();
   const putDuesMutation = usePutDues();
   const deleteDuesMutation = useDeleteDues();
