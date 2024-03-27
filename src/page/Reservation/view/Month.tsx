@@ -90,7 +90,7 @@ export default function Month() {
   const previousYear = () => setCurrentYear((prev) => prev - 1);
   const previousMonth = () => setCurrentMonth((prev) => {
     if ((prev - 1) >= 0) return (prev - 1) % 12;
-    return prev;
+    return 11;
   });
 
   useEffect(() => {
