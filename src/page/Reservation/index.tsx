@@ -5,13 +5,22 @@ import Week from './view/Week';
 import Month from './view/Month';
 import * as S from './style';
 
+interface CurrentPageDate {
+  year: number;
+  month: number;
+}
+
 function ReservationOutlet() {
   const [mode, setMode] = useState('week');
   const currentYear = new Date().getFullYear();
   const currentMonth = new Date().getMonth() + 1;
+  const [currentPageDate, setCurrentPageDate] = useState({ year: currentYear, month: currentMonth });
+  const setDate = ({ year, month }: CurrentPageDate) => {
+    setCurrentPageDate({ year, month });
+  };
   return (
     <div css={S.reservation}>
-      <h2 css={S.currentTimeTitle}>{`${currentYear}년 ${currentMonth}월`}</h2>
+      <h2 css={S.currentTimeTitle}>{`${currentPageDate.year}년 ${currentPageDate.month}월`}</h2>
       <ButtonGroup css={S.buttonGroup}>
         <Button
           onClick={() => setMode('month')}
@@ -29,8 +38,8 @@ function ReservationOutlet() {
         </Button>
       </ButtonGroup>
       {/* 주를 만들자 */}
-      {mode === 'week' && <Week />}
-      {mode === 'month' && <Month />}
+      {mode === 'week' && <Week setDate={setDate} />}
+      {mode === 'month' && <Month /> }
     </div>
   );
 }
