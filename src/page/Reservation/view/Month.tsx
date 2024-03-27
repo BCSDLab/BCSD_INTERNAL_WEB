@@ -86,9 +86,12 @@ export default function Month() {
 
   const handleClose = () => setOpen(false);
   const nextYear = () => setCurrentYear((prev) => prev + 1);
-  const nextMonth = () => setCurrentMonth((prev) => prev + 1);
+  const nextMonth = () => setCurrentMonth((prev) => (prev + 1) % 12);
   const previousYear = () => setCurrentYear((prev) => prev - 1);
-  const previousMonth = () => setCurrentMonth((prev) => prev - 1);
+  const previousMonth = () => setCurrentMonth((prev) => {
+    if ((prev - 1) >= 0) return (prev - 1) % 12;
+    return prev;
+  });
 
   useEffect(() => {
     // 현재 월의 일 수
