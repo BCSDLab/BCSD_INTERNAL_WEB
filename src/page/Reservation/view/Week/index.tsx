@@ -213,7 +213,7 @@ export default function Week({ setDate }: WeekProps) {
                         </TableCell>
                         {makeNumberArray(7).map((dayIndex) => (
                           <TableCell
-                            key={dayIndex}
+                            key={`${dayIndex}-${hour}-${minute}`}
                             onMouseDown={() => handleMouseDown({ time: `${hour}:${minute}`, day: weekDates[dayIndex]?.date })}
                             onMouseEnter={() => handleMouseEnter({ time: `${hour}:${minute}`, day: weekDates[dayIndex]?.date })}
                             onMouseUp={handleMouseUp}
@@ -225,6 +225,12 @@ export default function Week({ setDate }: WeekProps) {
                             {dragStart && dragStart.day === weekDates[dayIndex]?.date && dragStart.time === `${hour}:${minute}` && dragEnd && (
                               <DisplayTime startDateTime={dragStart.time} endDateTime={dragEnd.time} />
                             )}
+                            {selectionRange.map(({ start, end }, reservationInfoIndex) => {
+                              if (start.time === `${hour}:${minute}` && start.day === weekDates[dayIndex]?.date) {
+                                return <DisplayTime startDateTime={start.time} endDateTime={end.time} reason={reservationInfo[reservationInfoIndex]?.detailedReason} />;
+                              }
+                              return null;
+                            })}
                           </TableCell>
                         ))}
                       </TableRow>
@@ -234,7 +240,7 @@ export default function Week({ setDate }: WeekProps) {
                     <TableRow key={`${hour}:${minute}`}>
                       {makeNumberArray(7).map((dayIndex) => (
                         <TableCell
-                          key={dayIndex}
+                          key={`${dayIndex}-${hour}-${minute}`}
                           onMouseDown={() => handleMouseDown({ time: `${hour}:${minute}`, day: weekDates[dayIndex]?.date })}
                           onMouseEnter={() => handleMouseEnter({ time: `${hour}:${minute}`, day: weekDates[dayIndex]?.date })}
                           onMouseUp={handleMouseUp}
@@ -246,6 +252,12 @@ export default function Week({ setDate }: WeekProps) {
                           {dragStart && dragStart.day === weekDates[dayIndex]?.date && dragStart.time === `${hour}:${minute}` && dragEnd && (
                             <DisplayTime startDateTime={dragStart.time} endDateTime={dragEnd.time} />
                           )}
+                          {selectionRange.map(({ start, end }, reservationInfoIndex) => {
+                            if (start.time === `${hour}:${minute}` && start.day === weekDates[dayIndex]?.date) {
+                              return <DisplayTime startDateTime={start.time} endDateTime={end.time} reason={reservationInfo[reservationInfoIndex]?.detailedReason} />;
+                            }
+                            return null;
+                          })}
                         </TableCell>
                       ))}
                     </TableRow>
