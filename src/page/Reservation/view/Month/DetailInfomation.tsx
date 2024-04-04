@@ -17,6 +17,9 @@ export default function DetailInfomation({
       <div css={S.DetailContainer}>
         <div>
           <div>
+            {startDateTime.slice(0, 10)}
+          </div>
+          <div>
             시간 :
             {startDateTime.slice(10, 20)}
             {' '}
