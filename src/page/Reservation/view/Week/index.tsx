@@ -169,10 +169,6 @@ export default function Week({ currentDate, setCurrentDate }: WeekProps) {
   const handleModifyReservationModalOpen = ({
     hour, minute, dayIndex, day, time,
   }: ModifyReservationModalProps) => {
-    if (new Date(`${selectedYear}-${day} ${time}`) < new Date()) {
-      openSnackBar({ type: 'error', message: '지난 시간은 선택할 수 없습니다.' });
-      return;
-    }
     const isSelected = selectionRange.some(({ start, end }) => {
       const startTimeInMinutes = Number(start.time.slice(0, 2)) * 60 + Number(start.time.slice(3));
       const endTimeInMinutes = Number(end.time.slice(0, 2)) * 60 + Number(end.time.slice(3));
@@ -186,6 +182,10 @@ export default function Week({ currentDate, setCurrentDate }: WeekProps) {
       const currentTimeInMinutes = Number(`${hour}:${minute}`.slice(0, 2)) * 60 + Number(`${hour}:${minute}`.slice(3));
       return start.day === weekDates[dayIndex]?.date && end.day === weekDates[dayIndex]?.date && ((startTimeInMinutes <= currentTimeInMinutes && currentTimeInMinutes <= endTimeInMinutes) || (endTimeInMinutes <= currentTimeInMinutes && currentTimeInMinutes <= startTimeInMinutes));
     });
+    if (!isSelected && new Date(`${selectedYear}-${day} ${time}`) < new Date()) {
+      openSnackBar({ type: 'error', message: '지난 시간은 선택할 수 없습니다.' });
+      return;
+    }
     if (isSelected) {
       setSelectedIndex(reservationInfoIndex);
       openModifyReservationModal();
