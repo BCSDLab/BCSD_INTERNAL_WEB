@@ -42,6 +42,7 @@ export const selectedCell = ({
   selectionRange, time, day, dragStart, dragEnd,
 }: SelectedCellProps) => {
   const currentTimeInMinutes = Number(time.slice(0, 2)) * 60 + Number(time.slice(3));
+  const minute = time.split(':')[1];
 
   const isSelected = selectionRange.some(({ start, end }) => {
     const dayMatch = start.day === day && end.day === day;
@@ -64,12 +65,26 @@ export const selectedCell = ({
     padding: 2px;
     user-select: none;
   `;
+  const borderStyle = css`
+    position: relative;
+    padding: 2px;
+    user-select: none;
+  `;
 
   if (isSelected || isDragOver) {
     return css`
       background-color: #0288d1;
       cursor: pointer;
       ${baseStyle}
+    `;
+  }
+  if (minute === '50') {
+    return css`
+      border-bottom: 1px solid #e0e0e0;
+      border-right: 1px solid #e0e0e0;
+      border-left: 1px solid #e0e0e0;
+      background-color: transparent;
+      ${borderStyle}
     `;
   }
   return css`
