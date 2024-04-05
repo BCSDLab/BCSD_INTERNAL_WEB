@@ -2,7 +2,7 @@ import { css } from '@emotion/react';
 import { colors } from 'const/colors/style';
 
 export const top = css`
-  width: calc(100vw - 230px);
+  width: calc(100vw - 200px);
   height: 100px;
   display: flex;
   align-items: center;
