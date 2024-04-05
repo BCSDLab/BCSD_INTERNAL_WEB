@@ -3,9 +3,10 @@ import * as S from './style';
 interface DisplayTimeProps {
   startDateTime: string;
   endDateTime: string;
+  reason?: string;
 }
 
-export default function DisplayTime({ startDateTime, endDateTime }: DisplayTimeProps) {
+export default function DisplayTime({ startDateTime, endDateTime, reason = '' }: DisplayTimeProps) {
   const [startHour, startMinute] = startDateTime.split(':').map(Number);
   let [endHour, endMinute] = endDateTime.split(':').map(Number);
   endMinute += 10;
@@ -31,6 +32,11 @@ export default function DisplayTime({ startDateTime, endDateTime }: DisplayTimeP
   return (
     <div css={S.displayTime}>
       <span>{`${startTimeStr}~${endTimeStr}`}</span>
+      <span>{reason}</span>
     </div>
   );
 }
+
+DisplayTime.defaultProps = {
+  reason: '',
+};
