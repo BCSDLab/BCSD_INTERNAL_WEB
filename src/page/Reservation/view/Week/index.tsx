@@ -34,6 +34,8 @@ interface ModifyReservationModalProps {
   hour: string;
   minute: string;
   dayIndex: number;
+  day: string;
+  time: string;
 }
 
 interface WeekProps {
@@ -131,10 +133,6 @@ export default function Week({ currentDate, setCurrentDate }: WeekProps) {
   };
   // 오늘 날짜 기준으로 이전 날짜는 선택 불가능하게 만들어야 함
   const handleMouseDown = ({ time, day }: TimeSlotSelection) => {
-    if (new Date(`${selectedYear}-${day} ${time}`) < new Date()) {
-      openSnackBar({ type: 'error', message: '지난 시간은 선택할 수 없습니다.' });
-      return;
-    }
     setDragging(true);
     setDragStart({ time, day });
   };
@@ -168,7 +166,13 @@ export default function Week({ currentDate, setCurrentDate }: WeekProps) {
     closeReservationModal();
   };
 
-  const handleModifyReservationModalOpen = ({ hour, minute, dayIndex }: ModifyReservationModalProps) => {
+  const handleModifyReservationModalOpen = ({
+    hour, minute, dayIndex, day, time,
+  }: ModifyReservationModalProps) => {
+    if (new Date(`${selectedYear}-${day} ${time}`) < new Date()) {
+      openSnackBar({ type: 'error', message: '지난 시간은 선택할 수 없습니다.' });
+      return;
+    }
     const isSelected = selectionRange.some(({ start, end }) => {
       const startTimeInMinutes = Number(start.time.slice(0, 2)) * 60 + Number(start.time.slice(3));
       const endTimeInMinutes = Number(end.time.slice(0, 2)) * 60 + Number(end.time.slice(3));
@@ -224,7 +228,9 @@ export default function Week({ currentDate, setCurrentDate }: WeekProps) {
                             onMouseDown={() => handleMouseDown({ time: `${hour}:${minute}`, day: weekDates[dayIndex]?.date })}
                             onMouseEnter={() => handleMouseEnter({ time: `${hour}:${minute}`, day: weekDates[dayIndex]?.date })}
                             onMouseUp={handleMouseUp}
-                            onClick={() => handleModifyReservationModalOpen({ hour, minute, dayIndex })}
+                            onClick={() => handleModifyReservationModalOpen({
+                              hour, minute, dayIndex, time: `${hour}:${minute}`, day: weekDates[dayIndex]?.date,
+                            })}
                             css={S.selectedCell({
                               selectionRange, time: `${hour}:${minute}`, day: weekDates[dayIndex]?.date, dragStart, dragEnd,
                             })}
@@ -251,7 +257,9 @@ export default function Week({ currentDate, setCurrentDate }: WeekProps) {
                           onMouseDown={() => handleMouseDown({ time: `${hour}:${minute}`, day: weekDates[dayIndex]?.date })}
                           onMouseEnter={() => handleMouseEnter({ time: `${hour}:${minute}`, day: weekDates[dayIndex]?.date })}
                           onMouseUp={handleMouseUp}
-                          onClick={() => handleModifyReservationModalOpen({ hour, minute, dayIndex })}
+                          onClick={() => handleModifyReservationModalOpen({
+                            hour, minute, dayIndex, time: `${hour}:${minute}`, day: weekDates[dayIndex]?.date,
+                          })}
                           css={S.selectedCell({
                             selectionRange, time: `${hour}:${minute}`, day: weekDates[dayIndex]?.date, dragStart, dragEnd,
                           })}
