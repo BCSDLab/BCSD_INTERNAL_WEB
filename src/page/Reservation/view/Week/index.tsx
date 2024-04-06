@@ -9,6 +9,7 @@ import { HOUR_LIST, MINUTE_LIST } from 'util/constants/time';
 import makeNumberArray from 'util/hooks/makeNumberArray';
 import { useGetReservations } from 'query/reservations';
 import useBooleanState from 'util/hooks/useBooleanState';
+import { ArrowBackIosOutlined, ArrowForwardIosOutlined } from '@mui/icons-material';
 import * as S from './styles';
 import CreateReservationModal from './modal/createReservationModal';
 import DisplayTime from './modal/displayTime';
@@ -183,8 +184,12 @@ export default function Week({ setDate }: WeekProps) {
   return (
     <div css={S.weekContainer}>
       <div css={S.buttonGroup}>
-        <Button onClick={goToPrevWeek}>이전 주</Button>
-        <Button onClick={goToNextWeek}>다음 주</Button>
+        <Button css={S.prevWeekButton} onClick={goToPrevWeek}>
+          <ArrowBackIosOutlined />
+        </Button>
+        <Button css={S.nextWeekButton} onClick={goToNextWeek}>
+          <ArrowForwardIosOutlined />
+        </Button>
       </div>
       <Table>
         <TableHead>
