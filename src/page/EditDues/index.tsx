@@ -322,11 +322,11 @@ function DefaultTable() {
                       </h3>
                       <div css={S.sortPopoverButtonGroup}>
                         <Button variant="contained" color="primary" onClick={sortInAscendingOrderByUnpaidCount}>
-                          <ArrowDownward />
+                          <ArrowUpward />
                           오름차순
                         </Button>
                         <Button variant="contained" color="primary" onClick={sortInDescendingOrderByUnpaidCount}>
-                          <ArrowUpward />
+                          <ArrowDownward />
                           내림차순
                         </Button>
                       </div>
@@ -359,11 +359,11 @@ function DefaultTable() {
                         </h3>
                         <div css={S.sortPopoverButtonGroup}>
                           <Button variant="contained" color="primary" onClick={sortInAscendingOrderByName}>
-                            <ArrowDownward />
+                            <ArrowUpward />
                             오름차순
                           </Button>
                           <Button variant="contained" color="primary" onClick={sortInDescendingOrderByName}>
-                            <ArrowUpward />
+                            <ArrowDownward />
                             내림차순
                           </Button>
                         </div>
