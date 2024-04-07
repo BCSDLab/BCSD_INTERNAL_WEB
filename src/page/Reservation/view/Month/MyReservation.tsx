@@ -7,10 +7,9 @@ import { useState } from 'react';
 import { style } from './MonthModal';
 import DetailInfomation from './DetailInfomation';
 
-type Alignment = 'information' | 'passed';
+type Alignment = 'information' | 'passed' | 'reservation';
 
-export default function MyReservation({ open, handleClose }: { open: boolean, handleClose: () => void }) {
-  const { data } = useGetMyReservations();
+export const useToggleButtonGroup = () => {
   const [alignment, setAlignment] = useState<Alignment>('information');
 
   const handleChange = (
@@ -19,6 +18,13 @@ export default function MyReservation({ open, handleClose }: { open: boolean, ha
   ) => {
     if (event.target instanceof HTMLElement) setAlignment(newAlignment);
   };
+
+  return { alignment, handleChange };
+};
+
+export default function MyReservation({ open, handleClose }: { open: boolean, handleClose: () => void }) {
+  const { data } = useGetMyReservations();
+  const { alignment, handleChange } = useToggleButtonGroup();
 
   return (
     <Modal
@@ -51,7 +57,7 @@ export default function MyReservation({ open, handleClose }: { open: boolean, ha
             ),
           )}
         {alignment === 'passed'
-          && data.filter((item) => (Number(item.endDateTime.slice(5, 7)) < new Date().getMonth() + 1) && (Number(item.endDateTime.slice(8, 10)) < new Date().getDate())).map(
+          && data.filter((item) => (Number(item.endDateTime.slice(5, 7)) < new Date().getMonth() + 1) || (Number(item.endDateTime.slice(8, 10)) < new Date().getDate())).map(
             (filtered) => (
               <DetailInfomation
                 detailedReason={filtered.detailedReason}
