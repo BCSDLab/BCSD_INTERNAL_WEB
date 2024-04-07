@@ -22,6 +22,7 @@ enum Authority {
 }
 
 export interface Member {
+  [x: string]: any;
   id: number;
   joinedYear: number;
   joinedMonth: number;
@@ -41,6 +42,7 @@ export interface Member {
   updatedAt: string;
   isAuthed: boolean;
   isDeleted: boolean;
+  deleteReason: string;
 }
 
 export interface AdminMemberUpdate {
@@ -60,6 +62,7 @@ export interface AdminMemberUpdate {
   isAuthed: boolean;
   isDeleted: boolean;
   authority: Authority;
+  deleteReason: string;
 }
 
 export interface MemberUpdate {
@@ -98,6 +101,11 @@ export interface MemberCreate {
   authority?: Authority;
 }
 
+export interface MemberDelete {
+  id: number;
+  reason: string;
+}
+
 const REVERSE_STATUS_LABEL = Object.entries(STATUS_LABEL).reduce((acc, [key, value]) => {
   acc[value] = key as StatusType;
   return acc;
@@ -127,6 +135,7 @@ export const toAdminMemberUpdate = (member: Member): AdminMemberUpdate => {
     isAuthed: member.isAuthed,
     isDeleted: member.isDeleted,
     authority: member.authority,
+    deleteReason: member.deleteReason,
   };
 };
 

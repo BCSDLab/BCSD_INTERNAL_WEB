@@ -26,6 +26,7 @@ import useQueryParam from 'util/hooks/useQueryParam';
 import { useSnackBar } from 'ts/useSnackBar';
 import makeNumberArray from 'util/hooks/makeNumberArray';
 import { NewDuesData } from 'api/dues';
+import { useGetMembers } from 'query/members';
 import * as S from './style';
 
 type Status = 'PAID' | 'NOT_PAID' | 'SKIP' | 'NONE';
@@ -35,7 +36,6 @@ function DefaultTable() {
   const page = useQueryParam('page', 'number') as number | null;
   const currentYear = new Date().getFullYear();
   const [duesYear, setDuesYear] = useState(page ? currentYear - page + 1 : currentYear);
-  const [trackFilter, setTrackFilter] = useState([true, true, true, true, true, true]);
   const [name, setName] = useState('');
   const {
     value: isFilterModalOpen,
@@ -60,9 +60,11 @@ function DefaultTable() {
   const openSnackBar = useSnackBar();
 
   const { data: allDues, refetch } = useGetAllDues({ year: duesYear });
-  const [filteredValue, setFilteredValue] = useState(allDues.dues);
+  const { data: members } = useGetMembers({ pageIndex: 0, pageSize: 1000, trackId: null });
+  const [filteredValue, setFilteredValue] = useState(allDues.dues.filter((row) => members?.content.some((member) => member.memberType === 'REGULAR' && member.id === row.memberId)));
 
   const { data: tracks } = useGetTracks();
+  const [trackFilter, setTrackFilter] = useState(tracks.map(() => true));
   const postDuesMutation = usePostDues();
   const putDuesMutation = usePutDues();
   const deleteDuesMutation = useDeleteDues();
@@ -71,9 +73,9 @@ function DefaultTable() {
     const searchName = e.target.value;
     if (searchName === '') {
       if (trackFilter.every((value) => value)) {
-        setFilteredValue(allDues.dues);
+        setFilteredValue(allDues.dues.filter((row) => members?.content.some((member) => member.memberType === 'REGULAR' && member.id === row.memberId)));
       } else {
-        setFilteredValue(allDues.dues.filter((row) => trackFilter[tracks.map((track) => track.name).indexOf(row.track.name)]));
+        setFilteredValue(allDues.dues.filter((row) => members?.content.some((member) => member.memberType === 'REGULAR' && member.id === row.memberId) && trackFilter[tracks.map((track) => track.name).indexOf(row.track.name)]));
       }
     }
     setName(searchName);
@@ -81,7 +83,9 @@ function DefaultTable() {
 
   const handleNameSearchClick = () => {
     if (filteredValue.some((row) => row.name.includes(name))) {
-      setFilteredValue(allDues.dues.filter((row) => row.name.includes(name)));
+      setFilteredValue(allDues.dues.filter((row) => row.name.includes(name) && members?.content.some((member) => member.memberType === 'REGULAR' && member.id === row.memberId)));
+    } else {
+      openSnackBar({ type: 'error', message: '해당 이름을 가진 회원이 없습니다.' });
     }
   };
 
@@ -97,9 +101,8 @@ function DefaultTable() {
     setTrackFilter((prevTrack) => {
       const updatedTrack = [...prevTrack];
       updatedTrack[trackIndex] = !updatedTrack[trackIndex];
-      setFilteredValue(allDues.dues.filter(
-        (row) => updatedTrack[tracks.map((track) => track.name).indexOf(row.track.name)],
-      ));
+      setFilteredValue(allDues.dues.filter((row) => updatedTrack[tracks.map((track) => track.name).indexOf(row.track.name)]
+      && members?.content.some((member) => member.memberType === 'REGULAR' && member.id === row.memberId)));
       return updatedTrack;
     });
   };
@@ -154,16 +157,18 @@ function DefaultTable() {
   // 연도 변경 시, 데이터를 다시 설정함
   useEffect(() => {
     setDuesYear(page ? currentYear - page + 1 : currentYear);
-    setFilteredValue(allDues.dues);
-  }, [currentYear, page, allDues.dues]);
+    if (allDues.dues) {
+      setFilteredValue(allDues.dues.filter((row) => members?.content.some((member) => member.memberType === 'REGULAR' && member.id === row.memberId)));
+    }
+  }, [currentYear, page, allDues.dues, members?.content]);
 
   // API 호출 성공 시, 데이터를 다시 불러옴
   useEffect(() => {
     if (postDuesMutation.isSuccess || putDuesMutation.isSuccess || deleteDuesMutation.isSuccess) {
       refetch();
-      setFilteredValue(allDues.dues);
+      setFilteredValue(allDues.dues.filter((row) => members?.content.some((member) => member.memberType === 'REGULAR' && member.id === row.memberId)));
     }
-  }, [postDuesMutation.isSuccess, putDuesMutation.isSuccess, deleteDuesMutation.isSuccess, refetch, allDues.dues]);
+  }, [postDuesMutation.isSuccess, putDuesMutation.isSuccess, deleteDuesMutation.isSuccess, refetch, allDues.dues, members?.content]);
 
   const goToPrevYear = () => {
     // 재학생 회비 내역이 2021년부터 시작하므로 2021년 이전으로 이동할 수 없음

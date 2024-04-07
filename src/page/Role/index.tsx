@@ -78,7 +78,7 @@ function ViewOfRole() {
         <h3 css={S.gridTitle}>
           {`${selectedYear}년도 회장 부회장`}
         </h3>
-        <Grid css={S.gridWrapper(chairMen.length + viceChairMen.length)}>
+        <Grid css={S.gridWrapper}>
           {chairMenInfo.map((chairManInfo, index) => (
             <Item css={S.memberContainer} authority={myInfo?.authority} key={chairManInfo?.name} onClick={() => handleUpdateJobModalOpen(chairManInfo?.id, chairMen[index].id)}>
               <div css={S.memberWrapper}>
@@ -139,7 +139,7 @@ function ViewOfRole() {
         <h3 css={S.gridTitle}>
           {`${selectedYear}년도 트랙장`}
         </h3>
-        <Grid css={S.gridWrapper(trackLeaders.length)}>
+        <Grid css={S.gridWrapper}>
           {trackLeadersInfo && trackLeadersInfo.map((trackLeader, index) => (
             <Item css={S.memberContainer} authority={myInfo?.authority} key={trackLeader?.name} onClick={() => handleUpdateJobModalOpen(trackLeader?.id, trackLeaders[index].id)}>
               <div css={S.memberWrapper}>
@@ -172,7 +172,7 @@ function ViewOfRole() {
         <h3 css={S.gridTitle}>
           {`${selectedYear}년도 교육장`}
         </h3>
-        <Grid css={S.gridWrapper(educationLeaders.length)}>
+        <Grid css={S.gridWrapper}>
           {educationLeadersInfo.map((educationLeader, index) => (
             <Item css={S.memberContainer} authority={myInfo?.authority} key={educationLeader?.name} onClick={() => handleUpdateJobModalOpen(educationLeader?.id, educationLeaders[index].id)}>
               <div css={S.memberWrapper}>
@@ -205,7 +205,7 @@ function ViewOfRole() {
         <h3 css={S.gridTitle}>
           {`${selectedYear}년도 기타`}
         </h3>
-        <Grid css={S.gridWrapper(etc.length)}>
+        <Grid css={S.gridWrapper}>
           {etcInfo.map((member, index) => (
             <Item css={S.memberContainer} authority={myInfo?.authority} key={member?.name} onClick={() => handleUpdateJobModalOpen(member?.id, etc[index].id)}>
               <div css={S.memberWrapper}>

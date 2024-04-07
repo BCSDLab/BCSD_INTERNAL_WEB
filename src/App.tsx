@@ -16,6 +16,7 @@ import FindPassword from 'page/FindPassword';
 import Role from 'page/Role';
 import { useLoginState } from 'store/loginStore';
 import { PATHS } from 'util/constants/path';
+import TeamInfo from 'page/Team';
 import Reservation from 'page/Reservation';
 
 function App() {
@@ -72,6 +73,14 @@ function App() {
             element={(
               <Suspense fallback={<LoadingSpinner />}>
                 <TrackInfo />
+              </Suspense>
+            )}
+          />
+          <Route
+            path={PATHS.team}
+            element={(
+              <Suspense fallback={<LoadingSpinner />}>
+                <TeamInfo />
               </Suspense>
             )}
           />
