@@ -38,7 +38,7 @@ function ReservationOutlet() {
         </Button>
       </ButtonGroup>
       {/* 주를 만들자 */}
-      {mode === 'week' && <Week setDate={setDate} />}
+      {mode === 'week' && <Week currentDate={currentPageDate} setCurrentDate={setDate} />}
       {mode === 'month' && <Month /> }
     </div>
   );
