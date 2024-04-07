@@ -23,7 +23,6 @@ export const weekContainer = css`
 `;
 
 export const buttonGroup = css`
-  width: 100%;
   margin-left: 10px;
 `;
 
