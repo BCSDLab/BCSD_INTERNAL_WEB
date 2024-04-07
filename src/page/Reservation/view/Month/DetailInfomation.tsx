@@ -6,10 +6,12 @@ import * as S from './style';
 interface DetailInfomationProps extends Reservations {
   // eslint-disable-next-line
   id?: number;
+  // eslint-disable-next-line
+  memberName?: string;
 }
 
 export default function DetailInfomation({
-  detailedReason, startDateTime, endDateTime, memberCount, id, reason,
+  detailedReason, startDateTime, endDateTime, memberCount, id, reason, memberName,
 }: DetailInfomationProps) {
   const { mutate } = useDeleteReservations();
   return (
@@ -18,6 +20,11 @@ export default function DetailInfomation({
         <div>
           <div>
             {startDateTime.slice(0, 10)}
+          </div>
+          <div>
+            예약자명 :
+            {' '}
+            {memberName}
           </div>
           <div>
             시간 :
