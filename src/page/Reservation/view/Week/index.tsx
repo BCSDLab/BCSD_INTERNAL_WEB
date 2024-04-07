@@ -138,10 +138,14 @@ export default function Week({ currentDate, setCurrentDate }: WeekProps) {
     setDragStart({ time, day });
   };
 
-  const handleMouseEnter = ({ time }: TimeSlotSelection) => {
+  const handleMouseEnter = ({ time, day }: TimeSlotSelection) => {
     if (dragging) {
       const fixedDay = dragStart?.day;
       if (!fixedDay) return;
+      if (new Date(`${selectedYear}-${day} ${time}`) < new Date()) {
+        openSnackBar({ type: 'error', message: '지난 시간은 선택할 수 없습니다.' });
+        return;
+      }
       setDragEnd({ time, day: fixedDay });
     }
   };
