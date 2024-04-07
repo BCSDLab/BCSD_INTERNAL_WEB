@@ -8,8 +8,8 @@ import * as S from './style';
 
 interface CreateReservationModalProps {
   open: boolean;
-  onClose: () => void;
   reservationInfoIndex: number;
+  onClose: () => void;
   refetch: (options?: RefetchOptions | undefined) => Promise<QueryObserverResult<GetReservationsResponse[], Error>>
 }
 
@@ -22,7 +22,7 @@ const initialReservationInfo = {
 };
 
 export default function ModifyReservationModal({
-  open, onClose, reservationInfoIndex, refetch,
+  open, reservationInfoIndex, onClose, refetch,
 }: CreateReservationModalProps) {
   const openSnackBar = useSnackBar();
   const { data: reservationsInfo } = useGetReservations();
@@ -128,8 +128,12 @@ export default function ModifyReservationModal({
           />
         </div>
         <div css={S.buttonGroup}>
-          <Button variant="contained" color="error" onClick={handleDeleteReservationClick}>예약 취소</Button>
-          <Button variant="contained" onClick={handlePutReservationClick}>수정</Button>
+          {new Date(reservationInfo?.startDateTime) >= new Date() && (
+            <>
+              <Button variant="contained" color="error" onClick={handleDeleteReservationClick}>예약 취소</Button>
+              <Button variant="contained" onClick={handlePutReservationClick}>수정</Button>
+            </>
+          )}
           <Button variant="contained" onClick={handleModalClose}>취소</Button>
         </div>
       </div>
