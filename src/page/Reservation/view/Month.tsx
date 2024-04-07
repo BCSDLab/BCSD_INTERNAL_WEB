@@ -131,7 +131,7 @@ export default function Month() {
         <Button onClick={nextMonth}>
           <ArrowForwardIosOutlined />
         </Button>
-        <Button onClick={() => setOpen(true)}>
+        <Button variant="outlined" onClick={() => setOpen(true)}>
           예약 확인
         </Button>
       </div>
