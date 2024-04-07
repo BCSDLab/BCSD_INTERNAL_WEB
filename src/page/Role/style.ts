@@ -19,8 +19,8 @@ export const Item = styled(Paper)<ItemProps>(({ theme, authority }) => ({
 
 export const container = css`
   height: 100%;
-  width: 100%;
-  overflow: scroll;
+  width: calc(100vw - 200px);
+  overflow-y: scroll;
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -46,8 +46,8 @@ export const paginationTitle = css`
 `;
 
 export const content = css`
-  margin-top: 10px;
   width: 100%;
+  margin-top: 10px;
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -59,11 +59,12 @@ export const gridTitle = css`
   margin-top: 10px;
 `;
 
-export const gridWrapper = (itemCount: number) => {
-  const columnCount = itemCount > 4 ? 4 : itemCount;
+export const gridWrapper = () => {
   return css`
+  width: 100%;
   display: grid;
-  grid-template-columns: repeat(${columnCount}, 1fr);
+  justify-items: center;  
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
   gap: 20px;
   min-height: 200px;
   margin: 20px 0;
@@ -72,6 +73,7 @@ export const gridWrapper = (itemCount: number) => {
 };
 
 export const memberContainer = css`
+  max-width: 300px;
   display: flex;
   justify-content: center;
   align-items: center;

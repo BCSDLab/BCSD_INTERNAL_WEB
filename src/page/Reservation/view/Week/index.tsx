@@ -137,9 +137,11 @@ export default function Week({ currentDate, setCurrentDate }: WeekProps) {
     setDragStart({ time, day });
   };
 
-  const handleMouseEnter = ({ time, day }: TimeSlotSelection) => {
+  const handleMouseEnter = ({ time }: TimeSlotSelection) => {
     if (dragging) {
-      setDragEnd({ time, day });
+      const fixedDay = dragStart?.day;
+      if (!fixedDay) return;
+      setDragEnd({ time, day: fixedDay });
     }
   };
 
