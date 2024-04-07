@@ -94,23 +94,15 @@ export default function Week({ currentDate, setCurrentDate }: WeekProps) {
   // 드래그한 범위의 시작 시간과 종료 시간을 정렬
   useEffect(() => {
     if (!dragStart || !dragEnd) return;
-    const [startHour, startMinute] = dragStart.timeFrom.split(':').map(Number);
-    let [endHour, endMinute] = dragEnd.timeTo.split(':').map(Number);
-    if (endMinute >= 60) {
-      endMinute -= 60;
-      endHour += 1;
-    }
-    if (endHour >= 24) {
-      endHour = 0;
-    }
-    const startTime = startHour * 60 + startMinute;
-    const endTime = endHour * 60 + endMinute;
-    const newEndTime = `${String(endHour).padStart(2, '0')}:${String(endMinute).padStart(2, '0')}`;
-    if (startTime <= endTime) {
+    const [startHourFrom, startMinuteFrom] = dragStart.timeFrom.split(':').map(Number);
+    const [startHourTo, startMinuteTo] = dragStart.timeTo.split(':').map(Number);
+    const [endHourFrom, endMinuteFrom] = dragEnd.timeFrom.split(':').map(Number);
+    const [endHourTo, endMinuteTo] = dragEnd.timeTo.split(':').map(Number);
+    if (startHourFrom < endHourTo || (startHourFrom === endHourTo && startMinuteFrom <= endMinuteTo)) {
       startDateTime.current = `${selectedYear}-${dragStart.day} ${dragStart.timeFrom}`;
-      endDateTime.current = `${selectedYear}-${dragEnd.day} ${newEndTime}`;
-    } else {
-      startDateTime.current = `${selectedYear}-${dragEnd.day} ${newEndTime}`;
+      endDateTime.current = `${selectedYear}-${dragEnd.day} ${dragEnd.timeTo}`;
+    } else if (endHourFrom < startHourTo || (endHourFrom === startHourTo && endMinuteFrom <= startMinuteTo)) {
+      startDateTime.current = `${selectedYear}-${dragEnd.day} ${dragEnd.timeFrom}`;
       endDateTime.current = `${selectedYear}-${dragStart.day} ${dragStart.timeTo}`;
     }
   }, [dragStart, dragEnd, selectedYear]);
@@ -213,7 +205,6 @@ export default function Week({ currentDate, setCurrentDate }: WeekProps) {
     }
   };
 
-  console.log(selectionRange);
   return (
     <div css={S.weekContainer}>
       <div css={S.buttonGroup}>
