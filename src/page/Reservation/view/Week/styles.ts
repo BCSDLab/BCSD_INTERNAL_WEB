@@ -71,8 +71,8 @@ export const selectedCell = ({
     const endTimeInMinutes = Number(end.time.slice(0, 2)) * 60 + Number(end.time.slice(3));
 
     return dayMatch
-    && ((startTimeInMinutes <= currentTimeFrom && currentTimeTo <= endTimeInMinutes)
-    || (endTimeInMinutes <= currentTimeTo && currentTimeFrom <= startTimeInMinutes));
+    && (((startTimeInMinutes <= currentTimeFrom) && (currentTimeTo <= endTimeInMinutes))
+    || ((endTimeInMinutes <= currentTimeTo) && (currentTimeFrom <= startTimeInMinutes)));
   });
 
   const dragStartTimeFrom = dragStart ? Number(dragStart.timeFrom.slice(0, 2)) * 60 + Number(dragStart.timeFrom.slice(3)) : 0;
@@ -80,8 +80,8 @@ export const selectedCell = ({
   const dragStartTimeTo = dragStart ? Number(dragStart.timeTo.slice(0, 2)) * 60 + Number(dragStart.timeTo.slice(3)) : 0;
   const dragEndTimeTo = dragEnd ? Number(dragEnd.timeTo.slice(0, 2)) * 60 + Number(dragEnd.timeTo.slice(3)) : 0;
   const isDragOver = dragStart && dragEnd && day === dragStart.day && day === dragEnd.day
-  && ((dragStartTimeFrom <= currentTimeFrom && currentTimeTo <= dragEndTimeTo)
-    || (dragEndTimeFrom <= currentTimeFrom && currentTimeTo <= dragStartTimeTo));
+  && (((dragStartTimeFrom <= currentTimeFrom) && (currentTimeTo <= dragEndTimeTo))
+    || ((dragEndTimeFrom <= currentTimeFrom) && (currentTimeTo <= dragStartTimeTo)));
 
   const baseStyle = css`
     position: relative;

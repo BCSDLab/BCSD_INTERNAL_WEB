@@ -98,10 +98,10 @@ export default function Week({ currentDate, setCurrentDate }: WeekProps) {
     const [startHourTo, startMinuteTo] = dragStart.timeTo.split(':').map(Number);
     const [endHourFrom, endMinuteFrom] = dragEnd.timeFrom.split(':').map(Number);
     const [endHourTo, endMinuteTo] = dragEnd.timeTo.split(':').map(Number);
-    if (startHourFrom < endHourTo || (startHourFrom === endHourTo && startMinuteFrom <= endMinuteTo)) {
+    if (startHourFrom < endHourTo || ((startHourFrom === endHourTo) && (startMinuteFrom <= endMinuteTo))) {
       startDateTime.current = `${selectedYear}-${dragStart.day} ${dragStart.timeFrom}`;
       endDateTime.current = `${selectedYear}-${dragEnd.day} ${dragEnd.timeTo}`;
-    } else if (endHourFrom < startHourTo || (endHourFrom === startHourTo && endMinuteFrom <= startMinuteTo)) {
+    } else if (endHourFrom < startHourTo || ((endHourFrom === startHourTo) && (endMinuteFrom <= startMinuteTo))) {
       startDateTime.current = `${selectedYear}-${dragEnd.day} ${dragEnd.timeFrom}`;
       endDateTime.current = `${selectedYear}-${dragStart.day} ${dragStart.timeTo}`;
     }
@@ -157,9 +157,9 @@ export default function Week({ currentDate, setCurrentDate }: WeekProps) {
     const [endHourFrom, endMinuteFrom] = dragEnd.timeFrom.split(':').map(Number);
     const [endHourTo, endMinuteTo] = dragEnd.timeTo.split(':').map(Number);
     // 위에서 아래로 드래그를 할 때, else if는 아래에서 위로 드래그할 때
-    if (startHourFrom < endHourTo || (startHourFrom === endHourTo && startMinuteFrom <= endMinuteTo)) {
+    if (startHourFrom < endHourTo || ((startHourFrom === endHourTo) && (startMinuteFrom <= endMinuteTo))) {
       setSelectionRange((prev) => [...prev, { start: { time: dragStart.timeFrom, day: dragStart.day }, end: { time: dragEnd.timeTo, day: dragEnd.day } }]);
-    } else if (endHourFrom < startHourTo || (endHourFrom === startHourTo && endMinuteFrom <= startMinuteTo)) {
+    } else if (endHourFrom < startHourTo || ((endHourFrom === startHourTo) && (endMinuteFrom <= startMinuteTo))) {
       setSelectionRange((prev) => [...prev, { start: { time: dragEnd.timeFrom, day: dragEnd.day }, end: { time: dragStart.timeTo, day: dragStart.day } }]);
     }
     setDragging(false);
@@ -192,8 +192,8 @@ export default function Week({ currentDate, setCurrentDate }: WeekProps) {
       const currentTimeInMinutesFrom = Number(timeFrom.slice(0, 2)) * 60 + Number(timeFrom.slice(3));
       const currentTimeInMinutesTo = Number(timeTo.slice(0, 2)) * 60 + Number(timeTo.slice(3));
       return start.day === weekDates[dayIndex]?.date && end.day === weekDates[dayIndex]?.date
-       && ((startTimeInMinutes <= currentTimeInMinutesFrom && currentTimeInMinutesTo <= endTimeInMinutes)
-       || (endTimeInMinutes <= currentTimeInMinutesTo && currentTimeInMinutesFrom <= startTimeInMinutes));
+       && (((startTimeInMinutes <= currentTimeInMinutesFrom) && (currentTimeInMinutesTo <= endTimeInMinutes))
+       || ((endTimeInMinutes <= currentTimeInMinutesTo) && (currentTimeInMinutesFrom <= startTimeInMinutes)));
     });
     if (!isSelected && new Date(`${selectedYear}-${day} ${timeTo}`) < new Date()) {
       openSnackBar({ type: 'error', message: '지난 시간은 선택할 수 없습니다.' });
