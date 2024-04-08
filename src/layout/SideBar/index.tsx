@@ -6,6 +6,7 @@ import { useState } from 'react';
 import { KeyboardDoubleArrowDown, KeyboardDoubleArrowUp } from '@mui/icons-material';
 import { pagePath } from 'layout/TopBar';
 import { PATHS } from 'util/constants/path';
+import { staticImage } from 'const/images';
 import * as S from './style';
 
 interface Props {
@@ -23,7 +24,7 @@ export default function SideBar({ open, onClose }: Props) {
     <Drawer open={open} onClose={onClose}>
       <div css={S.container}>
         <div css={S.sideBar}>
-          <img src="https://image.bcsdlab.com/banner.png" alt="logo" css={S.logo} onClick={() => navigate(PATHS.home)} />
+          <img src={staticImage.banner} alt="logo" css={S.logo} onClick={() => navigate(PATHS.home)} />
           <Button
             color="secondary"
             sx={{ marginTop: '20px' }}
