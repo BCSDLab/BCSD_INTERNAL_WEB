@@ -23,7 +23,21 @@ export const weekContainer = css`
 `;
 
 export const buttonGroup = css`
-  margin-left: 10px;
+  display: flex;
+  position: relative;
+  justify-content: space-around;
+  width: 100%;
+  height: 36px;
+`;
+
+export const prevWeekButton = css`
+  position: absolute;
+  left: 12%;
+`;
+
+export const nextWeekButton = css`
+  position: absolute;
+  right: 0;
 `;
 
 export const notDraggableArea = css`

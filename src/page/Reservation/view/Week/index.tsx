@@ -10,6 +10,7 @@ import makeNumberArray from 'util/hooks/makeNumberArray';
 import { useGetReservations } from 'query/reservations';
 import useBooleanState from 'util/hooks/useBooleanState';
 import { useSnackBar } from 'ts/useSnackBar';
+import { ArrowBackIosOutlined, ArrowForwardIosOutlined } from '@mui/icons-material';
 import * as S from './styles';
 import CreateReservationModal from './modal/createReservationModal';
 import DisplayTime from './modal/displayTime';
@@ -137,10 +138,14 @@ export default function Week({ currentDate, setCurrentDate }: WeekProps) {
     setDragStart({ time, day });
   };
 
-  const handleMouseEnter = ({ time }: TimeSlotSelection) => {
+  const handleMouseEnter = ({ time, day }: TimeSlotSelection) => {
     if (dragging) {
       const fixedDay = dragStart?.day;
       if (!fixedDay) return;
+      if (new Date(`${selectedYear}-${day} ${time}`) < new Date()) {
+        openSnackBar({ type: 'error', message: '지난 시간은 선택할 수 없습니다.' });
+        return;
+      }
       setDragEnd({ time, day: fixedDay });
     }
   };
@@ -196,8 +201,12 @@ export default function Week({ currentDate, setCurrentDate }: WeekProps) {
   return (
     <div css={S.weekContainer}>
       <div css={S.buttonGroup}>
-        <Button onClick={goToPrevWeek}>이전 주</Button>
-        <Button onClick={goToNextWeek}>다음 주</Button>
+        <Button css={S.prevWeekButton} onClick={goToPrevWeek}>
+          <ArrowBackIosOutlined />
+        </Button>
+        <Button css={S.nextWeekButton} onClick={goToNextWeek}>
+          <ArrowForwardIosOutlined />
+        </Button>
       </div>
       <Table>
         <TableHead>

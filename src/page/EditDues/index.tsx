@@ -31,6 +31,11 @@ import * as S from './style';
 
 type Status = 'PAID' | 'NOT_PAID' | 'SKIP' | 'NONE';
 
+interface SortAnchorEl {
+  name: null | HTMLElement;
+  unpaidCount: null | HTMLElement;
+}
+
 function DefaultTable() {
   const navigate = useNavigate();
   const page = useQueryParam('page', 'number') as number | null;
@@ -55,7 +60,10 @@ function DefaultTable() {
     memo: '',
   });
   const [status, setStatus] = useState<Status>('PAID');
-  const [sortAnchorEl, setSortAnchorEl] = useState<null | HTMLElement>(null);
+  const [sortAnchorEl, setSortAnchorEl] = useState<SortAnchorEl>({
+    name: null,
+    unpaidCount: null,
+  });
 
   const openSnackBar = useSnackBar();
 
@@ -188,15 +196,40 @@ function DefaultTable() {
     setFilteredValue((prev) => {
       return prev.sort((a, b) => a.name.localeCompare(b.name));
     });
-    setSortAnchorEl(null);
+    setSortAnchorEl((prev) => ({ ...prev, name: null }));
   };
 
   const sortInDescendingOrderByName = () => {
     setFilteredValue((prev) => {
       return prev.sort((a, b) => b.name.localeCompare(a.name));
     });
-    setSortAnchorEl(null);
+    setSortAnchorEl((prev) => ({ ...prev, name: null }));
   };
+
+  const sortInAscendingOrderByUnpaidCount = () => {
+    setFilteredValue((prevValue) => prevValue.sort((a, b) => {
+      if (a.unpaidCount > b.unpaidCount) return 1;
+      if (a.unpaidCount < b.unpaidCount) return -1;
+
+      if (a.name.localeCompare(b.name) > 0) return 1;
+      if (a.name.localeCompare(b.name) < 0) return -1;
+      return 0;
+    }));
+    setSortAnchorEl((prev) => ({ ...prev, unpaidCount: null }));
+  };
+
+  const sortInDescendingOrderByUnpaidCount = () => {
+    setFilteredValue((prevValue) => prevValue.sort((a, b) => {
+      if (a.unpaidCount < b.unpaidCount) return 1;
+      if (a.unpaidCount > b.unpaidCount) return -1;
+
+      if (a.name.localeCompare(b.name) > 0) return 1;
+      if (a.name.localeCompare(b.name) < 0) return -1;
+      return 0;
+    }));
+    setSortAnchorEl((prev) => ({ ...prev, unpaidCount: null }));
+  };
+
   return (
     <>
       <div css={S.searchAndPagination}>
@@ -264,22 +297,57 @@ function DefaultTable() {
                     </Modal>
                   </div>
                 </TableCell>
-                <TableCell css={S.tableHeader}>미납 횟수</TableCell>
+                <TableCell css={S.tableHeader}>
+                  <span>미납 횟수</span>
+                  <Button
+                    type="button"
+                    onClick={(e) => setSortAnchorEl((prev) => ({ ...prev, unpaidCount: e.currentTarget }))}
+                    css={S.filterModalButton}
+                  >
+                    <Sort css={S.sortLogo} />
+                  </Button>
+                  <Popover
+                    id="simple-popover"
+                    open={Boolean(sortAnchorEl.unpaidCount)}
+                    anchorEl={sortAnchorEl.unpaidCount}
+                    onClose={() => setSortAnchorEl((prev) => ({ ...prev, unpaidCount: null }))}
+                    anchorOrigin={{
+                      vertical: 'bottom',
+                      horizontal: 'left',
+                    }}
+                  >
+                    <div css={S.sortPopover}>
+                      <h3>
+                        미납 횟수순 정렬
+                      </h3>
+                      <div css={S.sortPopoverButtonGroup}>
+                        <Button variant="contained" color="primary" onClick={sortInAscendingOrderByUnpaidCount}>
+                          <ArrowUpward />
+                          오름차순
+                        </Button>
+                        <Button variant="contained" color="primary" onClick={sortInDescendingOrderByUnpaidCount}>
+                          <ArrowDownward />
+                          내림차순
+                        </Button>
+                      </div>
+                    </div>
+                  </Popover>
+                </TableCell>
                 <TableCell css={S.tableHeader}>
                   <div css={S.nameTableCell}>
                     <span>이름</span>
                     <Button
                       type="button"
-                      onClick={(e) => setSortAnchorEl(e.currentTarget)}
+                      onClick={(e) => setSortAnchorEl((prev) => ({ ...prev, name: e.currentTarget }))}
                       css={S.filterModalButton}
                     >
                       <Sort css={S.sortLogo} />
                     </Button>
                     <Popover
                       id="simple-popover"
-                      open={Boolean(sortAnchorEl)}
-                      anchorEl={sortAnchorEl}
-                      onClose={() => setSortAnchorEl(null)}
+                      open={Boolean(sortAnchorEl.name)}
+                      anchorEl={sortAnchorEl.name}
+                      onClose={() => setSortAnchorEl((prev) => ({ ...prev, name: null }))}
                       anchorOrigin={{
                         vertical: 'bottom',
                         horizontal: 'left',
@@ -291,11 +359,11 @@ function DefaultTable() {
                         </h3>
                         <div css={S.sortPopoverButtonGroup}>
                           <Button variant="contained" color="primary" onClick={sortInAscendingOrderByName}>
-                            <ArrowDownward />
+                            <ArrowUpward />
                             오름차순
                           </Button>
                           <Button variant="contained" color="primary" onClick={sortInDescendingOrderByName}>
-                            <ArrowUpward />
+                            <ArrowDownward />
                             내림차순
                           </Button>
                         </div>
