@@ -60,6 +60,20 @@ export default function MonthModal({
   };
   const changeReason = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => setReserve({ ...reserve, reason: e.target.value });
   const changeDetailedReason = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => setReserve({ ...reserve, detailedReason: e.target.value });
+  const postReservation = () => {
+    if (today
+      && reserve.memberCount >= 1
+    ) {
+      reservation({
+        memberCount: reserve.memberCount,
+        reason: reserve.reason,
+        detailedReason: reserve.detailedReason,
+        startDateTime: `${today.slice(0, 4)}-${today.slice(5, 7)}-${today.slice(8, 10)} ${reserve.startHour}:${reserve.startMinute}`,
+        endDateTime: `${today.slice(0, 4)}-${today.slice(5, 7)}-${today.slice(8, 10)} ${reserve.endHour}:${reserve.endMinute}`,
+      });
+      if (!isError) handleClose();
+    }
+  };
 
   return (
     <Modal
@@ -194,20 +208,7 @@ export default function MonthModal({
                 </div>
                 <Button
                   variant="outlined"
-                  onClick={() => {
-                    if (today
-                      && reserve.memberCount >= 1
-                    ) {
-                      reservation({
-                        memberCount: reserve.memberCount,
-                        reason: reserve.reason,
-                        detailedReason: reserve.detailedReason,
-                        startDateTime: `${today.slice(0, 4)}-${today.slice(5, 7)}-${today.slice(8, 10)} ${reserve.startHour}:${reserve.startMinute}`,
-                        endDateTime: `${today.slice(0, 4)}-${today.slice(5, 7)}-${today.slice(8, 10)} ${reserve.endHour}:${reserve.endMinute}`,
-                      });
-                      if (!isError) handleClose();
-                    }
-                  }}
+                  onClick={postReservation}
                 >
                   예약
                 </Button>
