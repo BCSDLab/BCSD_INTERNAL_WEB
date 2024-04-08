@@ -11,7 +11,7 @@ interface CurrentPageDate {
 }
 
 function ReservationOutlet() {
-  const [mode, setMode] = useState('week');
+  const [mode, setMode] = useState('month');
   const currentYear = new Date().getFullYear();
   const currentMonth = new Date().getMonth() + 1;
   const [currentPageDate, setCurrentPageDate] = useState({ year: currentYear, month: currentMonth });
@@ -39,7 +39,7 @@ function ReservationOutlet() {
       </ButtonGroup>
       {/* 주를 만들자 */}
       {mode === 'week' && <Week currentDate={currentPageDate} setCurrentDate={setDate} />}
-      {mode === 'month' && <Month /> }
+      {mode === 'month' && <Month />}
     </div>
   );
 }

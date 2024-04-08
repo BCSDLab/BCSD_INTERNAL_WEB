@@ -142,7 +142,7 @@ export default function SignUp() {
       regist(data, getValues),
     onSuccess: () => {
       openSnackBar({ type: 'success', message: '회원가입에 성공했습니다.' })
-      navigate('/login')
+      navigate('/')
     },
     onError: (e) => {
       if (e instanceof AxiosError) openSnackBar({ type: 'error', message: e.response?.data.message })
