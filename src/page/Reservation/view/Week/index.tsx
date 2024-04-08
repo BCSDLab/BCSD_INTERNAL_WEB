@@ -5,7 +5,7 @@ import {
 import {
   useEffect, useState, Fragment, useRef,
 } from 'react';
-import { HOUR_LIST, MINUTE_LIST } from 'util/constants/time';
+import { HOUR_LIST, MINUTE_RANGE_LIST } from 'util/constants/time';
 import makeNumberArray from 'util/hooks/makeNumberArray';
 import { useGetReservations } from 'query/reservations';
 import useBooleanState from 'util/hooks/useBooleanState';
@@ -119,7 +119,7 @@ export default function Week({ currentDate, setCurrentDate }: WeekProps) {
     });
     setCurrentDate({ year: currentWeekStart.getFullYear(), month: Number(dates[0].date.split('-')[0]) });
     setWeekDates(dates);
-  // eslint-disable-next-line react-hooks/exhaustive-deps
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [currentWeekStart]);
 
   const goToPrevWeek = () => {
@@ -182,8 +182,8 @@ export default function Week({ currentDate, setCurrentDate }: WeekProps) {
       const currentTimeFrom = Number(timeFrom.slice(0, 2)) * 60 + Number(timeFrom.slice(3));
       const currentTimeTo = Number(timeTo.slice(0, 2)) * 60 + Number(timeTo.slice(3));
       return start.day === weekDates[dayIndex]?.date && end.day === weekDates[dayIndex]?.date
-      && ((startTime <= currentTimeFrom && currentTimeTo <= endTime)
-      || (endTime <= currentTimeFrom && currentTimeTo <= startTime));
+        && ((startTime <= currentTimeFrom && currentTimeTo <= endTime)
+          || (endTime <= currentTimeFrom && currentTimeTo <= startTime));
     });
 
     const reservationInfoIndex = selectionRange.findIndex(({ start, end }) => {
@@ -192,8 +192,8 @@ export default function Week({ currentDate, setCurrentDate }: WeekProps) {
       const currentTimeInMinutesFrom = Number(timeFrom.slice(0, 2)) * 60 + Number(timeFrom.slice(3));
       const currentTimeInMinutesTo = Number(timeTo.slice(0, 2)) * 60 + Number(timeTo.slice(3));
       return start.day === weekDates[dayIndex]?.date && end.day === weekDates[dayIndex]?.date
-       && (((startTimeInMinutes <= currentTimeInMinutesFrom) && (currentTimeInMinutesTo <= endTimeInMinutes))
-       || ((endTimeInMinutes <= currentTimeInMinutesTo) && (currentTimeInMinutesFrom <= startTimeInMinutes)));
+        && (((startTimeInMinutes <= currentTimeInMinutesFrom) && (currentTimeInMinutesTo <= endTimeInMinutes))
+          || ((endTimeInMinutes <= currentTimeInMinutesTo) && (currentTimeInMinutesFrom <= startTimeInMinutes)));
     });
     if (!isSelected && new Date(`${selectedYear}-${day} ${timeTo}`) < new Date()) {
       openSnackBar({ type: 'error', message: '지난 시간은 선택할 수 없습니다.' });
@@ -232,7 +232,7 @@ export default function Week({ currentDate, setCurrentDate }: WeekProps) {
           {HOUR_LIST.map((hour) => {
             return (
               <Fragment key={hour}>
-                {MINUTE_LIST.map((minute, minuteIndex) => {
+                {MINUTE_RANGE_LIST.map((minute, minuteIndex) => {
                   const [minuteFrom, minuteTo] = minute.split('-');
                   const timeFrom = `${hour}:${minuteFrom}`;
                   let timeTo = '';
@@ -264,7 +264,7 @@ export default function Week({ currentDate, setCurrentDate }: WeekProps) {
                               })}
                             >
                               {dragStart && dragStart.day === day && dragStart.timeFrom === timeFrom && dragStart.timeTo === timeTo && dragEnd && (
-                              <DisplayTime startDateTime={dragStart} endDateTime={dragEnd} />
+                                <DisplayTime startDateTime={dragStart} endDateTime={dragEnd} />
                               )}
                               {selectionRange.map(({ start, end }, reservationInfoIndex) => {
                                 if (start.time === timeFrom && start.day === day) {
@@ -296,7 +296,7 @@ export default function Week({ currentDate, setCurrentDate }: WeekProps) {
                             })}
                           >
                             {dragStart && dragStart.day === day && dragStart.timeFrom === timeFrom && dragEnd && (
-                            <DisplayTime startDateTime={dragStart} endDateTime={dragEnd} />
+                              <DisplayTime startDateTime={dragStart} endDateTime={dragEnd} />
                             )}
                             {selectionRange.map(({ start, end }, reservationInfoIndex) => {
                               if (start.time === timeFrom && start.day === day) {
