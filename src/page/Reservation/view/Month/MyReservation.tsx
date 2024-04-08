@@ -45,7 +45,7 @@ export default function MyReservation({ open, handleClose }: { open: boolean, ha
         </ToggleButtonGroup>
         <div css={S.DetailLayout}>
           {alignment === 'information'
-            && data.filter((item) => (Number(item.endDateTime.slice(5, 7)) >= new Date().getMonth() + 1) && (Number(item.endDateTime.slice(8, 10)) >= new Date().getDate())).map(
+            && data.filter((item) => (Number(item.endDateTime.slice(5, 7)) > new Date().getMonth() + 1) || (Number(item.endDateTime.slice(5, 7)) === new Date().getMonth() + 1 && Number(item.endDateTime.slice(8, 10)) >= new Date().getDate())).map(
               (filtered) => (
                 <DetailInfomation
                   detailedReason={filtered.detailedReason}
@@ -59,7 +59,7 @@ export default function MyReservation({ open, handleClose }: { open: boolean, ha
               ),
             )}
           {alignment === 'passed'
-            && data.filter((item) => (Number(item.endDateTime.slice(5, 7)) < new Date().getMonth() + 1) || (Number(item.endDateTime.slice(8, 10)) < new Date().getDate())).map(
+            && data.filter((item) => (Number(item.endDateTime.slice(5, 7)) < new Date().getMonth() + 1) || (Number(item.endDateTime.slice(5, 7)) === new Date().getMonth() + 1 && (Number(item.endDateTime.slice(8, 10)) < new Date().getDate()))).map(
               (filtered) => (
                 <DetailInfomation
                   detailedReason={filtered.detailedReason}
