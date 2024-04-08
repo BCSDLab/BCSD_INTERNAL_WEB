@@ -1,7 +1,7 @@
 import { Button, Modal, TextField } from '@mui/material';
 import { useEffect, useState } from 'react';
 import { useDeleteReservations, useGetReservations, usePutReservations } from 'query/reservations';
-import { GetReservationsResponse, Reservations } from 'model/reservations';
+import { GetReservationsResponse, Reservation } from 'model/reservations';
 import { useSnackBar } from 'ts/useSnackBar';
 import { QueryObserverResult, RefetchOptions } from '@tanstack/react-query';
 import * as S from './style';
@@ -14,6 +14,7 @@ interface CreateReservationModalProps {
 }
 
 const initialReservationInfo = {
+  memberName: '',
   memberCount: 0,
   reason: '',
   detailedReason: '',
@@ -28,7 +29,7 @@ export default function ModifyReservationModal({
   const { data: reservationsInfo } = useGetReservations();
   const { mutate: putReservations, isSuccess: isPutReservationsSuccess } = usePutReservations();
   const { mutate: deleteReservations, isSuccess: isDeleteReservationsSuccess } = useDeleteReservations();
-  const [reservationInfo, setReservationInfo] = useState<Reservations>(initialReservationInfo);
+  const [reservationInfo, setReservationInfo] = useState<Reservation>(initialReservationInfo);
 
   useEffect(() => {
     if (reservationsInfo) {
@@ -83,6 +84,7 @@ export default function ModifyReservationModal({
     setReservationInfo(initialReservationInfo);
     onClose();
   };
+
   return (
     <Modal
       open={open}
@@ -91,6 +93,13 @@ export default function ModifyReservationModal({
       <div css={S.reservationModal}>
         <h2 css={S.reservationModalTitle}>동방 예약 신청</h2>
         <div css={S.reservationTextFieldWrapper}>
+          <TextField
+            label="예약 등록자"
+            name="memberName"
+            value={reservationInfo?.memberName}
+            disabled
+            css={S}
+          />
           <TextField
             label="시작 시간"
             name="startDateTime"
