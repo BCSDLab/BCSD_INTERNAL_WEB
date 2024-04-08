@@ -44,7 +44,7 @@ export default function MonthModal({
 }: ModalContent) {
   const currentDate = new Date().getDate();
   const nowMonth = new Date().getMonth();
-  const { mutate: reservation } = useCreateReservations();
+  const { mutate: reservation, isError } = useCreateReservations();
   const [reserve, setReserve] = useState(initialState);
   const { alignment, handleChange } = useToggleButtonGroup();
   const canReserve = () => {
@@ -194,13 +194,20 @@ export default function MonthModal({
                 </div>
                 <Button
                   variant="outlined"
-                  onClick={() => today && reserve.memberCount >= 1 && reservation({
-                    memberCount: reserve.memberCount,
-                    reason: reserve.reason,
-                    detailedReason: reserve.detailedReason,
-                    startDateTime: `${today.slice(0, 4)}-${today.slice(5, 7)}-${today.slice(8, 10)} ${reserve.startHour}:${reserve.startMinute}`,
-                    endDateTime: `${today.slice(0, 4)}-${today.slice(5, 7)}-${today.slice(8, 10)} ${reserve.endHour}:${reserve.endMinute}`,
-                  })}
+                  onClick={() => {
+                    if (today
+                      && reserve.memberCount >= 1
+                    ) {
+                      reservation({
+                        memberCount: reserve.memberCount,
+                        reason: reserve.reason,
+                        detailedReason: reserve.detailedReason,
+                        startDateTime: `${today.slice(0, 4)}-${today.slice(5, 7)}-${today.slice(8, 10)} ${reserve.startHour}:${reserve.startMinute}`,
+                        endDateTime: `${today.slice(0, 4)}-${today.slice(5, 7)}-${today.slice(8, 10)} ${reserve.endHour}:${reserve.endMinute}`,
+                      });
+                      if (!isError) handleClose();
+                    }
+                  }}
                 >
                   예약
                 </Button>

@@ -3,7 +3,7 @@ import {
   deleteReservations, getReservations, postReservations, putReservations, myReservation,
 } from 'api/reservations';
 import { AxiosError } from 'axios';
-import { PostReservationRequest, Reservations } from 'model/reservations';
+import { Reservations } from 'model/reservations';
 import { useSnackBar } from 'ts/useSnackBar';
 
 interface PutReservations {
@@ -23,9 +23,9 @@ export const useCreateReservations = () => {
   const openSnackBar = useSnackBar();
   const queryClient = useQueryClient();
 
-  const { mutate, isSuccess } = useMutation({
+  const { mutate, isSuccess, isError } = useMutation({
     mutationKey: ['postReservations'],
-    mutationFn: (data: PostReservationRequest) => postReservations(data),
+    mutationFn: (data: Reservations) => postReservations(data),
     onSuccess: () => {
       openSnackBar({ type: 'success', message: '예약이 완료되었습니다.' });
       queryClient.invalidateQueries({ queryKey: ['reservations'] });
@@ -37,7 +37,7 @@ export const useCreateReservations = () => {
       }
     },
   });
-  return { mutate, isSuccess };
+  return { mutate, isSuccess, isError };
 };
 
 export const useDeleteReservations = () => {

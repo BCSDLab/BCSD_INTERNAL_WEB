@@ -1,9 +1,9 @@
 import { accessClient } from 'api';
-import { GetReservationsResponse, Reservations, PostReservationRequest } from 'model/reservations';
+import { GetReservationsResponse, Reservations } from 'model/reservations';
 
 export const getReservations = () => accessClient.get<GetReservationsResponse[]>('/reservations');
 
-export const postReservations = (data: PostReservationRequest) => accessClient.post('/reservations', data);
+export const postReservations = (data: Reservations) => accessClient.post('/reservations', data);
 
 export const deleteReservations = (id: number) => accessClient.delete(`/reservations/${id}`);
 

@@ -8,6 +8,7 @@ interface DetailInfomationProps extends Reservations {
   id?: number;
   // eslint-disable-next-line
   passed?: boolean;
+  memberName: string;
 }
 
 export default function DetailInfomation({

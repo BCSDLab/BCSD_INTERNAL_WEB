@@ -3,7 +3,7 @@ import {
 } from '@mui/material';
 import { ArrowBackIosNewOutlined, ArrowForwardIosOutlined } from '@mui/icons-material';
 import { useGetReservations } from 'query/reservations';
-import { Reservations } from 'model/reservations';
+import { Reservation } from 'model/reservations';
 import { useEffect, useState } from 'react';
 import * as S from './style';
 // eslint-disable-next-line import/no-cycle
@@ -19,7 +19,7 @@ type Calendar = {
 type Calendars = Calendar[];
 
 export type CalendarContent = {
-  data: Reservations[],
+  data: Reservation[],
   date: number | null,
   today: string | null,
   currentMonth: number,
