@@ -13,8 +13,9 @@ import { useSnackBar } from 'ts/useSnackBar';
 import { ArrowBackIosOutlined, ArrowForwardIosOutlined } from '@mui/icons-material';
 import * as S from './styles';
 import CreateReservationModal from './modal/createReservationModal';
-import DisplayTime from './modal/displayTime';
+import DisplayTimeAndReason from './modal/displayTimeAndReason';
 import ModifyReservationModal from './modal/modifyReservationModal';
+import DisplayTime from './modal/displayTime';
 
 interface WeekDay {
   dayOfWeek: string;
@@ -22,21 +23,26 @@ interface WeekDay {
 }
 
 interface TimeSlotSelection {
+  timeFrom: string;
+  timeTo: string;
+  day: string;
+}
+
+interface TimeAndDay {
   time: string;
   day: string;
 }
 
 interface SelectionRange {
-  start: TimeSlotSelection;
-  end: TimeSlotSelection;
+  start: TimeAndDay;
+  end: TimeAndDay;
 }
 
 interface ModifyReservationModalProps {
-  hour: string;
-  minute: string;
   dayIndex: number;
   day: string;
-  time: string;
+  timeFrom: string;
+  timeTo: string;
 }
 
 interface WeekProps {
@@ -88,25 +94,16 @@ export default function Week({ currentDate, setCurrentDate }: WeekProps) {
   // 드래그한 범위의 시작 시간과 종료 시간을 정렬
   useEffect(() => {
     if (!dragStart || !dragEnd) return;
-    const [startHour, startMinute] = dragStart.time.split(':').map(Number);
-    let [endHour, endMinute] = dragEnd.time.split(':').map(Number);
-    endMinute += 10;
-    if (endMinute >= 60) {
-      endMinute -= 60;
-      endHour += 1;
-    }
-    if (endHour >= 24) {
-      endHour = 0;
-    }
-    const startTime = startHour * 60 + startMinute;
-    const endTime = endHour * 60 + endMinute;
-    const newEndTime = `${String(endHour).padStart(2, '0')}:${String(endMinute).padStart(2, '0')}`;
-    if (startTime <= endTime) {
-      startDateTime.current = `${selectedYear}-${dragStart.day} ${dragStart.time}`;
-      endDateTime.current = `${selectedYear}-${dragEnd.day} ${newEndTime}`;
-    } else {
-      startDateTime.current = `${selectedYear}-${dragEnd.day} ${newEndTime}`;
-      endDateTime.current = `${selectedYear}-${dragStart.day} ${dragStart.time}`;
+    const [startHourFrom, startMinuteFrom] = dragStart.timeFrom.split(':').map(Number);
+    const [startHourTo, startMinuteTo] = dragStart.timeTo.split(':').map(Number);
+    const [endHourFrom, endMinuteFrom] = dragEnd.timeFrom.split(':').map(Number);
+    const [endHourTo, endMinuteTo] = dragEnd.timeTo.split(':').map(Number);
+    if (startHourFrom < endHourTo || ((startHourFrom === endHourTo) && (startMinuteFrom <= endMinuteTo))) {
+      startDateTime.current = `${selectedYear}-${dragStart.day} ${dragStart.timeFrom}`;
+      endDateTime.current = `${selectedYear}-${dragEnd.day} ${dragEnd.timeTo}`;
+    } else if (endHourFrom < startHourTo || ((endHourFrom === startHourTo) && (endMinuteFrom <= startMinuteTo))) {
+      startDateTime.current = `${selectedYear}-${dragEnd.day} ${dragEnd.timeFrom}`;
+      endDateTime.current = `${selectedYear}-${dragStart.day} ${dragStart.timeTo}`;
     }
   }, [dragStart, dragEnd, selectedYear]);
 
@@ -133,20 +130,20 @@ export default function Week({ currentDate, setCurrentDate }: WeekProps) {
     setCurrentWeekStart(new Date(currentWeekStart.setDate(currentWeekStart.getDate() + 7)));
   };
   // 오늘 날짜 기준으로 이전 날짜는 선택 불가능하게 만들어야 함
-  const handleMouseDown = ({ time, day }: TimeSlotSelection) => {
+  const handleMouseDown = ({ timeFrom, timeTo, day }: TimeSlotSelection) => {
     setDragging(true);
-    setDragStart({ time, day });
+    setDragStart({ timeFrom, timeTo, day });
   };
 
-  const handleMouseEnter = ({ time, day }: TimeSlotSelection) => {
+  const handleMouseEnter = ({ timeFrom, timeTo, day }: TimeSlotSelection) => {
     if (dragging) {
       const fixedDay = dragStart?.day;
       if (!fixedDay) return;
-      if (new Date(`${selectedYear}-${day} ${time}`) < new Date()) {
+      if (new Date(`${selectedYear}-${day} ${timeTo}`) < new Date()) {
         openSnackBar({ type: 'error', message: '지난 시간은 선택할 수 없습니다.' });
         return;
       }
-      setDragEnd({ time, day: fixedDay });
+      setDragEnd({ timeFrom, timeTo, day: fixedDay });
     }
   };
 
@@ -155,12 +152,15 @@ export default function Week({ currentDate, setCurrentDate }: WeekProps) {
       setDragging(false);
       return;
     }
-    const [startHour, startMinute] = dragStart.time.split(':').map(Number);
-    const [endHour, endMinute] = dragEnd.time.split(':').map(Number);
-    if (startHour < endHour || (startHour === endHour && startMinute <= endMinute)) {
-      setSelectionRange((prev) => [...prev, { start: dragStart, end: dragEnd }]);
-    } else {
-      setSelectionRange((prev) => [...prev, { start: dragEnd, end: dragStart }]);
+    const [startHourFrom, startMinuteFrom] = dragStart.timeFrom.split(':').map(Number);
+    const [startHourTo, startMinuteTo] = dragStart.timeTo.split(':').map(Number);
+    const [endHourFrom, endMinuteFrom] = dragEnd.timeFrom.split(':').map(Number);
+    const [endHourTo, endMinuteTo] = dragEnd.timeTo.split(':').map(Number);
+    // 위에서 아래로 드래그를 할 때, else if는 아래에서 위로 드래그할 때
+    if (startHourFrom < endHourTo || ((startHourFrom === endHourTo) && (startMinuteFrom <= endMinuteTo))) {
+      setSelectionRange((prev) => [...prev, { start: { time: dragStart.timeFrom, day: dragStart.day }, end: { time: dragEnd.timeTo, day: dragEnd.day } }]);
+    } else if (endHourFrom < startHourTo || ((endHourFrom === startHourTo) && (endMinuteFrom <= startMinuteTo))) {
+      setSelectionRange((prev) => [...prev, { start: { time: dragEnd.timeFrom, day: dragEnd.day }, end: { time: dragStart.timeTo, day: dragStart.day } }]);
     }
     setDragging(false);
     setDragStart(null);
@@ -174,22 +174,28 @@ export default function Week({ currentDate, setCurrentDate }: WeekProps) {
   };
 
   const handleModifyReservationModalOpen = ({
-    hour, minute, dayIndex, day, time,
+    dayIndex, day, timeFrom, timeTo,
   }: ModifyReservationModalProps) => {
     const isSelected = selectionRange.some(({ start, end }) => {
-      const startTimeInMinutes = Number(start.time.slice(0, 2)) * 60 + Number(start.time.slice(3));
-      const endTimeInMinutes = Number(end.time.slice(0, 2)) * 60 + Number(end.time.slice(3));
-      const currentTimeInMinutes = Number(`${hour}:${minute}`.slice(0, 2)) * 60 + Number(`${hour}:${minute}`.slice(3));
-      return start.day === weekDates[dayIndex]?.date && end.day === weekDates[dayIndex]?.date && ((startTimeInMinutes <= currentTimeInMinutes && currentTimeInMinutes <= endTimeInMinutes) || (endTimeInMinutes <= currentTimeInMinutes && currentTimeInMinutes <= startTimeInMinutes));
+      const startTime = Number(start.time.slice(0, 2)) * 60 + Number(start.time.slice(3));
+      const endTime = Number(end.time.slice(0, 2)) * 60 + Number(end.time.slice(3));
+      const currentTimeFrom = Number(timeFrom.slice(0, 2)) * 60 + Number(timeFrom.slice(3));
+      const currentTimeTo = Number(timeTo.slice(0, 2)) * 60 + Number(timeTo.slice(3));
+      return start.day === weekDates[dayIndex]?.date && end.day === weekDates[dayIndex]?.date
+      && ((startTime <= currentTimeFrom && currentTimeTo <= endTime)
+      || (endTime <= currentTimeFrom && currentTimeTo <= startTime));
     });
 
     const reservationInfoIndex = selectionRange.findIndex(({ start, end }) => {
       const startTimeInMinutes = Number(start.time.slice(0, 2)) * 60 + Number(start.time.slice(3));
       const endTimeInMinutes = Number(end.time.slice(0, 2)) * 60 + Number(end.time.slice(3));
-      const currentTimeInMinutes = Number(`${hour}:${minute}`.slice(0, 2)) * 60 + Number(`${hour}:${minute}`.slice(3));
-      return start.day === weekDates[dayIndex]?.date && end.day === weekDates[dayIndex]?.date && ((startTimeInMinutes <= currentTimeInMinutes && currentTimeInMinutes <= endTimeInMinutes) || (endTimeInMinutes <= currentTimeInMinutes && currentTimeInMinutes <= startTimeInMinutes));
+      const currentTimeInMinutesFrom = Number(timeFrom.slice(0, 2)) * 60 + Number(timeFrom.slice(3));
+      const currentTimeInMinutesTo = Number(timeTo.slice(0, 2)) * 60 + Number(timeTo.slice(3));
+      return start.day === weekDates[dayIndex]?.date && end.day === weekDates[dayIndex]?.date
+       && (((startTimeInMinutes <= currentTimeInMinutesFrom) && (currentTimeInMinutesTo <= endTimeInMinutes))
+       || ((endTimeInMinutes <= currentTimeInMinutesTo) && (currentTimeInMinutesFrom <= startTimeInMinutes)));
     });
-    if (!isSelected && new Date(`${selectedYear}-${day} ${time}`) < new Date()) {
+    if (!isSelected && new Date(`${selectedYear}-${day} ${timeTo}`) < new Date()) {
       openSnackBar({ type: 'error', message: '지난 시간은 선택할 수 없습니다.' });
       return;
     }
@@ -198,6 +204,7 @@ export default function Week({ currentDate, setCurrentDate }: WeekProps) {
       openModifyReservationModal();
     }
   };
+
   return (
     <div css={S.weekContainer}>
       <div css={S.buttonGroup}>
@@ -226,6 +233,14 @@ export default function Week({ currentDate, setCurrentDate }: WeekProps) {
             return (
               <Fragment key={hour}>
                 {MINUTE_LIST.map((minute, minuteIndex) => {
+                  const [minuteFrom, minuteTo] = minute.split('-');
+                  const timeFrom = `${hour}:${minuteFrom}`;
+                  let timeTo = '';
+                  if (minuteTo === '00') {
+                    timeTo = `${(Number(hour) + 1).toString().padStart(2, '0')}:${minuteTo}`;
+                  } else {
+                    timeTo = `${hour}:${minuteTo}`;
+                  }
                   if (minuteIndex === 0) {
                     return (
                       <TableRow key={hour}>
@@ -233,59 +248,65 @@ export default function Week({ currentDate, setCurrentDate }: WeekProps) {
                           {hour}
                           :00
                         </TableCell>
-                        {makeNumberArray(7).map((dayIndex) => (
-                          <TableCell
-                            key={`${dayIndex}-${hour}-${minute}`}
-                            onMouseDown={() => handleMouseDown({ time: `${hour}:${minute}`, day: weekDates[dayIndex]?.date })}
-                            onMouseEnter={() => handleMouseEnter({ time: `${hour}:${minute}`, day: weekDates[dayIndex]?.date })}
-                            onMouseUp={handleMouseUp}
-                            onClick={() => handleModifyReservationModalOpen({
-                              hour, minute, dayIndex, time: `${hour}:${minute}`, day: weekDates[dayIndex]?.date,
-                            })}
-                            css={S.selectedCell({
-                              selectionRange, time: `${hour}:${minute}`, day: weekDates[dayIndex]?.date, dragStart, dragEnd,
-                            })}
-                          >
-                            {dragStart && dragStart.day === weekDates[dayIndex]?.date && dragStart.time === `${hour}:${minute}` && dragEnd && (
-                              <DisplayTime startDateTime={dragStart.time} endDateTime={dragEnd.time} />
-                            )}
-                            {selectionRange.map(({ start, end }, reservationInfoIndex) => {
-                              if (start.time === `${hour}:${minute}` && start.day === weekDates[dayIndex]?.date) {
-                                return <DisplayTime startDateTime={start.time} endDateTime={end.time} reason={reservationInfo[reservationInfoIndex]?.detailedReason} />;
-                              }
-                              return null;
-                            })}
-                          </TableCell>
-                        ))}
+                        {makeNumberArray(7).map((dayIndex) => {
+                          const day = weekDates[dayIndex]?.date;
+                          return (
+                            <TableCell
+                              key={`${dayIndex}-${timeTo}`}
+                              onMouseDown={() => handleMouseDown({ timeFrom, timeTo, day })}
+                              onMouseEnter={() => handleMouseEnter({ timeFrom, timeTo, day })}
+                              onMouseUp={handleMouseUp}
+                              onClick={() => handleModifyReservationModalOpen({
+                                dayIndex, day, timeFrom, timeTo,
+                              })}
+                              css={S.selectedCell({
+                                selectionRange, timeFrom, timeTo, day, dragStart, dragEnd,
+                              })}
+                            >
+                              {dragStart && dragStart.day === day && dragStart.timeFrom === timeFrom && dragStart.timeTo === timeTo && dragEnd && (
+                              <DisplayTime startDateTime={dragStart} endDateTime={dragEnd} />
+                              )}
+                              {selectionRange.map(({ start, end }, reservationInfoIndex) => {
+                                if (start.time === timeFrom && start.day === day) {
+                                  return <DisplayTimeAndReason startDateTime={start.time} endDateTime={end.time} reason={reservationInfo[reservationInfoIndex]?.detailedReason} />;
+                                }
+                                return null;
+                              })}
+                            </TableCell>
+                          );
+                        })}
                       </TableRow>
                     );
                   }
                   return (
-                    <TableRow key={`${hour}:${minute}`}>
-                      {makeNumberArray(7).map((dayIndex) => (
-                        <TableCell
-                          key={`${dayIndex}-${hour}-${minute}`}
-                          onMouseDown={() => handleMouseDown({ time: `${hour}:${minute}`, day: weekDates[dayIndex]?.date })}
-                          onMouseEnter={() => handleMouseEnter({ time: `${hour}:${minute}`, day: weekDates[dayIndex]?.date })}
-                          onMouseUp={handleMouseUp}
-                          onClick={() => handleModifyReservationModalOpen({
-                            hour, minute, dayIndex, time: `${hour}:${minute}`, day: weekDates[dayIndex]?.date,
-                          })}
-                          css={S.selectedCell({
-                            selectionRange, time: `${hour}:${minute}`, day: weekDates[dayIndex]?.date, dragStart, dragEnd,
-                          })}
-                        >
-                          {dragStart && dragStart.day === weekDates[dayIndex]?.date && dragStart.time === `${hour}:${minute}` && dragEnd && (
-                            <DisplayTime startDateTime={dragStart.time} endDateTime={dragEnd.time} />
-                          )}
-                          {selectionRange.map(({ start, end }, reservationInfoIndex) => {
-                            if (start.time === `${hour}:${minute}` && start.day === weekDates[dayIndex]?.date) {
-                              return <DisplayTime startDateTime={start.time} endDateTime={end.time} reason={reservationInfo[reservationInfoIndex]?.detailedReason} />;
-                            }
-                            return null;
-                          })}
-                        </TableCell>
-                      ))}
+                    <TableRow key={timeFrom}>
+                      {makeNumberArray(7).map((dayIndex) => {
+                        const day = weekDates[dayIndex]?.date;
+                        return (
+                          <TableCell
+                            key={`${dayIndex}-${timeFrom}`}
+                            onMouseDown={() => handleMouseDown({ timeFrom, timeTo, day })}
+                            onMouseEnter={() => handleMouseEnter({ timeFrom, timeTo, day })}
+                            onMouseUp={handleMouseUp}
+                            onClick={() => handleModifyReservationModalOpen({
+                              dayIndex, day, timeFrom, timeTo,
+                            })}
+                            css={S.selectedCell({
+                              selectionRange, timeFrom, timeTo, day, dragStart, dragEnd,
+                            })}
+                          >
+                            {dragStart && dragStart.day === day && dragStart.timeFrom === timeFrom && dragEnd && (
+                            <DisplayTime startDateTime={dragStart} endDateTime={dragEnd} />
+                            )}
+                            {selectionRange.map(({ start, end }, reservationInfoIndex) => {
+                              if (start.time === timeFrom && start.day === day) {
+                                return <DisplayTimeAndReason startDateTime={start.time} endDateTime={end.time} reason={reservationInfo[reservationInfoIndex]?.detailedReason} />;
+                              }
+                              return null;
+                            })}
+                          </TableCell>
+                        );
+                      })}
                     </TableRow>
                   );
                 })}
