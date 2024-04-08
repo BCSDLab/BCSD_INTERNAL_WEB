@@ -35,7 +35,10 @@ function CalendarCell({
 
   return (
     <>
-      <TableCell css={S.Cell(currentMonth === new Date().getMonth() && date === new Date().getDate())} onClick={() => date && handleOpen()}>
+      <TableCell
+        css={S.Cell(currentMonth === new Date().getMonth() && date === new Date().getDate())}
+        onClick={() => date && handleOpen()}
+      >
         <div css={S.Date(currentMonth === new Date().getMonth() && date === new Date().getDate())}>
           {date}
         </div>
@@ -149,7 +152,7 @@ export default function Month() {
         </TableHead>
         <TableBody>
           {currentCalendar.map((week) => (
-            <TableRow>
+            <TableRow sx={{ width: '100%' }}>
               {week.map((day) => (
                 <CalendarCell today={day.today} date={day.date} data={data} currentMonth={currentMonth} />
               ))}

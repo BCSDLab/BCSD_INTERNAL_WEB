@@ -53,8 +53,8 @@ export const current = css`
 `;
 
 export const scheduleContent = css`
-  height: 80px;
-  margin-top: 13px;
+  height: 100px;
+  margin-top: 20px;
   overflow: scroll;
   display: flex;
   flex-direction: column;
