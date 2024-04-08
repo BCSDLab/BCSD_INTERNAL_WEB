@@ -47,7 +47,7 @@ export const mainContent = css`
   display: flex;
   flex-direction: column;
   align-items: center;
-  width: calc(100vw - 270px);
+  width: 100%;
   min-height: calc(100vh - 120px);
 `;
 

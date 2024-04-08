@@ -2,7 +2,7 @@ import { css } from '@emotion/react';
 import { colors } from 'const/colors/style';
 
 export const container = css`
-  width: calc(100vw - 250px);
+  width: 100%;
 `;
 
 export const image = css`

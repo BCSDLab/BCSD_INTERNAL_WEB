@@ -28,7 +28,7 @@ export const container = css`
   flex-direction: column;
   height: calc(100vh - 100px);
   overflow: scroll;
-  width: calc(100vw - 200px);
+  width: 100%;
   background-color: ${colors.gray};
 `;
 

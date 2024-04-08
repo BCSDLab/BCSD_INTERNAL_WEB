@@ -6,10 +6,10 @@ export const Layout = css`
 `;
 
 export const width = css`
-  width: calc(100vw - 200px);
+  width: 100vw;
 `;
 
 export const content = css`
-  width: calc(100vw - 200px);
+  width: 100vw;
   height: calc(100vh - 100px);
 `;

@@ -2,11 +2,18 @@ import { css } from '@emotion/react';
 import { colors } from 'const/colors/style';
 
 export const top = css`
-  width: calc(100vw - 200px);
+  width: 100%;
   height: 100px;
   display: flex;
   align-items: center;
-  padding-left: 30px;
+  justify-content: space-between;
+  padding-right: 30px;
   border-bottom: 1px solid ${colors.borderGray};
   box-sizing: border-box;
+`;
+
+export const flex = css`
+  display: flex;
+  align-items: center;
+  height: 100%;
 `;

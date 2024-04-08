@@ -1,6 +1,10 @@
-import { useLocation } from 'react-router-dom';
+import { useLocation, useNavigate } from 'react-router-dom';
+import { useLoginState } from 'store/loginStore';
+import { Button } from '@mui/material';
+import MenuIcon from '@mui/icons-material/Menu';
 import useQueryParam from 'util/hooks/useQueryParam';
 import { PATHS } from 'util/constants/path';
+import { useEffect } from 'react';
 import * as S from './style';
 
 export const pagePath = [
@@ -48,16 +52,37 @@ export const pagePath = [
 
 const currentYear = new Date().getFullYear();
 
-export default function TopBar() {
+interface Props {
+  openSideBar: () => void;
+  onClose: () => void;
+}
+
+export default function TopBar({ openSideBar, onClose }: Props) {
   const location = useLocation();
+  const navigate = useNavigate();
   const pages = useQueryParam('page', 'number') as number | null;
   const duesYear = pages ? currentYear - pages + 1 : currentYear;
+  const { deleteMe } = useLoginState();
+  const logOut = () => {
+    deleteMe();
+    navigate(PATHS.home);
+  };
 
   const { title, path } = pagePath.filter((page) => page.path === location.pathname)[0];
 
+  useEffect(() => {
+    onClose();
+  }, [onClose, location.pathname]);
+
   return (
     <div css={S.top}>
-      <h1>{path.includes('dues') ? `${duesYear}년 ${title}` : title}</h1>
+      <div css={S.flex}>
+        <Button onClick={openSideBar}>
+          <MenuIcon />
+        </Button>
+        <h1>{path.includes('dues') ? `${duesYear}년 ${title}` : title}</h1>
+      </div>
+      <Button variant="contained" color="primary" sx={{ width: '100px' }} onClick={logOut}>로그아웃</Button>
     </div>
   );
 }
