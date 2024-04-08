@@ -89,10 +89,14 @@ export default function Month() {
 
   const handleClose = () => setOpen(false);
   const nextYear = () => setCurrentYear((prev) => prev + 1);
-  const nextMonth = () => setCurrentMonth((prev) => (prev + 1) % 12);
+  const nextMonth = () => {
+    setCurrentMonth((prev) => (prev + 1) % 12);
+    if (currentMonth === 11) nextYear();
+  };
   const previousYear = () => setCurrentYear((prev) => prev - 1);
   const previousMonth = () => setCurrentMonth((prev) => {
     if ((prev - 1) >= 0) return (prev - 1) % 12;
+    previousYear();
     return 11;
   });
 
