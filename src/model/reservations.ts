@@ -4,9 +4,18 @@ export interface Reservations {
   detailedReason: string;
   startDateTime: string;
   endDateTime: string;
+  memberName: string;
 }
 
 export interface GetReservationsResponse extends Reservations {
   id: number;
   memberName: string;
+}
+
+export interface PostReservationRequest {
+  memberCount: number;
+  reason: string;
+  detailedReason: string;
+  startDateTime: string;
+  endDateTime: string;
 }
