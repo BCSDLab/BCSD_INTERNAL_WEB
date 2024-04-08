@@ -28,8 +28,8 @@ export const DetailLayout = css`
   display: flex;
   flex-direction: column;
   gap: 15px;
-  height: 170px;
   overflow: scroll;
+  height: 400px;
 `;
 
 export const ReservationLayout = css`
@@ -38,7 +38,7 @@ export const ReservationLayout = css`
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  gap: 10px;
+  gap: 30px;
   width: 100%;
 `;
 
@@ -64,6 +64,8 @@ export const SpaceBetween = css`
 export const ReserveContainer = css`
   border: 1px solid ${colors.borderGray};
   padding: 7px;
+  height: 350px;
+  margin-top: 30px;
 `;
 
 export const DetailContainer = css`

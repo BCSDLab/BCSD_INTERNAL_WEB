@@ -3,7 +3,7 @@ import {
 } from '@mui/material';
 import { ArrowBackIosNewOutlined, ArrowForwardIosOutlined } from '@mui/icons-material';
 import { useGetReservations } from 'query/reservations';
-import { Reservations } from 'model/reservations';
+import { Reservation } from 'model/reservations';
 import { useEffect, useState } from 'react';
 import * as S from './style';
 // eslint-disable-next-line import/no-cycle
@@ -19,7 +19,7 @@ type Calendar = {
 type Calendars = Calendar[];
 
 export type CalendarContent = {
-  data: Reservations[],
+  data: Reservation[],
   date: number | null,
   today: string | null,
   currentMonth: number,
@@ -35,7 +35,10 @@ function CalendarCell({
 
   return (
     <>
-      <TableCell css={S.Cell(currentMonth === new Date().getMonth() && date === new Date().getDate())} onClick={() => date && handleOpen()}>
+      <TableCell
+        css={S.Cell(currentMonth === new Date().getMonth() && date === new Date().getDate())}
+        onClick={() => date && handleOpen()}
+      >
         <div css={S.Date(currentMonth === new Date().getMonth() && date === new Date().getDate())}>
           {date}
         </div>
@@ -86,9 +89,16 @@ export default function Month() {
 
   const handleClose = () => setOpen(false);
   const nextYear = () => setCurrentYear((prev) => prev + 1);
-  const nextMonth = () => setCurrentMonth((prev) => prev + 1);
+  const nextMonth = () => {
+    setCurrentMonth((prev) => (prev + 1) % 12);
+    if (currentMonth === 11) nextYear();
+  };
   const previousYear = () => setCurrentYear((prev) => prev - 1);
-  const previousMonth = () => setCurrentMonth((prev) => prev - 1);
+  const previousMonth = () => setCurrentMonth((prev) => {
+    if ((prev - 1) >= 0) return (prev - 1) % 12;
+    previousYear();
+    return 11;
+  });
 
   useEffect(() => {
     // 현재 월의 일 수
@@ -128,7 +138,7 @@ export default function Month() {
         <Button onClick={nextMonth}>
           <ArrowForwardIosOutlined />
         </Button>
-        <Button onClick={() => setOpen(true)}>
+        <Button variant="outlined" onClick={() => setOpen(true)}>
           예약 확인
         </Button>
       </div>
@@ -146,7 +156,7 @@ export default function Month() {
         </TableHead>
         <TableBody>
           {currentCalendar.map((week) => (
-            <TableRow>
+            <TableRow sx={{ width: '100%' }}>
               {week.map((day) => (
                 <CalendarCell today={day.today} date={day.date} data={data} currentMonth={currentMonth} />
               ))}

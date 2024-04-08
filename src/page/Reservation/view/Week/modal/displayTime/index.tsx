@@ -1,42 +1,35 @@
 import * as S from './style';
 
-interface DisplayTimeProps {
-  startDateTime: string;
-  endDateTime: string;
-  reason?: string;
+interface TimeSlotSelection {
+  timeFrom: string;
+  timeTo: string;
+  day: string;
 }
 
-export default function DisplayTime({ startDateTime, endDateTime, reason = '' }: DisplayTimeProps) {
-  const [startHour, startMinute] = startDateTime.split(':').map(Number);
-  let [endHour, endMinute] = endDateTime.split(':').map(Number);
-  endMinute += 10;
-  if (endMinute >= 60) {
-    endMinute -= 60;
-    endHour += 1;
-  }
-  if (endHour >= 24) {
-    endHour = 0;
-  }
-  const startTimeStr = `${String(startHour).padStart(2, '0')}:${String(startMinute).padStart(2, '0')}`;
-  const endTimeStr = `${String(endHour).padStart(2, '0')}:${String(endMinute).padStart(2, '0')}`;
-  const startTime = startHour * 60 + startMinute;
-  const endTime = endHour * 60 + endMinute;
-  if (startTime >= endTime) {
+interface DisplayTimeProps {
+  startDateTime: TimeSlotSelection;
+  endDateTime: TimeSlotSelection;
+}
+
+export default function DisplayTime({ startDateTime, endDateTime }: DisplayTimeProps) {
+  const [startHourFrom, startMinuteFrom] = startDateTime.timeFrom.split(':').map(Number);
+  const [endHourFrom, endMinuteFrom] = endDateTime.timeFrom.split(':').map(Number);
+  const [startHourTo, startMinuteTo] = startDateTime.timeTo.split(':').map(Number);
+  const [endHourTo, endMinuteTo] = endDateTime.timeTo.split(':').map(Number);
+  // 드래그를 아래로 할 때
+  if (startHourFrom < endHourTo || (startHourFrom === endHourTo && startMinuteFrom < endMinuteTo)) {
     return (
       <div css={S.displayTime}>
-        <span>{`${endTimeStr}~${startTimeStr}`}</span>
+        <span>{`${startDateTime.timeFrom}~${endDateTime.timeTo}`}</span>
       </div>
     );
   }
 
-  return (
-    <div css={S.displayTime}>
-      <span>{`${startTimeStr}~${endTimeStr}`}</span>
-      <span>{reason}</span>
-    </div>
-  );
+  if (startHourTo > endHourFrom || (startHourTo === endHourFrom && startMinuteTo > endMinuteFrom)) {
+    return (
+      <div css={S.displayTime}>
+        <span>{`${endDateTime.timeFrom}~${startDateTime.timeTo}`}</span>
+      </div>
+    );
+  }
 }
-
-DisplayTime.defaultProps = {
-  reason: '',
-};
