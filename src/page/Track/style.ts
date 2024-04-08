@@ -11,7 +11,7 @@ export const container = css`
   background-color: ${colors.gray};
   height: calc(100vh - 100px);
   overflow: scroll;
-  width: calc(100vw - 200px);
+  width: 100%;
 `;
 
 export const contentContainer = css`

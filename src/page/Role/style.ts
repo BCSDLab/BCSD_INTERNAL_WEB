@@ -19,7 +19,7 @@ export const Item = styled(Paper)<ItemProps>(({ theme, authority }) => ({
 
 export const container = css`
   height: 100%;
-  width: calc(100vw - 200px);
+  width: 100%;
   overflow-y: scroll;
   display: flex;
   flex-direction: column;
