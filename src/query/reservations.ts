@@ -23,12 +23,13 @@ export const useCreateReservations = () => {
   const openSnackBar = useSnackBar();
   const queryClient = useQueryClient();
 
-  const { mutate, isSuccess } = useMutation({
+  const { mutate, isSuccess, isError } = useMutation({
     mutationKey: ['postReservations'],
     mutationFn: (data: Reservations) => postReservations(data),
     onSuccess: () => {
       openSnackBar({ type: 'success', message: '예약이 완료되었습니다.' });
       queryClient.invalidateQueries({ queryKey: ['reservations'] });
+      queryClient.invalidateQueries({ queryKey: ['myReservations'] });
     },
     onError: (e) => {
       if (e instanceof AxiosError) {
@@ -36,7 +37,7 @@ export const useCreateReservations = () => {
       }
     },
   });
-  return { mutate, isSuccess };
+  return { mutate, isSuccess, isError };
 };
 
 export const useDeleteReservations = () => {

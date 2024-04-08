@@ -14,8 +14,10 @@ export const Cell = (isToday: boolean) => css`
   border: 1px solid ${colors.borderGray};
   box-sizing: border-box;
   width: calc(100% / 7);
+  height: 100px;
   position: relative;
   background-color: ${isToday && '#ECEAE4'};
+  padding: 0;
 `;
 
 export const Date = (isToday: boolean) => css`
@@ -51,8 +53,12 @@ export const current = css`
 `;
 
 export const scheduleContent = css`
-  height: 80px;
+  height: 100px;
+  margin-top: 20px;
   overflow: scroll;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
   &::-webkit-scrollbar {
     display: none; /* 크롬, 사파리, 오페라 */
   }

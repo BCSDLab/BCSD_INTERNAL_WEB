@@ -1,5 +1,5 @@
 import {
-  Box, Modal, TextField, Button, MenuItem,
+  Box, Modal, TextField, Button, MenuItem, ToggleButton, ToggleButtonGroup,
 } from '@mui/material';
 import { useCreateReservations } from 'query/reservations';
 import { useState } from 'react';
@@ -7,7 +7,8 @@ import { HOUR_LIST, MINUTE_LIST } from 'util/constants/time';
 import DetailInfomation from './DetailInfomation';
 // eslint-disable-next-line import/no-cycle
 import { CalendarContent } from '../Month';
-
+// eslint-disable-next-line import/no-cycle
+import { useToggleButtonGroup } from './MyReservation';
 import * as S from './style';
 
 export const style = {
@@ -43,17 +44,36 @@ export default function MonthModal({
 }: ModalContent) {
   const currentDate = new Date().getDate();
   const nowMonth = new Date().getMonth();
-  const { mutate: reservation } = useCreateReservations();
+  const { mutate: reservation, isError } = useCreateReservations();
   const [reserve, setReserve] = useState(initialState);
+  const { alignment, handleChange } = useToggleButtonGroup();
   const canReserve = () => {
     if (currentMonth > nowMonth) return true;
     if (date && nowMonth === currentMonth && date >= currentDate) return true;
     return false;
   };
 
-  const changeMemberCount = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => setReserve({ ...reserve, memberCount: parseInt(e.target.value, 10) });
+  const changeMemberCount = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
+    // if (!e.target.value) setReserve({ ...reserve, memberCount: 0 });
+    if (parseInt(e.target.value, 10) < 0) setReserve({ ...reserve, memberCount: 0 });
+    setReserve({ ...reserve, memberCount: parseInt(e.target.value, 10) }); // 양수만 입력받음
+  };
   const changeReason = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => setReserve({ ...reserve, reason: e.target.value });
   const changeDetailedReason = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => setReserve({ ...reserve, detailedReason: e.target.value });
+  const postReservation = () => {
+    if (today
+      && reserve.memberCount >= 1
+    ) {
+      reservation({
+        memberCount: reserve.memberCount,
+        reason: reserve.reason,
+        detailedReason: reserve.detailedReason,
+        startDateTime: `${today.slice(0, 4)}-${today.slice(5, 7)}-${today.slice(8, 10)} ${reserve.startHour}:${reserve.startMinute}`,
+        endDateTime: `${today.slice(0, 4)}-${today.slice(5, 7)}-${today.slice(8, 10)} ${reserve.endHour}:${reserve.endMinute}`,
+      });
+      if (!isError) handleClose();
+    }
+  };
 
   return (
     <Modal
@@ -63,25 +83,35 @@ export default function MonthModal({
       <Box sx={style}>
         <h2>
           {today}
-          {' '}
-          예약정보
         </h2>
+        <ToggleButtonGroup
+          color="primary"
+          exclusive
+          value={alignment}
+          onChange={handleChange}
+          aria-label="Platform"
+        >
+          <ToggleButton value="information">예약 정보</ToggleButton>
+          <ToggleButton value="reservation" disabled={!canReserve()}>예약 하기</ToggleButton>
+        </ToggleButtonGroup>
 
-        {data.length > 0 ? (
+        {alignment === 'information' && (data.length > 0 ? (
           <div css={S.DetailLayout}>
             {data.map((item) => (
               <DetailInfomation
+                key={item.detailedReason}
                 detailedReason={item.detailedReason}
                 startDateTime={item.startDateTime}
                 endDateTime={item.endDateTime}
                 reason={item.reason}
                 memberCount={item.memberCount}
+                memberName={item.memberName}
               />
             ))}
           </div>
-        ) : <div css={S.DetailLayout}>예약정보가 없습니다.</div>}
+        ) : <div css={S.DetailLayout}>예약정보가 없습니다.</div>)}
 
-        {date && canReserve()
+        {date && canReserve() && alignment === 'reservation'
           && (
             <div css={S.ReserveContainer}>
               <h2>예약하기</h2>
@@ -93,6 +123,7 @@ export default function MonthModal({
                     variant="outlined"
                     size="small"
                     type="number"
+                    error={reserve.memberCount < 0}
                     sx={{ width: 100 }}
                     value={reserve.memberCount}
                     onChange={changeMemberCount}
@@ -175,13 +206,9 @@ export default function MonthModal({
                     </TextField>
                   </div>
                 </div>
-                <Button onClick={() => today && reservation({
-                  memberCount: reserve.memberCount,
-                  reason: reserve.reason,
-                  detailedReason: reserve.detailedReason,
-                  startDateTime: `${today.slice(0, 4)}-${today.slice(5, 7)}-${today.slice(8, 10)} ${reserve.startHour}:${reserve.startMinute}`,
-                  endDateTime: `${today.slice(0, 4)}-${today.slice(5, 7)}-${today.slice(8, 10)} ${reserve.endHour}:${reserve.endMinute}`,
-                })}
+                <Button
+                  variant="outlined"
+                  onClick={postReservation}
                 >
                   예약
                 </Button>
