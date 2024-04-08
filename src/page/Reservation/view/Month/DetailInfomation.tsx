@@ -3,7 +3,7 @@ import { Button } from '@mui/material';
 import { useDeleteReservations } from 'query/reservations';
 import * as S from './style';
 
-interface DetailInfomationProps extends Reservations {
+interface DetailInformationProps extends Reservations {
   // eslint-disable-next-line
   id?: number;
   // eslint-disable-next-line
@@ -13,7 +13,7 @@ interface DetailInfomationProps extends Reservations {
 
 export default function DetailInfomation({
   detailedReason, startDateTime, endDateTime, memberCount, id, reason, memberName, passed,
-}: DetailInfomationProps) {
+}: DetailInformationProps) {
   const { mutate } = useDeleteReservations();
   return (
     <div css={S.Detail}>
