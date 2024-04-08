@@ -6,6 +6,7 @@ import { useState } from 'react';
 // eslint-disable-next-line
 import { style } from './MonthModal';
 import DetailInfomation from './DetailInfomation';
+import * as S from './style';
 
 type Alignment = 'information' | 'passed' | 'reservation';
 
@@ -42,34 +43,37 @@ export default function MyReservation({ open, handleClose }: { open: boolean, ha
           <ToggleButton value="information">예약 정보</ToggleButton>
           <ToggleButton value="passed">지난 예약</ToggleButton>
         </ToggleButtonGroup>
-        {alignment === 'information'
-          && data.filter((item) => (Number(item.endDateTime.slice(5, 7)) >= new Date().getMonth() + 1) && (Number(item.endDateTime.slice(8, 10)) >= new Date().getDate())).map(
-            (filtered) => (
-              <DetailInfomation
-                detailedReason={filtered.detailedReason}
-                startDateTime={filtered.startDateTime}
-                endDateTime={filtered.endDateTime}
-                memberCount={filtered.memberCount}
-                reason={filtered.reason}
-                id={filtered.id}
-                memberName={filtered.memberName}
-              />
-            ),
-          )}
-        {alignment === 'passed'
-          && data.filter((item) => (Number(item.endDateTime.slice(5, 7)) < new Date().getMonth() + 1) || (Number(item.endDateTime.slice(8, 10)) < new Date().getDate())).map(
-            (filtered) => (
-              <DetailInfomation
-                detailedReason={filtered.detailedReason}
-                startDateTime={filtered.startDateTime}
-                endDateTime={filtered.endDateTime}
-                memberCount={filtered.memberCount}
-                reason={filtered.reason}
-                id={filtered.id}
-                memberName={filtered.memberName}
-              />
-            ),
-          )}
+        <div css={S.DetailLayout}>
+          {alignment === 'information'
+            && data.filter((item) => (Number(item.endDateTime.slice(5, 7)) >= new Date().getMonth() + 1) && (Number(item.endDateTime.slice(8, 10)) >= new Date().getDate())).map(
+              (filtered) => (
+                <DetailInfomation
+                  detailedReason={filtered.detailedReason}
+                  startDateTime={filtered.startDateTime}
+                  endDateTime={filtered.endDateTime}
+                  memberCount={filtered.memberCount}
+                  reason={filtered.reason}
+                  id={filtered.id}
+                  memberName={filtered.memberName}
+                />
+              ),
+            )}
+          {alignment === 'passed'
+            && data.filter((item) => (Number(item.endDateTime.slice(5, 7)) < new Date().getMonth() + 1) || (Number(item.endDateTime.slice(8, 10)) < new Date().getDate())).map(
+              (filtered) => (
+                <DetailInfomation
+                  detailedReason={filtered.detailedReason}
+                  startDateTime={filtered.startDateTime}
+                  endDateTime={filtered.endDateTime}
+                  memberCount={filtered.memberCount}
+                  reason={filtered.reason}
+                  id={filtered.id}
+                  memberName={filtered.memberName}
+                  passed={true}
+                />
+              ),
+            )}
+        </div>
       </Box>
     </Modal>
   );

@@ -7,11 +7,11 @@ interface DetailInfomationProps extends Reservations {
   // eslint-disable-next-line
   id?: number;
   // eslint-disable-next-line
-  memberName?: string;
+  passed?: boolean;
 }
 
 export default function DetailInfomation({
-  detailedReason, startDateTime, endDateTime, memberCount, id, reason, memberName,
+  detailedReason, startDateTime, endDateTime, memberCount, id, reason, memberName, passed,
 }: DetailInfomationProps) {
   const { mutate } = useDeleteReservations();
   return (
@@ -51,7 +51,7 @@ export default function DetailInfomation({
           </div>
         </div>
         {
-          id && (
+          id && !passed && (
             <Button variant="outlined" color="error" onClick={() => mutate(id)}>
               취소
             </Button>
