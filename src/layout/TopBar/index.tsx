@@ -5,6 +5,8 @@ import MenuIcon from '@mui/icons-material/Menu';
 import useQueryParam from 'util/hooks/useQueryParam';
 import { PATHS } from 'util/constants/path';
 import { useEffect } from 'react';
+import { useGetMe } from 'query/members';
+import { useSlackSync } from 'query/admin';
 import * as S from './style';
 
 export const pagePath = [
@@ -63,9 +65,18 @@ export default function TopBar({ openSideBar, onClose }: Props) {
   const pages = useQueryParam('page', 'number') as number | null;
   const duesYear = pages ? currentYear - pages + 1 : currentYear;
   const { deleteMe } = useLoginState();
+  const { data: getMe } = useGetMe();
+  const { mutate: slackSync } = useSlackSync();
+
+  const memberAuthority = getMe.authority;
+
   const logOut = () => {
     deleteMe();
     navigate(PATHS.home);
+  };
+
+  const handleSlackSyncClick = () => {
+    slackSync();
   };
 
   const { title, path } = pagePath.filter((page) => page.path === location.pathname)[0];
@@ -82,7 +93,12 @@ export default function TopBar({ openSideBar, onClose }: Props) {
         </Button>
         <h1>{path.includes('dues') ? `${duesYear}년 ${title}` : title}</h1>
       </div>
-      <Button variant="contained" color="primary" sx={{ width: '100px' }} onClick={logOut}>로그아웃</Button>
+      <div css={S.buttonContainer}>
+        {(memberAuthority === 'ADMIN' || memberAuthority === 'MANAGER') && (
+        <Button variant="contained" color="primary" css={S.syncButton} onClick={handleSlackSyncClick}>슬랙 동기화</Button>
+        )}
+        <Button variant="contained" color="primary" sx={{ width: '100px' }} onClick={logOut}>로그아웃</Button>
+      </div>
     </div>
   );
 }

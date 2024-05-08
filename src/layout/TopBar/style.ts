@@ -17,3 +17,13 @@ export const flex = css`
   align-items: center;
   height: 100%;
 `;
+
+export const buttonContainer = css`
+  display: flex;
+  justify-content: flex-end;
+  gap: 20px;
+`;
+
+export const syncButton = css`
+  
+`;
