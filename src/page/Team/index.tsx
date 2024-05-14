@@ -59,23 +59,26 @@ export default function TeamInfo() {
       <div css={S.contentContainer}>
         <Grid container spacing={2}>
           {teams?.map((team: Team) => (
-            <Grid item xs={4} key={team.id} css={S.gridContainer}>
+            <Grid item xs={12} key={team.id} css={S.gridContainer}>
               <Item css={S.teamContainer}>
                 <div css={S.teamTitle}>{team.name}</div>
                 <div css={S.infoWrapper}>
-                  <span css={S.fontBold}>팀장</span>
+                  <div css={S.fontBold}>팀장</div>
+                </div>
+                <div css={S.infoWrapper}>
                   {team.leaders.map((leader: Member) => (
                     <span key={leader.id}>{leader.name}</span>
                   ))}
                 </div>
                 <div css={S.infoWrapper}>
                   <span css={S.fontBold}>팀원</span>
+                </div>
+                <div css={S.infoWrapper}>
                   {teamMembers?.filter((teamMember) => teamMember.teamId === team.id && teamMember.isLeader === false)
                     .map((teamMember) => (
                       <span key={teamMember.id}>{teamMember.memberResponse?.name}</span>
                     ))}
                 </div>
-
                 <div css={S.infoWrapper}>
                   <Button variant="outlined" color="primary">팀원 관리</Button>
                   <Button

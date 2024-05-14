@@ -60,7 +60,10 @@ export const fontBold = css`
 `;
 
 export const infoWrapper = css`
+  width: 400px;
   display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
   gap: 10px;
   font-size: 18px;
 `;
