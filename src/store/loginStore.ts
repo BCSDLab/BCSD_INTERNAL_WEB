@@ -12,8 +12,13 @@ export const useLoginState = create<LoginState>((set) => ({
   me: null,
   setMe: async () => {
     if (localStorage.getItem('accessToken')) {
-      const user = await getMe();
-      set({ me: user });
+      try {
+        const user = await getMe();
+        set({ me: user });
+      } catch (error) {
+        localStorage.removeItem('accessToken');
+        set({ me: null });
+      }
     }
   },
   deleteMe: () => {
