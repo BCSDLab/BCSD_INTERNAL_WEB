@@ -1,5 +1,6 @@
 import { css } from '@emotion/react';
 import { colors } from 'const/colors/style';
+import { mobile } from 'util/hooks/useMediaQuery';
 
 export const sideBar = css`
   display: flex;
@@ -8,6 +9,10 @@ export const sideBar = css`
   background-color: ${colors.gray};
   border-right: 1px solid ${colors.borderGray};
   box-sizing: border-box;
+
+  ${mobile} {
+    width: 175px;
+  }
 `;
 
 export const topBar = css`
