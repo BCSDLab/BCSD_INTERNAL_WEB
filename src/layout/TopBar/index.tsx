@@ -62,7 +62,8 @@ interface Props {
 export default function TopBar({ openSideBar, onClose }: Props) {
   const location = useLocation();
   const navigate = useNavigate();
-  const pages = useQueryParam('page', 'number') as number | null;
+  const param = useQueryParam('page');
+  const pages = Number(param);
   const duesYear = pages ? currentYear - pages + 1 : currentYear;
   const { deleteMe } = useLoginState();
   const { data: getMe } = useGetMe();
