@@ -1,7 +1,6 @@
 import { GOOGLE_API_KEY, GOOGLE_CLIENT_ID } from 'config/constants';
 import { Reservation } from 'model/reservations';
 import { gapi } from 'gapi-script';
-import { useSnackBar } from './useSnackBar';
 
 const DISCOVERY_DOCS = ['https://www.googleapis.com/discovery/v1/apis/calendar/v3/rest'];
 const SCOPES = 'https://www.googleapis.com/auth/calendar.events';
