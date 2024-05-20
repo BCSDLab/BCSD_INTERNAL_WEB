@@ -9,13 +9,13 @@ export const layout = css`
   height: 100vh;
 `;
 
-export const container = css`
+export const container = (isMobile: boolean) => css`
   display: flex;
   flex-direction: column;
   justify-content: center;
   align-items: center;
-  width: 500px;
-  height: 650px;
+  width: ${isMobile ? '100vw' : '500px'};
+  height: ${isMobile ? '100vh' : '650px'};
   border: 1px solid ${colors.borderGray};
   background-color: white;
   position: relative;
@@ -36,8 +36,8 @@ export const button = css`
   margin-bottom: 20px;
 `;
 
-export const image = css`
-  width: 400px;
+export const image = (isMobile: boolean) => css`
+  width: ${isMobile ? '100vw' : '400px'};
   height: 251.144px;
   object-fit: fill;
 `;
