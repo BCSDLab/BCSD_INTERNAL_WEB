@@ -1,4 +1,5 @@
 import { css } from '@emotion/react';
+import { mobile } from 'util/hooks/useMediaQuery';
 
 export const template = css`
   display: flex;
@@ -7,7 +8,6 @@ export const template = css`
   align-items: center;
   width: 100vw;
   height: 100vh;
-  gap: 2vh;
 `;
 
 export const center = css`
@@ -23,6 +23,10 @@ export const image = css`
   width: 35vw;
   height: 20vh;
   object-fit: cover;
+
+  ${mobile} {
+    width: 100vw;
+  }
 `;
 
 export const input = css`
