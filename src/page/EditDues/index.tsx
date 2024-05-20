@@ -1,4 +1,3 @@
-import { useNavigate } from 'react-router-dom';
 import Table from '@mui/material/Table';
 import TableBody from '@mui/material/TableBody';
 import TableCell from '@mui/material/TableCell';
@@ -16,17 +15,18 @@ import {
   useDeleteDues, useGetAllDues, usePostDues, usePutDues,
 } from 'query/dues';
 import useBooleanState from 'util/hooks/useBooleanState.ts';
-import { LAST_DUES_YEAR, STATUS_MAPPING } from 'util/constants/status';
+import { STATUS_MAPPING } from 'util/constants/status';
 import { useGetTracks } from 'query/tracks';
 import LoadingSpinner from 'layout/LoadingSpinner';
 import {
-  ArrowBackIosNewOutlined, ArrowDownward, ArrowForwardIosOutlined, ArrowUpward, Sort,
+  ArrowDownward, ArrowUpward, Sort,
 } from '@mui/icons-material';
-import useQueryParam from 'util/hooks/useQueryParam';
+import { useQueryParam } from 'util/hooks/useQueryParam';
 import { useSnackBar } from 'ts/useSnackBar';
 import makeNumberArray from 'util/hooks/makeNumberArray';
 import { NewDuesData } from 'api/dues';
 import { useGetMembers } from 'query/members';
+import YearPagination from 'component/YearPagination';
 import * as S from './style';
 
 type Status = 'PAID' | 'NOT_PAID' | 'SKIP' | 'NONE';
@@ -37,8 +37,8 @@ interface SortAnchorEl {
 }
 
 function DefaultTable() {
-  const navigate = useNavigate();
-  const page = useQueryParam('page', 'number') as number | null;
+  const param = useQueryParam('page');
+  const page = Number(param);
   const currentYear = new Date().getFullYear();
   const [duesYear, setDuesYear] = useState(page ? currentYear - page + 1 : currentYear);
   const [name, setName] = useState('');
@@ -164,11 +164,10 @@ function DefaultTable() {
 
   // 연도 변경 시, 데이터를 다시 설정함
   useEffect(() => {
-    setDuesYear(page ? currentYear - page + 1 : currentYear);
     if (allDues.dues) {
       setFilteredValue(allDues.dues.filter((row) => members?.content.some((member) => member.memberType === 'REGULAR' && member.id === row.memberId)));
     }
-  }, [currentYear, page, allDues.dues, members?.content]);
+  }, [allDues.dues, members?.content]);
 
   // API 호출 성공 시, 데이터를 다시 불러옴
   useEffect(() => {
@@ -177,20 +176,6 @@ function DefaultTable() {
       setFilteredValue(allDues.dues.filter((row) => members?.content.some((member) => member.memberType === 'REGULAR' && member.id === row.memberId)));
     }
   }, [postDuesMutation.isSuccess, putDuesMutation.isSuccess, deleteDuesMutation.isSuccess, refetch, allDues.dues, members?.content]);
-
-  const goToPrevYear = () => {
-    // 재학생 회비 내역이 2021년부터 시작하므로 2021년 이전으로 이동할 수 없음
-    const prevYear = page ? page + 1 : 2;
-    if (prevYear <= currentYear - 2020) {
-      navigate(`/edit-dues?page=${prevYear}`);
-    }
-  };
-
-  const goToNextYear = () => {
-    if (page && page > 1) {
-      navigate(`/edit-dues?page=${page - 1}`);
-    }
-  };
 
   const sortInAscendingOrderByName = () => {
     setFilteredValue((prev) => {
@@ -234,14 +219,7 @@ function DefaultTable() {
     <>
       <div css={S.searchAndPagination}>
         <div css={S.pagination}>
-          {/* 회비 데이터가 2021년이 마지막입니다. */}
-          <Button onClick={goToPrevYear} disabled={duesYear === LAST_DUES_YEAR}>
-            <ArrowBackIosNewOutlined />
-          </Button>
-          <span css={S.paginationTitle}>{duesYear}</span>
-          <Button onClick={goToNextYear} disabled={duesYear === currentYear}>
-            <ArrowForwardIosOutlined />
-          </Button>
+          <YearPagination duesYear={duesYear} setDuesYear={setDuesYear} />
         </div>
         <div>
           <Input

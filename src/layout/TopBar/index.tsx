@@ -2,7 +2,7 @@ import { useLocation, useNavigate } from 'react-router-dom';
 import { useLoginState } from 'store/loginStore';
 import { Button } from '@mui/material';
 import MenuIcon from '@mui/icons-material/Menu';
-import useQueryParam from 'util/hooks/useQueryParam';
+import { useQueryParam } from 'util/hooks/useQueryParam';
 import { PATHS } from 'util/constants/path';
 import { useEffect } from 'react';
 import { useGetMe } from 'query/members';
@@ -62,7 +62,8 @@ interface Props {
 export default function TopBar({ openSideBar, onClose }: Props) {
   const location = useLocation();
   const navigate = useNavigate();
-  const pages = useQueryParam('page', 'number') as number | null;
+  const param = useQueryParam('page');
+  const pages = Number(param);
   const duesYear = pages ? currentYear - pages + 1 : currentYear;
   const { deleteMe } = useLoginState();
   const { data: getMe } = useGetMe();
