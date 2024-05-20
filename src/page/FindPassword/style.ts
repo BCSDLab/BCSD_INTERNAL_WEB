@@ -1,5 +1,6 @@
 import { css } from '@emotion/react';
 import { colors } from 'const/colors/style';
+import { mobile } from 'util/hooks/useMediaQuery';
 
 export const layout = css`
   display: flex;
@@ -19,6 +20,11 @@ export const container = css`
   border: 1px solid ${colors.borderGray};
   background-color: white;
   position: relative;
+
+  ${mobile} {
+    width: 100vw;
+    height: 100vh;
+  }
 `;
 
 export const inputSet = css`
@@ -40,6 +46,10 @@ export const image = css`
   width: 400px;
   height: 251.144px;
   object-fit: fill;
+
+  ${mobile} {
+    width: 100vw;
+  }
 `;
 
 export const font = css`  

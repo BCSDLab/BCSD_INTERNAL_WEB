@@ -1,4 +1,5 @@
 import { css } from '@emotion/react';
+import { mobile } from 'util/hooks/useMediaQuery';
 
 export const template = css`
   display: flex;
@@ -15,4 +16,8 @@ display: flex;
 gap: 2vw;
 width: 40vw;
 justify-content: center;
+
+${mobile} {
+  width: 90vw;
+}
 `;
