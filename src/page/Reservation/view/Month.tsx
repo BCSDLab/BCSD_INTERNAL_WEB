@@ -5,6 +5,7 @@ import { ArrowBackIosNewOutlined, ArrowForwardIosOutlined } from '@mui/icons-mat
 import { useGetReservations } from 'query/reservations';
 import { Reservation } from 'model/reservations';
 import { useEffect, useState } from 'react';
+import { convertEventToReservation, initClient, listUpcomingEvents } from 'ts/googleapi';
 import * as S from './style';
 // eslint-disable-next-line import/no-cycle
 import MonthModal from './Month/MonthModal';
@@ -23,6 +24,13 @@ export type CalendarContent = {
   date: number | null,
   today: string | null,
   currentMonth: number,
+};
+
+const filterEventsByMonth = (events: gapi.client.calendar.Event[], currentMonth: number, currentYear: number) => {
+  return events.filter((event) => {
+    const eventDate = new Date(event.start?.dateTime || event.start?.date || '');
+    return eventDate.getMonth() === currentMonth && eventDate.getFullYear() === currentYear;
+  });
 };
 
 function CalendarCell({
@@ -45,7 +53,7 @@ function CalendarCell({
         <div css={S.scheduleContent}>
           {date && filteredData.map((item, index) => (
             <p css={S.schedule(index)}>
-              {item.startDateTime.slice(10, 20)}
+              {item.startDateTime.slice(11, 16)}
               {' '}
               {item.reason}
             </p>
@@ -86,6 +94,7 @@ export default function Month() {
   const [currentMonth, setCurrentMonth] = useState(new Date().getMonth());
   const [currentCalendar, setCurrentCalendar] = useState<Calendars[]>([]);
   const [open, setOpen] = useState<boolean>(false);
+  const [events, setEvents] = useState<Reservation[]>([]);
 
   const handleClose = () => setOpen(false);
   const nextYear = () => setCurrentYear((prev) => prev + 1);
@@ -119,6 +128,16 @@ export default function Month() {
     const weeklyCalendar = chunkArray(calendar, 7);
 
     setCurrentCalendar(weeklyCalendar);
+  }, [currentMonth, currentYear]);
+
+  useEffect(() => {
+    initClient().then(() => {
+      listUpcomingEvents().then((res) => {
+        const filteredEvents = filterEventsByMonth(res, currentMonth, currentYear);
+        const reservations = filteredEvents.map((event) => convertEventToReservation(event));
+        setEvents(reservations);
+      });
+    });
   }, [currentMonth, currentYear]);
 
   return (
@@ -158,7 +177,7 @@ export default function Month() {
           {currentCalendar.map((week) => (
             <TableRow sx={{ width: '100%' }}>
               {week.map((day) => (
-                <CalendarCell today={day.today} date={day.date} data={data} currentMonth={currentMonth} />
+                <CalendarCell today={day.today} date={day.date} data={[...(data || []), ...events]} currentMonth={currentMonth} />
               ))}
             </TableRow>
           ))}

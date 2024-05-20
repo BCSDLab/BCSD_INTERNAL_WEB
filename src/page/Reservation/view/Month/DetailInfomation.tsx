@@ -29,11 +29,12 @@ export default function DetailInfomation({
           </div>
           <div>
             시간 :
-            {startDateTime.slice(10, 20)}
+            {' '}
+            {startDateTime.slice(11, 16)}
             {' '}
             ~
             {' '}
-            {endDateTime.slice(10, 20)}
+            {endDateTime.slice(11, 16)}
           </div>
           <div>
             정보 :
