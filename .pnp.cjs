@@ -38,6 +38,10 @@ function $$SETUP_STATE(hydrateRuntimeState, basePath) {
             ["@mui/x-date-pickers", "virtual:a79afa73eb2e01e38ec8abd8b1edf107d6dd56f9062cceedb11296bcea4327b8544d549bcda7b0453d71764f5c9a14f2806a9337f4acd494c08d057af27781a0#npm:6.19.4"],\
             ["@tanstack/react-query", "virtual:a79afa73eb2e01e38ec8abd8b1edf107d6dd56f9062cceedb11296bcea4327b8544d549bcda7b0453d71764f5c9a14f2806a9337f4acd494c08d057af27781a0#npm:5.18.1"],\
             ["@types/crypto-js", "npm:4.2.2"],\
+            ["@types/gapi", "npm:0.0.47"],\
+            ["@types/gapi.auth2", "npm:0.0.60"],\
+            ["@types/gapi.client.calendar", "npm:3.0.12"],\
+            ["@types/gapi.client.calendar-v3", "npm:0.0.4"],\
             ["@types/node", "npm:20.11.16"],\
             ["@types/react", "npm:18.2.52"],\
             ["@types/react-dom", "npm:18.2.18"],\
@@ -56,6 +60,7 @@ function $$SETUP_STATE(hydrateRuntimeState, basePath) {
             ["eslint-plugin-react-hooks", "virtual:a79afa73eb2e01e38ec8abd8b1edf107d6dd56f9062cceedb11296bcea4327b8544d549bcda7b0453d71764f5c9a14f2806a9337f4acd494c08d057af27781a0#npm:4.6.0"],\
             ["eslint-plugin-react-refresh", "virtual:a79afa73eb2e01e38ec8abd8b1edf107d6dd56f9062cceedb11296bcea4327b8544d549bcda7b0453d71764f5c9a14f2806a9337f4acd494c08d057af27781a0#npm:0.4.5"],\
             ["exceljs", "npm:4.4.0"],\
+            ["gapi-script", "npm:1.2.0"],\
             ["react", "npm:18.2.0"],\
             ["react-dom", "virtual:a79afa73eb2e01e38ec8abd8b1edf107d6dd56f9062cceedb11296bcea4327b8544d549bcda7b0453d71764f5c9a14f2806a9337f4acd494c08d057af27781a0#npm:18.2.0"],\
             ["react-hook-form", "virtual:a79afa73eb2e01e38ec8abd8b1edf107d6dd56f9062cceedb11296bcea4327b8544d549bcda7b0453d71764f5c9a14f2806a9337f4acd494c08d057af27781a0#npm:7.50.1"],\
@@ -1069,6 +1074,28 @@ function $$SETUP_STATE(hydrateRuntimeState, basePath) {
           "linkType": "HARD"\
         }]\
       ]],\
+      ["@maxim_mazurok/gapi.client.calendar-v3", [\
+        ["npm:0.0.20240425", {\
+          "packageLocation": "./.yarn/cache/@maxim_mazurok-gapi.client.calendar-v3-npm-0.0.20240425-12052d25f1-c46ae4433c.zip/node_modules/@maxim_mazurok/gapi.client.calendar-v3/",\
+          "packageDependencies": [\
+            ["@maxim_mazurok/gapi.client.calendar-v3", "npm:0.0.20240425"],\
+            ["@types/gapi.client", "npm:1.0.8"],\
+            ["@types/gapi.client.discovery-v1", "npm:0.0.4"]\
+          ],\
+          "linkType": "HARD"\
+        }]\
+      ]],\
+      ["@maxim_mazurok/gapi.client.discovery-v1", [\
+        ["npm:0.1.20200806", {\
+          "packageLocation": "./.yarn/cache/@maxim_mazurok-gapi.client.discovery-v1-npm-0.1.20200806-e22696dee7-18b9360788.zip/node_modules/@maxim_mazurok/gapi.client.discovery-v1/",\
+          "packageDependencies": [\
+            ["@maxim_mazurok/gapi.client.discovery-v1", "npm:0.1.20200806"],\
+            ["@types/gapi.client", "npm:1.0.8"],\
+            ["@types/gapi.client.discovery-v1", "npm:0.0.4"]\
+          ],\
+          "linkType": "HARD"\
+        }]\
+      ]],\
       ["@mui/base", [\
         ["npm:5.0.0-beta.34", {\
           "packageLocation": "./.yarn/cache/@mui-base-npm-5.0.0-beta.34-69a8341400-7402817464.zip/node_modules/@mui/base/",\
@@ -1883,6 +1910,64 @@ function $$SETUP_STATE(hydrateRuntimeState, basePath) {
           "linkType": "HARD"\
         }]\
       ]],\
+      ["@types/gapi", [\
+        ["npm:0.0.47", {\
+          "packageLocation": "./.yarn/cache/@types-gapi-npm-0.0.47-e25311ceb0-9f18e5d22a.zip/node_modules/@types/gapi/",\
+          "packageDependencies": [\
+            ["@types/gapi", "npm:0.0.47"]\
+          ],\
+          "linkType": "HARD"\
+        }]\
+      ]],\
+      ["@types/gapi.auth2", [\
+        ["npm:0.0.60", {\
+          "packageLocation": "./.yarn/cache/@types-gapi.auth2-npm-0.0.60-0818407a4c-a42a417831.zip/node_modules/@types/gapi.auth2/",\
+          "packageDependencies": [\
+            ["@types/gapi.auth2", "npm:0.0.60"],\
+            ["@types/gapi", "npm:0.0.47"]\
+          ],\
+          "linkType": "HARD"\
+        }]\
+      ]],\
+      ["@types/gapi.client", [\
+        ["npm:1.0.8", {\
+          "packageLocation": "./.yarn/cache/@types-gapi.client-npm-1.0.8-40175e07e7-add67fad25.zip/node_modules/@types/gapi.client/",\
+          "packageDependencies": [\
+            ["@types/gapi.client", "npm:1.0.8"]\
+          ],\
+          "linkType": "HARD"\
+        }]\
+      ]],\
+      ["@types/gapi.client.calendar", [\
+        ["npm:3.0.12", {\
+          "packageLocation": "./.yarn/cache/@types-gapi.client.calendar-npm-3.0.12-dbc4f7961f-4365b386ea.zip/node_modules/@types/gapi.client.calendar/",\
+          "packageDependencies": [\
+            ["@types/gapi.client.calendar", "npm:3.0.12"],\
+            ["@maxim_mazurok/gapi.client.calendar-v3", "npm:0.0.20240425"]\
+          ],\
+          "linkType": "HARD"\
+        }]\
+      ]],\
+      ["@types/gapi.client.calendar-v3", [\
+        ["npm:0.0.4", {\
+          "packageLocation": "./.yarn/cache/@types-gapi.client.calendar-v3-npm-0.0.4-1ef36fd353-ee2c4bdc74.zip/node_modules/@types/gapi.client.calendar-v3/",\
+          "packageDependencies": [\
+            ["@types/gapi.client.calendar-v3", "npm:0.0.4"],\
+            ["@maxim_mazurok/gapi.client.calendar-v3", "npm:0.0.20240425"]\
+          ],\
+          "linkType": "HARD"\
+        }]\
+      ]],\
+      ["@types/gapi.client.discovery-v1", [\
+        ["npm:0.0.4", {\
+          "packageLocation": "./.yarn/cache/@types-gapi.client.discovery-v1-npm-0.0.4-da690f7335-51d20e6cfb.zip/node_modules/@types/gapi.client.discovery-v1/",\
+          "packageDependencies": [\
+            ["@types/gapi.client.discovery-v1", "npm:0.0.4"],\
+            ["@maxim_mazurok/gapi.client.discovery-v1", "npm:0.1.20200806"]\
+          ],\
+          "linkType": "HARD"\
+        }]\
+      ]],\
       ["@types/json-schema", [\
         ["npm:7.0.15", {\
           "packageLocation": "./.yarn/cache/@types-json-schema-npm-7.0.15-fd16381786-97ed0cb44d.zip/node_modules/@types/json-schema/",\
@@ -2662,6 +2747,10 @@ function $$SETUP_STATE(hydrateRuntimeState, basePath) {
             ["@mui/x-date-pickers", "virtual:a79afa73eb2e01e38ec8abd8b1edf107d6dd56f9062cceedb11296bcea4327b8544d549bcda7b0453d71764f5c9a14f2806a9337f4acd494c08d057af27781a0#npm:6.19.4"],\
             ["@tanstack/react-query", "virtual:a79afa73eb2e01e38ec8abd8b1edf107d6dd56f9062cceedb11296bcea4327b8544d549bcda7b0453d71764f5c9a14f2806a9337f4acd494c08d057af27781a0#npm:5.18.1"],\
             ["@types/crypto-js", "npm:4.2.2"],\
+            ["@types/gapi", "npm:0.0.47"],\
+            ["@types/gapi.auth2", "npm:0.0.60"],\
+            ["@types/gapi.client.calendar", "npm:3.0.12"],\
+            ["@types/gapi.client.calendar-v3", "npm:0.0.4"],\
             ["@types/node", "npm:20.11.16"],\
             ["@types/react", "npm:18.2.52"],\
             ["@types/react-dom", "npm:18.2.18"],\
@@ -2680,6 +2769,7 @@ function $$SETUP_STATE(hydrateRuntimeState, basePath) {
             ["eslint-plugin-react-hooks", "virtual:a79afa73eb2e01e38ec8abd8b1edf107d6dd56f9062cceedb11296bcea4327b8544d549bcda7b0453d71764f5c9a14f2806a9337f4acd494c08d057af27781a0#npm:4.6.0"],\
             ["eslint-plugin-react-refresh", "virtual:a79afa73eb2e01e38ec8abd8b1edf107d6dd56f9062cceedb11296bcea4327b8544d549bcda7b0453d71764f5c9a14f2806a9337f4acd494c08d057af27781a0#npm:0.4.5"],\
             ["exceljs", "npm:4.4.0"],\
+            ["gapi-script", "npm:1.2.0"],\
             ["react", "npm:18.2.0"],\
             ["react-dom", "virtual:a79afa73eb2e01e38ec8abd8b1edf107d6dd56f9062cceedb11296bcea4327b8544d549bcda7b0453d71764f5c9a14f2806a9337f4acd494c08d057af27781a0#npm:18.2.0"],\
             ["react-hook-form", "virtual:a79afa73eb2e01e38ec8abd8b1edf107d6dd56f9062cceedb11296bcea4327b8544d549bcda7b0453d71764f5c9a14f2806a9337f4acd494c08d057af27781a0#npm:7.50.1"],\
@@ -4241,6 +4331,15 @@ function $$SETUP_STATE(hydrateRuntimeState, basePath) {
           "packageLocation": "./.yarn/cache/functions-have-names-npm-1.2.3-e5cf1e2208-c3f1f5ba20.zip/node_modules/functions-have-names/",\
           "packageDependencies": [\
             ["functions-have-names", "npm:1.2.3"]\
+          ],\
+          "linkType": "HARD"\
+        }]\
+      ]],\
+      ["gapi-script", [\
+        ["npm:1.2.0", {\
+          "packageLocation": "./.yarn/cache/gapi-script-npm-1.2.0-974f1c2f4e-f61140855e.zip/node_modules/gapi-script/",\
+          "packageDependencies": [\
+            ["gapi-script", "npm:1.2.0"]\
           ],\
           "linkType": "HARD"\
         }]\

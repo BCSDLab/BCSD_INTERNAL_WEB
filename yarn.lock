@@ -782,6 +782,26 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@maxim_mazurok/gapi.client.calendar-v3@npm:latest":
+  version: 0.0.20240425
+  resolution: "@maxim_mazurok/gapi.client.calendar-v3@npm:0.0.20240425"
+  dependencies:
+    "@types/gapi.client": "*"
+    "@types/gapi.client.discovery-v1": "*"
+  checksum: c46ae4433c751e8f7caacfd5412652bd918fed7d8f5159e3c2c203acb9bde78673afa563e039feb6855a6f08cb47f8691e99488c11c2e35ae3740105e278a9bd
+  languageName: node
+  linkType: hard
+
+"@maxim_mazurok/gapi.client.discovery-v1@npm:latest":
+  version: 0.1.20200806
+  resolution: "@maxim_mazurok/gapi.client.discovery-v1@npm:0.1.20200806"
+  dependencies:
+    "@types/gapi.client": "*"
+    "@types/gapi.client.discovery-v1": "*"
+  checksum: 18b93607889ca62301b149841115eee9720d4fdaa4329d6e865b73ceb77c3cfea4d23808b2a861d583a96ccac4a3b9affb9d04b08fa329a6956d4272175f1696
+  languageName: node
+  linkType: hard
+
 "@mui/base@npm:5.0.0-beta.34":
   version: 5.0.0-beta.34
   resolution: "@mui/base@npm:5.0.0-beta.34"
@@ -1359,6 +1379,56 @@ __metadata:
   version: 1.0.5
   resolution: "@types/estree@npm:1.0.5"
   checksum: dd8b5bed28e6213b7acd0fb665a84e693554d850b0df423ac8076cc3ad5823a6bc26b0251d080bdc545af83179ede51dd3f6fa78cad2c46ed1f29624ddf3e41a
+  languageName: node
+  linkType: hard
+
+"@types/gapi.auth2@npm:^0.0.60":
+  version: 0.0.60
+  resolution: "@types/gapi.auth2@npm:0.0.60"
+  dependencies:
+    "@types/gapi": "*"
+  checksum: a42a4178313b8917291286d34ce54408b4e84e7ca26c467e374683f1b7f198d8a1ef4b7d4eb3258c005fd838ba9cdcedf8f8ec52e07fdaad4fd96b879611225e
+  languageName: node
+  linkType: hard
+
+"@types/gapi.client.calendar-v3@npm:^0.0.4":
+  version: 0.0.4
+  resolution: "@types/gapi.client.calendar-v3@npm:0.0.4"
+  dependencies:
+    "@maxim_mazurok/gapi.client.calendar-v3": latest
+  checksum: ee2c4bdc74de5047e1d8e3a201d00306bf590e8bc02532965c3bc440d8fdcf73f35b4567f4716a46f9c88e84f686af7661803c204c7905c7918b872dae3f6f73
+  languageName: node
+  linkType: hard
+
+"@types/gapi.client.calendar@npm:^3.0.12":
+  version: 3.0.12
+  resolution: "@types/gapi.client.calendar@npm:3.0.12"
+  dependencies:
+    "@maxim_mazurok/gapi.client.calendar-v3": latest
+  checksum: 4365b386eacdd0bb9415d0adb1a746ead741253f0235f66d49956600085ece2d1797a9e050a6e70ded98b45617dd5cf68ed17b9f7f4b568a35dd90d57bea13d0
+  languageName: node
+  linkType: hard
+
+"@types/gapi.client.discovery-v1@npm:*":
+  version: 0.0.4
+  resolution: "@types/gapi.client.discovery-v1@npm:0.0.4"
+  dependencies:
+    "@maxim_mazurok/gapi.client.discovery-v1": latest
+  checksum: 51d20e6cfbda250eb95f55ba563662ba9b71b97aee375cdc46179ff7cbc553082f45d6e4ce322767d121298a6e90bd7848e6c1c56c433217600627fbcc78f600
+  languageName: node
+  linkType: hard
+
+"@types/gapi.client@npm:*":
+  version: 1.0.8
+  resolution: "@types/gapi.client@npm:1.0.8"
+  checksum: add67fad25689d8cd2d6557c99c949f8e74b91d9f7c0b3f1708dd08b902efaf16fd58c7a0d4a678614d96806db1413ca59da23fe36da286121808602a61de1af
+  languageName: node
+  linkType: hard
+
+"@types/gapi@npm:*, @types/gapi@npm:^0.0.47":
+  version: 0.0.47
+  resolution: "@types/gapi@npm:0.0.47"
+  checksum: 9f18e5d22a549f0b0b99c43e63d2ed2f7438ee8edf12963f7edb3934592908f8ce24ad23cc5e36952faa4d9c486625b70d3dd39f4a905a397507ceb8f8ef41ce
   languageName: node
   linkType: hard
 
@@ -1968,6 +2038,10 @@ __metadata:
     "@mui/x-date-pickers": ^6.19.4
     "@tanstack/react-query": ^5.18.1
     "@types/crypto-js": ^4.2.2
+    "@types/gapi": ^0.0.47
+    "@types/gapi.auth2": ^0.0.60
+    "@types/gapi.client.calendar": ^3.0.12
+    "@types/gapi.client.calendar-v3": ^0.0.4
     "@types/node": ^20.11.16
     "@types/react": ^18.2.43
     "@types/react-dom": ^18.2.17
@@ -1986,6 +2060,7 @@ __metadata:
     eslint-plugin-react-hooks: ^4.6.0
     eslint-plugin-react-refresh: ^0.4.5
     exceljs: ^4.4.0
+    gapi-script: ^1.2.0
     react: ^18.2.0
     react-dom: ^18.2.0
     react-hook-form: ^7.50.1
@@ -3290,6 +3365,13 @@ __metadata:
   version: 1.2.3
   resolution: "functions-have-names@npm:1.2.3"
   checksum: c3f1f5ba20f4e962efb71344ce0a40722163e85bee2101ce25f88214e78182d2d2476aa85ef37950c579eb6cf6ee811c17b3101bb84004bb75655f3e33f3fdb5
+  languageName: node
+  linkType: hard
+
+"gapi-script@npm:^1.2.0":
+  version: 1.2.0
+  resolution: "gapi-script@npm:1.2.0"
+  checksum: f61140855e9a4369de15badb2f4568fdd037d949561de5fd86eca379b89423301bc6062748aba6bd1be68a5329f6239ca9c4b6b5fe454ad6046b6b918979d1ba
   languageName: node
   linkType: hard
 
