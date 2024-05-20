@@ -1,4 +1,5 @@
 import { css } from '@emotion/react';
+import { mobile } from 'util/hooks/useMediaQuery';
 
 export const template = css`
   display: flex;
@@ -18,10 +19,14 @@ export const center = css`
   height: 100%;
 `;
 
-export const image = (isMobile: boolean) => css`
-  width: ${isMobile ? '100vw' : '35vw'};
+export const image = css`
+  width: 35vw;
   height: 20vh;
   object-fit: cover;
+
+  ${mobile} {
+    width: 100vw;
+  }
 `;
 
 export const input = css`

@@ -45,7 +45,7 @@ export default function SignIn() {
             login({ studentNumber: account.studentNumber, password: SHA256(account.password).toString() });
           }}
         >
-          <img src="https://image.bcsdlab.com/banner.png" alt="banner" css={() => S.image(isMobile)} />
+          <img src="https://image.bcsdlab.com/banner.png" alt="banner" css={S.image} />
           <FormControl sx={{ width: '25ch' }} variant="outlined">
             <TextField
               label="학번"

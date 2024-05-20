@@ -8,7 +8,6 @@ import { SHA256 } from 'crypto-js';
 import { useSnackBar } from 'ts/useSnackBar';
 import { AxiosError } from 'axios';
 import { useNavigate } from 'react-router-dom';
-import useMediaQuery from 'util/hooks/useMediaQuery';
 import * as S from './style';
 
 const initialState = {
@@ -103,12 +102,10 @@ export default function FindPassword() {
     } else requestEamil({ email: passwordChangeInfo.email });
   };
 
-  const { isMobile } = useMediaQuery();
-
   return (
     <div css={S.layout}>
-      <div css={() => S.container(isMobile)}>
-        <img src="https://image.bcsdlab.com/banner.png" alt="bscd logo" css={() => S.image(isMobile)} />
+      <div css={S.container}>
+        <img src="https://image.bcsdlab.com/banner.png" alt="bscd logo" css={S.image} />
         <p css={S.font}>
           {!step.password && !step.token && step.email && '가입하실 때 사용한 이메일을 입력해 주세요.'}
           {!step.password && step.token && '인증번호를 입력해 주세요.'}

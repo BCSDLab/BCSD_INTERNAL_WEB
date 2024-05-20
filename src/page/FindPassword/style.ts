@@ -1,5 +1,6 @@
 import { css } from '@emotion/react';
 import { colors } from 'const/colors/style';
+import { mobile } from 'util/hooks/useMediaQuery';
 
 export const layout = css`
   display: flex;
@@ -9,16 +10,21 @@ export const layout = css`
   height: 100vh;
 `;
 
-export const container = (isMobile: boolean) => css`
+export const container = css`
   display: flex;
   flex-direction: column;
   justify-content: center;
   align-items: center;
-  width: ${isMobile ? '100vw' : '500px'};
-  height: ${isMobile ? '100vh' : '650px'};
+  width: 500px;
+  height: 650px;
   border: 1px solid ${colors.borderGray};
   background-color: white;
   position: relative;
+
+  ${mobile} {
+    width: 100vw;
+    height: 100vh;
+  }
 `;
 
 export const inputSet = css`
@@ -36,10 +42,14 @@ export const button = css`
   margin-bottom: 20px;
 `;
 
-export const image = (isMobile: boolean) => css`
-  width: ${isMobile ? '100vw' : '400px'};
+export const image = css`
+  width: 400px;
   height: 251.144px;
   object-fit: fill;
+
+  ${mobile} {
+    width: 100vw;
+  }
 `;
 
 export const font = css`  
