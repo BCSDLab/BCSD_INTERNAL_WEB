@@ -21,7 +21,7 @@ import LoadingSpinner from 'layout/LoadingSpinner';
 import {
   ArrowDownward, ArrowUpward, Sort,
 } from '@mui/icons-material';
-import useQueryParam from 'util/hooks/useQueryParam';
+import { useQueryParam } from 'util/hooks/useQueryParam';
 import { useSnackBar } from 'ts/useSnackBar';
 import makeNumberArray from 'util/hooks/makeNumberArray';
 import { NewDuesData } from 'api/dues';

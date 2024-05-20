@@ -1,7 +1,7 @@
 // 보여줘야 하는 정보
 // unpaidCount, 각 미납 내역들
 import { useEffect, useState } from 'react';
-import useQueryParam from 'util/hooks/useQueryParam';
+import { useQueryParam } from 'util/hooks/useQueryParam';
 import YearPagination from 'component/YearPagination';
 import { useGetAllDues } from 'query/dues';
 import { useGetMe } from 'query/members';

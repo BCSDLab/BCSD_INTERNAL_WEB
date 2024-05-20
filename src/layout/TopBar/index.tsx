@@ -2,7 +2,7 @@ import { useLocation, useNavigate } from 'react-router-dom';
 import { useLoginState } from 'store/loginStore';
 import { Button } from '@mui/material';
 import MenuIcon from '@mui/icons-material/Menu';
-import useQueryParam from 'util/hooks/useQueryParam';
+import { useQueryParam } from 'util/hooks/useQueryParam';
 import { PATHS } from 'util/constants/path';
 import { useEffect } from 'react';
 import { useGetMe } from 'query/members';
