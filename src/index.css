@@ -8,7 +8,6 @@
 
 body {
   min-height: 100vh;
-  min-width: 1148px;
   background-color: #F9FAFB;
   
 
@@ -27,4 +26,8 @@ html {
 button {
   border: none;
   font-family: NotoSansKR, sans-serif;
+}
+
+#root {
+  max-width: 100vw;
 }

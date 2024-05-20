@@ -8,6 +8,7 @@ import {
 import { Visibility, VisibilityOff } from '@mui/icons-material';
 import { Link, useNavigate } from 'react-router-dom';
 import { PATHS } from 'util/constants/path';
+import useMediaQuery from 'util/hooks/useMediaQuery';
 import * as S from './style';
 
 const DemoPaper = styled(Paper)(({ theme }) => ({
@@ -32,10 +33,11 @@ export default function SignIn() {
   };
 
   const { mutate: login, isPending } = useLogin();
+  const { isMobile } = useMediaQuery();
 
   return (
     <div css={S.template}>
-      <DemoPaper variant="elevation">
+      <DemoPaper variant="elevation" sx={isMobile ? { width: '100vw', height: '100vh', padding: 0 } : null}>
         <form
           css={S.center}
           onSubmit={(e) => {
@@ -43,7 +45,7 @@ export default function SignIn() {
             login({ studentNumber: account.studentNumber, password: SHA256(account.password).toString() });
           }}
         >
-          <img src="https://image.bcsdlab.com/banner.png" alt="banner" css={S.image} />
+          <img src="https://image.bcsdlab.com/banner.png" alt="banner" css={() => S.image(isMobile)} />
           <FormControl sx={{ width: '25ch' }} variant="outlined">
             <TextField
               label="학번"

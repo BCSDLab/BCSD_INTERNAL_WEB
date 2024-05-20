@@ -7,7 +7,6 @@ export const template = css`
   align-items: center;
   width: 100vw;
   height: 100vh;
-  gap: 2vh;
 `;
 
 export const center = css`
@@ -19,8 +18,8 @@ export const center = css`
   height: 100%;
 `;
 
-export const image = css`
-  width: 35vw;
+export const image = (isMobile: boolean) => css`
+  width: ${isMobile ? '100vw' : '35vw'};
   height: 20vh;
   object-fit: cover;
 `;
