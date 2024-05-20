@@ -5,9 +5,7 @@ import { ArrowBackIosNewOutlined, ArrowForwardIosOutlined } from '@mui/icons-mat
 import { useGetReservations } from 'query/reservations';
 import { Reservation } from 'model/reservations';
 import { useEffect, useState } from 'react';
-import {
-  convertEventToReservation, initClient, listUpcomingEvents, signIn,
-} from 'ts/googleapi';
+import { convertEventToReservation, initClient, listUpcomingEvents } from 'ts/googleapi';
 import * as S from './style';
 // eslint-disable-next-line import/no-cycle
 import MonthModal from './Month/MonthModal';
@@ -162,7 +160,6 @@ export default function Month() {
         <Button variant="outlined" onClick={() => setOpen(true)}>
           예약 확인
         </Button>
-        <Button onClick={signIn}>구글 로그인</Button>
       </div>
       <Table>
         <TableHead>
