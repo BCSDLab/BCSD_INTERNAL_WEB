@@ -19,6 +19,7 @@ import { useGetTracks } from 'query/tracks.ts';
 import { useSnackBar } from 'ts/useSnackBar.tsx';
 import { AxiosError } from 'axios';
 import { useNavigate } from 'react-router-dom';
+import useMediaQuery from 'util/hooks/useMediaQuery.ts';
 
 const status = [
   {
@@ -149,6 +150,8 @@ export default function SignUp() {
     }
   });
 
+  const { isMobile } = useMediaQuery();
+
   return (
     <form css={S.template} onSubmit={handleSubmit((data) => {
       if (getValues('password') === passwordCheck) signUp(data)
@@ -172,7 +175,7 @@ export default function SignUp() {
           <CircularProgress color="inherit" />
         </Backdrop>
       }
-      <div css={S.inputSet}>
+      <div css={() => S.inputSet(isMobile)}>
         <Controller
           name='name'
           control={control}
@@ -206,7 +209,7 @@ export default function SignUp() {
           }
         />
       </div>
-      <div css={S.inputSet}>
+      <div css={() => S.inputSet(isMobile)}>
         <Controller
           control={control}
           name='joinedYear'
@@ -240,7 +243,7 @@ export default function SignUp() {
           }
         />
       </div>
-      <div css={S.inputSet}>
+      <div css={() => S.inputSet(isMobile)}>
         <Controller
           name='trackId'
           control={control}
@@ -286,7 +289,7 @@ export default function SignUp() {
             </TextField>}
         />
       </div>
-      <div css={S.inputSet}>
+      <div css={() => S.inputSet(isMobile)}>
         <Controller
           name='phoneNumber'
           control={control}
@@ -331,7 +334,7 @@ export default function SignUp() {
             </TextField>}
         />
       </div>
-      <div css={S.inputSet}>
+      <div css={() => S.inputSet(isMobile)}>
         <Controller
           name='password'
           control={control}
@@ -358,7 +361,7 @@ export default function SignUp() {
           error={!!errors.password}
         />
       </div>
-      <div css={S.inputSet}>
+      <div css={() => S.inputSet(isMobile)}>
         <Controller
           name='company'
           control={control}
@@ -394,7 +397,7 @@ export default function SignUp() {
           }
         />
       </div>
-      <div css={S.inputSet}>
+      <div css={() => S.inputSet(isMobile)}>
         <Controller
           name='email'
           control={control}
@@ -433,7 +436,7 @@ export default function SignUp() {
           }
         />
       </div>
-      <div css={S.inputSet}>
+      <div css={() => S.inputSet(isMobile)}>
         <Button variant="contained" type='submit' disabled={isPending}>회원가입</Button>
       </div>
     </form >

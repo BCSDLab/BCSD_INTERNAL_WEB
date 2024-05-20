@@ -10,9 +10,9 @@ export const template = css`
   gap: 2vh;
 `;
 
-export const inputSet = css`
+export const inputSet = (isMobile: boolean) => css`
 display: flex;
 gap: 2vw;
-width: 40vw;
+width: ${isMobile ? '90vw' : '40vw'};
 justify-content: center;
 `;
