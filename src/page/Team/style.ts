@@ -25,6 +25,11 @@ export const teamMembers = css`
   margin-bottom: 5px;
 `;
 
+export const teamMemberInfo = css`
+  color: gray;
+  cursor: pointer;
+`;
+
 export const modalView = {
   position: 'absolute',
   top: '50%',

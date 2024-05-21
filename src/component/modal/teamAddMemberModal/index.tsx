@@ -1,22 +1,25 @@
 import {
   useState, useEffect, useCallback, memo, useMemo,
 } from 'react';
-
 import {
   Typography, Box, List, TextField, ListItemText, Modal, ListItemButton,
 } from '@mui/material';
 import { useSearchMembers } from 'query/members';
 import { Member } from 'model/member';
+import { useCreateTeamMember } from 'query/teams';
+
 import * as S from './style';
 
 interface SearchMemberModalProps {
   open: boolean;
   onClose: () => void;
+  teamId: number;
 }
 
-const SearchModal = memo(({ open, onClose }: SearchMemberModalProps) => {
+const SearchModal = memo(({ open, onClose, teamId }: SearchMemberModalProps) => {
   const [searchQuery, setSearchQuery] = useState('');
   const [searchResults, setSearchResults] = useState<Member[]>([]);
+  const { mutate: addTeamMember } = useCreateTeamMember();
 
   const { data: membersResult } = useSearchMembers({
     pageIndex: 0, pageSize: 1000, name: searchQuery,
@@ -30,7 +33,7 @@ const SearchModal = memo(({ open, onClose }: SearchMemberModalProps) => {
     }
   }, [membersResult]);
 
-  const handleSearchChange = useCallback((e) => {
+  const handleSearchChange = useCallback((e: any) => {
     setSearchQuery(e.target.value);
   }, []);
 
@@ -38,16 +41,15 @@ const SearchModal = memo(({ open, onClose }: SearchMemberModalProps) => {
     searchResults.map((member) => (
       <ListItemButton
         key={member.id}
+        sx={S.listButton}
         onClick={() => {
-          console.log('hello');
+          addTeamMember({ memberId: member.id, isLeader: false, teamId });
         }}
       >
-
         <ListItemText primary={member.name} />
-
       </ListItemButton>
     ))
-  ), [searchResults]);
+  ), [addTeamMember, searchResults, teamId]);
 
   return (
     <Modal
@@ -63,7 +65,7 @@ const SearchModal = memo(({ open, onClose }: SearchMemberModalProps) => {
         <TextField
           type="text"
           variant="outlined"
-          // value={searchQuery}
+          value={searchQuery}
           onChange={handleSearchChange}
           fullWidth
         />

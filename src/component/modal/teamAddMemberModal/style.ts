@@ -7,10 +7,21 @@ export const modalView = {
   bgcolor: 'background.paper',
   border: '2px solid #000',
   boxShadow: 24,
+  borderRadius: 1,
   p: 4,
 };
 
 export const searchMemberResult = {
-  maxHeight: 200, // 최대 높이 설정
-  overflow: 'auto', // 넘칠 경우 스크롤
+  height: 300,
+  overflow: 'auto',
+};
+
+export const listButton = {
+  border: 1,
+  borderColor: 'gray',
+  borderRadius: 2,
+  marginBottom: 1,
+  '&:hover': {
+    backgroundColor: '#D6F3FE',
+  },
 };

@@ -1,8 +1,9 @@
 import {
   Typography, Grid, Paper, Button,
 } from '@mui/material';
-
-import { useDeleteTeam, useGetTeams, useGetTeamsMembers } from 'query/teams';
+import {
+  useDeleteTeam, useDeleteTeamMember, useGetTeams, useGetTeamsMembers,
+} from 'query/teams';
 import { Team } from 'model/team';
 import { useCallback, useState, useMemo } from 'react';
 import SearchModal from 'component/modal/teamAddMemberModal';
@@ -12,7 +13,9 @@ import * as S from './style';
 export default function TeamInfo() {
   const { data: teams } = useGetTeams();
   const { data: teamMembers } = useGetTeamsMembers();
+  const [selectedTeam, setSelectedTeam] = useState(0);
   const { mutate: deleteTeam } = useDeleteTeam();
+  const { mutate: deleteMemberByTeam } = useDeleteTeamMember();
 
   const [open, setOpen] = useState(false);
   const handleOpen = useCallback(() => setOpen(true), []);
@@ -58,7 +61,13 @@ export default function TeamInfo() {
                 <div css={S.teamMembers}>
                   {teamMembers?.filter((teamMember) => teamMember.teamId === team.id && teamMember.isLeader === false)
                     .map((teamMember) => (
-                      <Typography variant="body1" key={teamMember.id}>
+                      <Typography
+                        variant="body1"
+                        key={teamMember.memberResponse?.id}
+                        onClick={() => {
+                          deleteMemberByTeam({ teamId: team.id, memberId: teamMember.memberResponse!.id });
+                        }}
+                      >
                         {teamMember.memberResponse?.name}
                         _
                         {teamMember.memberResponse?.track.name}
@@ -70,7 +79,10 @@ export default function TeamInfo() {
                 <Button
                   variant="outlined"
                   color="primary"
-                  onClick={handleOpen}
+                  onClick={() => {
+                    setSelectedTeam(team.id);
+                    handleOpen();
+                  }}
                 >
                   팀원 추가하기
                 </Button>
@@ -89,11 +101,11 @@ export default function TeamInfo() {
         </Grid>
       </Paper>
     ))
-  ), [teams, teamMembers, handleOpen, deleteTeam]);
+  ), [teams, teamMembers, deleteMemberByTeam, handleOpen, deleteTeam]);
 
   return (
     <div css={S.container}>
-      <SearchModal open={open} onClose={handleClose} />
+      <SearchModal open={open} onClose={handleClose} teamId={selectedTeam} />
       {renderTeams}
     </div>
   );
