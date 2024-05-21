@@ -1,4 +1,4 @@
-import { useMutation, useQueryClient, useSuspenseQuery } from '@tanstack/react-query';
+import { useMutation, useQuery, useQueryClient, useSuspenseQuery } from '@tanstack/react-query';
 import {
   createMember,
   deleteMember, getMember, getMembers, getMembersDeleted, login, updateMember, getNotAuthedMembers, getMe, updateMe, getSearchMembers,
@@ -43,7 +43,7 @@ export const useGetMembers = ({ pageIndex, pageSize, trackId }: GetMembers) => {
 };
 
 export const useSearchMembers = ({ pageIndex, pageSize, name }: SearchMembers) => {
-  const { data } = useSuspenseQuery({
+  const { data } = useQuery({
     queryKey: ['members', pageIndex, pageSize, name],
     queryFn: () => getSearchMembers(pageIndex, pageSize, name),
   });
