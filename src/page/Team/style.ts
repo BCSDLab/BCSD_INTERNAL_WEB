@@ -1,69 +1,43 @@
 import { css } from '@emotion/react';
-import { colors } from 'const/colors/style';
 
 export const container = css`
-  display: flex;
-  flex-direction: column;
-  background-color: ${colors.gray};
-  width: 100%;
-  height: 100%;
   padding: 20px;
-`;
-
-export const contentContainer = css`
-  display: flex;
   justify-content: center;
-  align-items: center;
-`;
-
-export const gridContainer = css`
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  margin-top: 30px;
-`;
-
-export const createButtonContainer = css`
-  display: flex;
-  justify-content: flex-end;
-  height: 100%;
-  margin-top: 50px;
-`;
-
-export const createButton = css`
-  margin-right: 40px;
 `;
 
 export const teamContainer = css`
+  text-align: center;
+`;
+
+export const teamBottom = css`
   display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  padding: 20px;
-  width: 500px;
-  height: 100%;
-  gap: 20px;
+  flex-direction: row;
+  justify-content: end;
+  gap: 10px;
 `;
 
-export const leaderProfileImage = css`
-  width: 120px;
-`;
-
-export const teamTitle = css`
-  display: inline-block;
-  font-size: 24px;
-  font-weight: bold;
-`;
-
-export const fontBold = css`
-  font-weight: bold;
-`;
-
-export const infoWrapper = css`
-  width: 400px;
+export const teamMembers = css`
   display: flex;
+  flex-direction: row;
   flex-wrap: wrap;
   justify-content: center;
   gap: 10px;
-  font-size: 18px;
+  margin-bottom: 5px;
 `;
+
+export const modalView = {
+  position: 'absolute',
+  top: '50%',
+  left: '50%',
+  transform: 'translate(-50%, -50%)',
+  width: 400,
+  bgcolor: 'background.paper',
+  border: '2px solid #000',
+  boxShadow: 24,
+  p: 4,
+};
+
+export const searchMemberResult = {
+  maxHeight: 200, // 최대 높이 설정
+  overflow: 'auto', // 넘칠 경우 스크롤
+};

@@ -6,8 +6,13 @@ import {
 import { Pagination } from 'model/page';
 
 export const getMembers = (pageIndex: number, pageSize: number, trackId?: number) => {
-  if (trackId === undefined) return accessClient.get <Pagination<Member>>(`/members?page=${pageIndex}&size=${pageSize}&deleted=false`);
+  if (trackId === undefined) return accessClient.get<Pagination<Member>>(`/members?page=${pageIndex}&size=${pageSize}&deleted=false`);
   return accessClient.get<Pagination<Member>>(`/members?page=${pageIndex}&size=${pageSize}&trackId=${trackId}&deleted=false`);
+};
+
+export const getSearchMembers = (pageIndex: number, pageSize: number, name?: string) => {
+  if (name === undefined) return accessClient.get<Pagination<Member>>(`/members?page=${pageIndex}&size=${pageSize}&deleted=false`);
+  return accessClient.get<Pagination<Member>>(`/members?page=${pageIndex}&size=${pageSize}&name=${name}&deleted=false`);
 };
 
 export const getMembersDeleted = (pageIndex: number, pageSize: number, trackId?: number) => {
