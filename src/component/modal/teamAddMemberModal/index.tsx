@@ -3,7 +3,7 @@ import {
 } from 'react';
 
 import {
-  Typography, Box, List, TextField, ListItem, ListItemText, Modal,
+  Typography, Box, List, TextField, ListItemText, Modal, ListItemButton,
 } from '@mui/material';
 import { useSearchMembers } from 'query/members';
 import { Member } from 'model/member';
@@ -36,9 +36,16 @@ const SearchModal = memo(({ open, onClose }: SearchMemberModalProps) => {
 
   const renderSearchResults = useMemo(() => (
     searchResults.map((member) => (
-      <ListItem key={member.id} button>
+      <ListItemButton
+        key={member.id}
+        onClick={() => {
+          console.log('hello');
+        }}
+      >
+
         <ListItemText primary={member.name} />
-      </ListItem>
+
+      </ListItemButton>
     ))
   ), [searchResults]);
 
