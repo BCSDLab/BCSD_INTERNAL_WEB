@@ -105,8 +105,8 @@ const TeamInfoModal = memo(({
             <div css={S.buttonWrapper}>
               <Button
                 sx={{ mt: 2, mb: 2 }}
-                variant="outlined"
-                color="secondary"
+                variant="contained"
+                color="error"
                 onClick={() => handleDeleteTeam(teamId)}
               >
                 삭제

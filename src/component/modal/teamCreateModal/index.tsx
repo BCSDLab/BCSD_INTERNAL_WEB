@@ -52,7 +52,13 @@ const TeamCreateModal = memo(({ open, onClose }: CreateModalProps) => {
         <Typography id="modal-title" variant="h6" component="h2">
           팀 생성
         </Typography>
-        <Box component="form" noValidate autoComplete="off" sx={{ mt: 2 }}>
+        <Box
+          component="form"
+          noValidate
+          autoComplete="off"
+          sx={{ mt: 2 }}
+          onSubmit={handleSave}
+        >
           <TextField
             margin="normal"
             label="팀명"
