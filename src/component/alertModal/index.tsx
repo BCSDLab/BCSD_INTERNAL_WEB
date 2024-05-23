@@ -6,7 +6,7 @@ import DialogTitle from '@mui/material/DialogTitle';
 interface AlertModalProps {
   isOpen: boolean;
   description: string;
-  onConfirm: () => any;
+  onConfirm: () => void;
   setAlert: (state: boolean) => void;
 }
 

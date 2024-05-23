@@ -36,7 +36,7 @@ const SearchModal = memo(({
     }
   }, [membersResult]);
 
-  const handleSearchChange = useCallback((e: any) => {
+  const handleSearchChange = useCallback((e: React.ChangeEvent<HTMLInputElement>) => {
     setSearchQuery(e.target.value);
   }, []);
 
