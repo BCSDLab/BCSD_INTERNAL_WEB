@@ -17,9 +17,9 @@ interface SearchMemberModalProps {
   isLeader: boolean;
 }
 
-const SearchModal = memo(({
+function SearchModal({
   open, onClose, teamId, isLeader,
-}: SearchMemberModalProps) => {
+}: SearchMemberModalProps) {
   const [searchQuery, setSearchQuery] = useState('');
   const [searchResults, setSearchResults] = useState<Member[]>([]);
   const { mutate: addTeamMember } = useCreateTeamMember();
@@ -83,6 +83,6 @@ const SearchModal = memo(({
       </Box>
     </Modal>
   );
-});
+}
 
-export default SearchModal;
+export default memo(SearchModal);
