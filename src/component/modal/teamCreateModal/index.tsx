@@ -1,11 +1,11 @@
 import {
   Box, Button, Modal, TextField, Typography,
 } from '@mui/material';
-import { useState } from 'react';
+import { useState, memo } from 'react';
 import { useCreateTeam } from 'query/teams';
 import * as S from './style';
 
-interface ModalProps {
+interface CreateModalProps {
   open: boolean;
   onClose: () => void;
 }
@@ -21,7 +21,7 @@ const style = {
   p: 4,
 };
 
-export default function TeamCreateModal({ open, onClose }: ModalProps): React.ReactElement {
+const TeamCreateModal = memo(({ open, onClose }: CreateModalProps) => {
   const [teamName, setTeamName] = useState('');
   const { mutate: createTeam } = useCreateTeam();
 
@@ -85,4 +85,6 @@ export default function TeamCreateModal({ open, onClose }: ModalProps): React.Re
     </Modal>
 
   );
-}
+});
+
+export default TeamCreateModal;

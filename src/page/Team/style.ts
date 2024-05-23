@@ -2,10 +2,14 @@ import { css } from '@emotion/react';
 
 export const container = css`
   padding: 20px;
-  justify-content: center;
+  display: flex;
+  flex-direction: column;
+  justify-content: end;
+  gap: 10px;
 `;
 
 export const teamContainer = css`
+  width: 800px;
   text-align: center;
 `;
 
@@ -45,4 +49,14 @@ export const modalView = {
 export const searchMemberResult = {
   maxHeight: 200, // 최대 높이 설정
   overflow: 'auto', // 넘칠 경우 스크롤
+};
+
+export const addTeamButton = {
+  margin: 'auto',
+  width: 800,
+  textAlign: 'center',
+};
+
+export const teamBottomButton = {
+  whiteSpace: 'nowrap',
 };

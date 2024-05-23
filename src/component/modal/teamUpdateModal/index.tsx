@@ -1,14 +1,19 @@
 import {
-  Box, Button, Modal, TextField, Typography,
+  Box, Button, List, ListItemButton, Modal, TextField, Typography,
 } from '@mui/material';
-import { useEffect, useState } from 'react';
-import { useDeleteTeam, useUpdateTeam } from 'query/teams';
+import { memo, useEffect, useState } from 'react';
+import {
+  useDeleteTeam, useDeleteTeamMember, useGetTeamMembers, useUpdateTeam,
+} from 'query/teams';
+import AlertDialog from 'component/alertModal';
+
 import * as S from './style';
 
 interface MemberInfoModalProps {
   open: boolean;
   onClose: () => void;
-  teamId: number | null;
+  teamName: string;
+  teamId: number;
 }
 
 const style = {
@@ -22,36 +27,36 @@ const style = {
   p: 4,
 };
 
-export default function TeamInfoModal({ open, onClose, teamId }: MemberInfoModalProps): React.ReactElement {
-  const [team, setTeam] = useState({
-    name: '',
-  });
+const TeamInfoModal = memo(({
+  open, onClose, teamName, teamId,
+}: MemberInfoModalProps) => {
+  const [team, setTeam] = useState(teamName);
+  const [selectedMember, setSelectedMember] = useState<number | null>(null);
+  const [alertOpen, setAlertOpen] = useState(false);
+
   const { mutate: updateTeam } = useUpdateTeam();
   const { mutate: deleteTeam } = useDeleteTeam();
+  const { mutate: deleteMemberByTeam } = useDeleteTeamMember();
+  const { data: teamMembers } = useGetTeamMembers(teamId);
 
   const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    const { name, value } = event.target;
-    setTeam({
-      ...team,
-      [name]: value,
-    });
+    const { value } = event.target;
+    setTeam(value);
   };
 
   const handleSave = () => {
     if (team && teamId) {
-      updateTeam({ id: teamId, name: team.name, isDeleted: false });
+      updateTeam({ id: teamId, name: team, isDeleted: false });
     }
     onClose();
-    setTeam({
-      name: '',
-    });
+    setTeam('');
   };
 
   const handleClose = () => {
     onClose();
-    setTeam({
-      name: '',
-    });
+    setTeam('');
+    setAlertOpen(false);
+    setSelectedMember(null);
   };
 
   const handleDeleteTeam = (id: number) => {
@@ -61,15 +66,19 @@ export default function TeamInfoModal({ open, onClose, teamId }: MemberInfoModal
     onClose();
   };
 
+  const handleDeleteMember = () => {
+    if (selectedMember !== null) {
+      deleteMemberByTeam({ teamId, memberId: selectedMember });
+    }
+  };
+
   useEffect(
     () => {
       if (teamId) {
-        setTeam({
-          name: team.name,
-        });
+        setTeam(teamName);
       }
     },
-    [team.name, teamId],
+    [teamName, teamId],
   );
 
   return (
@@ -88,7 +97,7 @@ export default function TeamInfoModal({ open, onClose, teamId }: MemberInfoModal
             margin="normal"
             label="팀명"
             name="name"
-            value={team.name}
+            value={team}
             fullWidth
             onChange={handleChange}
           />
@@ -98,7 +107,7 @@ export default function TeamInfoModal({ open, onClose, teamId }: MemberInfoModal
                 sx={{ mt: 2, mb: 2 }}
                 variant="outlined"
                 color="secondary"
-                onClick={() => handleDeleteTeam(teamId!)}
+                onClick={() => handleDeleteTeam(teamId)}
               >
                 삭제
               </Button>
@@ -119,10 +128,64 @@ export default function TeamInfoModal({ open, onClose, teamId }: MemberInfoModal
                 닫기
               </Button>
             </div>
-
           </div>
+        </Box>
+        <Box>
+          <Typography gutterBottom variant="h5">
+            팀장 🍊
+          </Typography>
+          <Box sx={S.teamMemberList}>
+            <List>
+              {teamMembers?.filter((member) => member.isLeader === true)
+                .map((teamMember) => (
+                  <ListItemButton
+                    key={teamMember.memberResponse?.id}
+                    sx={S.listButton}
+                    onClick={() => {
+                      setSelectedMember(teamMember.memberResponse!.id);
+                      setAlertOpen(true);
+                    }}
+                  >
+                    {teamMember.memberResponse?.name}
+                    _
+                    {teamMember.memberResponse?.track.name}
+                  </ListItemButton>
+                ))}
+            </List>
+          </Box>
+          <Box>
+            <Typography gutterBottom variant="h5">
+              팀원 🐜
+            </Typography>
+            <Box sx={S.teamMemberList}>
+              <List>
+                {teamMembers?.map((teamMember) => (
+                  <ListItemButton
+                    key={teamMember.memberResponse?.id}
+                    sx={S.listButton}
+                    onClick={() => {
+                      setSelectedMember(teamMember.memberResponse!.id);
+                      setAlertOpen(true);
+                    }}
+                  >
+                    {teamMember.memberResponse?.name}
+                    _
+                    {teamMember.memberResponse?.track.name}
+                  </ListItemButton>
+                ))}
+              </List>
+            </Box>
+          </Box>
+          <AlertDialog
+            isOpen={alertOpen}
+            description="정말 삭제하시겠어요?"
+            onConfirm={handleDeleteMember}
+            setAlert={setAlertOpen}
+          />
         </Box>
       </Box>
     </Modal>
   );
-}
+});
+
+export default TeamInfoModal;

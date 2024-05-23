@@ -1,25 +1,58 @@
 import {
   Typography, Grid, Paper, Button,
 } from '@mui/material';
-import {
-  useDeleteTeam, useDeleteTeamMember, useGetTeams, useGetTeamsMembers,
-} from 'query/teams';
+import { useGetTeams, useGetTeamsMembers } from 'query/teams';
 import { Team } from 'model/team';
 import { useCallback, useState, useMemo } from 'react';
 import SearchModal from 'component/modal/teamAddMemberModal';
+import TeamCreateModal from 'component/modal/teamCreateModal';
+import TeamInfoModal from 'component/modal/teamUpdateModal';
+import { useGetMe } from 'query/members';
 
 import * as S from './style';
+
+type ModalKind = 'searchModal' | 'teamCreateModal' | 'teamUpdateModal' | null;
+
+interface SelectedTeam {
+  teamId: number;
+  teamName: string;
+}
 
 export default function TeamInfo() {
   const { data: teams } = useGetTeams();
   const { data: teamMembers } = useGetTeamsMembers();
-  const [selectedTeam, setSelectedTeam] = useState(0);
-  const { mutate: deleteTeam } = useDeleteTeam();
-  const { mutate: deleteMemberByTeam } = useDeleteTeamMember();
+  const { data: getMe } = useGetMe();
 
-  const [open, setOpen] = useState(false);
-  const handleOpen = useCallback(() => setOpen(true), []);
-  const handleClose = useCallback(() => setOpen(false), []);
+  // Modal Open Close를 관리
+  const [openSearchModal, setOpenSearchModal] = useState(false);
+  const [openTeamCreateModal, setOpenTeamCreateModal] = useState(false);
+  const [openTeamUpdateModal, setOpenTeamUpdateModal] = useState(false);
+
+  const [modalTarget, setModaltarget] = useState<ModalKind>(null);
+  const [selectedTeam, setSelectedTeam] = useState<SelectedTeam>({ teamId: 0, teamName: '' });
+  const [isLeaderSelect, setIsLeaderSelect] = useState(false);
+
+  const handleOpen = useCallback((target: ModalKind) => {
+    if (target === 'searchModal') {
+      setOpenSearchModal(true);
+    } else if (target === 'teamCreateModal') {
+      setOpenTeamCreateModal(true);
+    } else if (target === 'teamUpdateModal') {
+      setOpenTeamUpdateModal(true);
+    }
+    setModaltarget(target);
+  }, []);
+
+  const handleClose = useCallback(() => {
+    if (modalTarget === 'searchModal') {
+      setOpenSearchModal(false);
+    } else if (modalTarget === 'teamCreateModal') {
+      setOpenTeamCreateModal(false);
+    } else if (modalTarget === 'teamUpdateModal') {
+      setOpenTeamUpdateModal(false);
+    }
+    setIsLeaderSelect(false);
+  }, [modalTarget]);
 
   const renderTeams = useMemo(() => (
     teams?.map((team: Team) => (
@@ -64,9 +97,6 @@ export default function TeamInfo() {
                       <Typography
                         variant="body1"
                         key={teamMember.memberResponse?.id}
-                        onClick={() => {
-                          deleteMemberByTeam({ teamId: team.id, memberId: teamMember.memberResponse!.id });
-                        }}
                       >
                         {teamMember.memberResponse?.name}
                         _
@@ -74,39 +104,68 @@ export default function TeamInfo() {
                       </Typography>
                     ))}
                 </div>
-              </Grid>
-              <Grid css={S.teamBottom}>
-                <Button
-                  variant="outlined"
-                  color="primary"
-                  onClick={() => {
-                    setSelectedTeam(team.id);
-                    handleOpen();
-                  }}
-                >
-                  팀원 추가하기
-                </Button>
-                <Button
-                  variant="outlined"
-                  color="error"
-                  onClick={() => {
-                    deleteTeam(team.id);
-                  }}
-                >
-                  팀 삭제하기
-                </Button>
+                {(getMe.authority === 'ADMIN' || getMe.authority === 'MANAGER') && (
+                  <Grid css={S.teamBottom}>
+                    <Button
+                      variant="outlined"
+                      color="primary"
+                      sx={S.teamBottomButton}
+                      onClick={() => {
+                        setSelectedTeam({ teamId: team.id, teamName: team.name });
+                        setIsLeaderSelect(true);
+                        handleOpen('searchModal');
+                      }}
+                    >
+                      팀장 추가하기
+                    </Button>
+                    <Button
+                      variant="outlined"
+                      color="primary"
+                      sx={S.teamBottomButton}
+                      onClick={() => {
+                        setSelectedTeam({ teamId: team.id, teamName: team.name });
+                        handleOpen('searchModal');
+                      }}
+                    >
+                      팀원 추가하기
+                    </Button>
+                    <Button
+                      variant="outlined"
+                      color="info"
+                      sx={S.teamBottomButton}
+                      onClick={() => {
+                        setSelectedTeam({ teamId: team.id, teamName: team.name });
+                        handleOpen('teamUpdateModal');
+                      }}
+                    >
+                      팀 관리하기
+                    </Button>
+                  </Grid>
+                )}
               </Grid>
             </Grid>
           </Grid>
         </Grid>
       </Paper>
     ))
-  ), [teams, teamMembers, deleteMemberByTeam, handleOpen, deleteTeam]);
+  ), [teams, teamMembers, getMe.authority, handleOpen]);
 
   return (
     <div css={S.container}>
-      <SearchModal open={open} onClose={handleClose} teamId={selectedTeam} />
+      <SearchModal open={openSearchModal} onClose={handleClose} teamId={selectedTeam.teamId} isLeader={isLeaderSelect} />
+      <TeamCreateModal open={openTeamCreateModal} onClose={handleClose} />
+      <TeamInfoModal open={openTeamUpdateModal} onClose={handleClose} teamId={selectedTeam.teamId} teamName={selectedTeam.teamName} />
       {renderTeams}
+      <Button
+        variant="contained"
+        color="info"
+        sx={S.addTeamButton}
+        onClick={() => {
+          handleOpen('teamCreateModal');
+        }}
+      >
+        팀 추가하기
+      </Button>
     </div>
   );
 }

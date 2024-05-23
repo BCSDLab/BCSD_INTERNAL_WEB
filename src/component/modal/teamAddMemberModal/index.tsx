@@ -14,9 +14,12 @@ interface SearchMemberModalProps {
   open: boolean;
   onClose: () => void;
   teamId: number;
+  isLeader: boolean;
 }
 
-const SearchModal = memo(({ open, onClose, teamId }: SearchMemberModalProps) => {
+const SearchModal = memo(({
+  open, onClose, teamId, isLeader,
+}: SearchMemberModalProps) => {
   const [searchQuery, setSearchQuery] = useState('');
   const [searchResults, setSearchResults] = useState<Member[]>([]);
   const { mutate: addTeamMember } = useCreateTeamMember();
@@ -38,18 +41,21 @@ const SearchModal = memo(({ open, onClose, teamId }: SearchMemberModalProps) => 
   }, []);
 
   const renderSearchResults = useMemo(() => (
-    searchResults.map((member) => (
-      <ListItemButton
-        key={member.id}
-        sx={S.listButton}
-        onClick={() => {
-          addTeamMember({ memberId: member.id, isLeader: false, teamId });
-        }}
-      >
-        <ListItemText primary={member.name} />
-      </ListItemButton>
-    ))
-  ), [addTeamMember, searchResults, teamId]);
+    searchResults
+      .filter((member) => (member.isDeleted === false && member.memberType === 'REGULAR'))
+      .map((member) => (
+        <ListItemButton
+          key={member.id}
+          sx={S.listButton}
+          onClick={() => {
+            addTeamMember({ memberId: member.id, isLeader, teamId });
+            setSearchQuery('');
+          }}
+        >
+          <ListItemText primary={`${member.name}_${member.track.name}`} />
+        </ListItemButton>
+      ))
+  ), [addTeamMember, isLeader, searchResults, teamId]);
 
   return (
     <Modal
