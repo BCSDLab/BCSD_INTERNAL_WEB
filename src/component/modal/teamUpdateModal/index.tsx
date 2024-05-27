@@ -136,7 +136,7 @@ const TeamInfoModal = memo(({
           </Typography>
           <Box sx={S.teamMemberList}>
             <List>
-              {teamMembers?.filter((member) => member.isLeader === true)
+              {teamMembers.filter((member) => member.isLeader === true)
                 .map((teamMember) => (
                   <ListItemButton
                     key={teamMember.memberResponse?.id}
@@ -159,7 +159,7 @@ const TeamInfoModal = memo(({
             </Typography>
             <Box sx={S.teamMemberList}>
               <List>
-                {teamMembers?.map((teamMember) => (
+                {teamMembers.map((teamMember) => (
                   <ListItemButton
                     key={teamMember.memberResponse?.id}
                     sx={S.listButton}

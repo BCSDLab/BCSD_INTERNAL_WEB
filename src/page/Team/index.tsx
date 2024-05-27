@@ -23,7 +23,6 @@ export default function TeamInfo() {
   const { data: teamMembers } = useGetTeamsMembers();
   const { data: getMe } = useGetMe();
 
-  // Modal Open Close를 관리
   const [openSearchModal, setOpenSearchModal] = useState(false);
   const [openTeamCreateModal, setOpenTeamCreateModal] = useState(false);
   const [openTeamUpdateModal, setOpenTeamUpdateModal] = useState(false);
@@ -55,7 +54,7 @@ export default function TeamInfo() {
   }, [modalTarget]);
 
   const renderTeams = useMemo(() => (
-    teams?.map((team: Team) => (
+    teams.map((team: Team) => (
       <Paper
         key={team.id}
         sx={{
@@ -79,7 +78,7 @@ export default function TeamInfo() {
                   팀장 🍊
                 </Typography>
                 <div css={S.teamMembers}>
-                  {teamMembers?.filter((teamMember) => teamMember.teamId === team.id && teamMember.isLeader === true)
+                  {teamMembers.filter((teamMember) => teamMember.teamId === team.id && teamMember.isLeader === true)
                     .map((leader) => (
                       <Typography variant="body1" key={leader.id}>
                         {leader.memberResponse?.name}
@@ -92,7 +91,7 @@ export default function TeamInfo() {
                   팀원 🐜
                 </Typography>
                 <div css={S.teamMembers}>
-                  {teamMembers?.filter((teamMember) => teamMember.teamId === team.id && teamMember.isLeader === false)
+                  {teamMembers.filter((teamMember) => teamMember.teamId === team.id && teamMember.isLeader === false)
                     .map((teamMember) => (
                       <Typography
                         variant="body1"
