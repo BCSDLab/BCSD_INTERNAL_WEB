@@ -1,11 +1,11 @@
 import {
   Box, Button, Modal, TextField, Typography,
 } from '@mui/material';
-import { useState } from 'react';
+import { useState, memo } from 'react';
 import { useCreateTeam } from 'query/teams';
 import * as S from './style';
 
-interface ModalProps {
+interface CreateModalProps {
   open: boolean;
   onClose: () => void;
 }
@@ -21,7 +21,7 @@ const style = {
   p: 4,
 };
 
-export default function TeamCreateModal({ open, onClose }: ModalProps): React.ReactElement {
+const TeamCreateModal = memo(({ open, onClose }: CreateModalProps) => {
   const [teamName, setTeamName] = useState('');
   const { mutate: createTeam } = useCreateTeam();
 
@@ -52,7 +52,13 @@ export default function TeamCreateModal({ open, onClose }: ModalProps): React.Re
         <Typography id="modal-title" variant="h6" component="h2">
           팀 생성
         </Typography>
-        <Box component="form" noValidate autoComplete="off" sx={{ mt: 2 }}>
+        <Box
+          component="form"
+          noValidate
+          autoComplete="off"
+          sx={{ mt: 2 }}
+          onSubmit={handleSave}
+        >
           <TextField
             margin="normal"
             label="팀명"
@@ -85,4 +91,6 @@ export default function TeamCreateModal({ open, onClose }: ModalProps): React.Re
     </Modal>
 
   );
-}
+});
+
+export default TeamCreateModal;

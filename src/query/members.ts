@@ -1,7 +1,9 @@
-import { useMutation, useQueryClient, useSuspenseQuery } from '@tanstack/react-query';
+import {
+  useMutation, useQuery, useQueryClient, useSuspenseQuery,
+} from '@tanstack/react-query';
 import {
   createMember,
-  deleteMember, getMember, getMembers, getMembersDeleted, login, updateMember, getNotAuthedMembers, getMe, updateMe,
+  deleteMember, getMember, getMembers, getMembersDeleted, login, updateMember, getNotAuthedMembers, getMe, updateMe, getSearchMembers,
 } from 'api/members';
 import {
   AdminMemberUpdate, MemberCreate, MemberDelete, MemberUpdate,
@@ -19,6 +21,13 @@ interface GetMembers {
   deleted?: boolean | null;
 }
 
+interface SearchMembers {
+  pageIndex: number;
+  pageSize: number;
+  name: string;
+  deleted?: boolean | null;
+}
+
 interface LoginRequest {
   studentNumber: string,
   password: string,
@@ -31,6 +40,14 @@ export const useGetMembers = ({ pageIndex, pageSize, trackId }: GetMembers) => {
       if (trackId === null) return getMembers(pageIndex, pageSize);
       return getMembers(pageIndex, pageSize, trackId);
     },
+  });
+  return { data };
+};
+
+export const useSearchMembers = ({ pageIndex, pageSize, name }: SearchMembers) => {
+  const { data } = useQuery({
+    queryKey: ['members', pageIndex, pageSize, name],
+    queryFn: () => getSearchMembers(pageIndex, pageSize, name),
   });
   return { data };
 };

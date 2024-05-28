@@ -15,4 +15,4 @@ export const createTeamMember = (memberId: number, isLeader: boolean, teamId: nu
 
 export const getTeamMembers = (teamId: number) => accessClient.get<Team[]>(`/teams/members/${teamId}?page=0&size=1000`);
 
-export const deleteTeamMember = (teamId: number, memberId: number) => accessClient.delete<Team>(`/teams/members/${teamId}`, { data: { memberId } });
+export const deleteTeamMember = (teamId: number, memberId: number) => accessClient.delete<Team>(`/teams/${teamId}/members/${memberId}`, { data: { memberId } });
