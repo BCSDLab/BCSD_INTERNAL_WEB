@@ -57,6 +57,14 @@ export const paginationTitle = css`
   margin-top: 7px;
 `;
 
+export const noticeButton = css`
+  margin-right: 10px;
+`;
+
+export const unpaidNoticeButton = css`
+  margin-right: 10px;
+`;
+
 export const tableContainer = css`
   overflow-x: initial;
 `;
