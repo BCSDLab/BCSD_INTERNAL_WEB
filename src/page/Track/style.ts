@@ -36,6 +36,7 @@ export const gridContainer = css`
   display: flex;
   justify-content: center;
   align-items: center;
+  cursor: pointer;
 `;
 
 export const trackContainer = css`

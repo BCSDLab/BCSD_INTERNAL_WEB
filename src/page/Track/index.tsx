@@ -9,6 +9,8 @@ import { useGetMe } from 'query/members';
 import TrackCreateModal from 'component/modal/trackCreateModal';
 import { useState } from 'react';
 import TrackUpdateModal from 'component/modal/trackUpdateModal';
+import { useNavigate } from 'react-router-dom';
+import { useTrackStore } from 'store/trackStore';
 import * as S from './style';
 
 const Item = styled(Paper)(({ theme }) => ({
@@ -30,6 +32,8 @@ export default function TrackInfo() {
   const [selectedTrackId, setSelectedTrackId] = useState<number | null>(null);
   const memberAuthority = getMe.authority;
   const { mutate: deleteTrack } = useDeleteTrack();
+  const navigate = useNavigate();
+  const setTrack = useTrackStore((state) => state.setTrack);
 
   const handleOpenTrackCreateModal = () => {
     setMemberCreateModalOpen(true);
@@ -50,13 +54,18 @@ export default function TrackInfo() {
     deleteTrack(trackId);
   };
 
+  const handleTrackClick = (trackId: number, trackName: string) => {
+    setTrack(trackId, trackName);
+    navigate('/member');
+  };
+
   return (
     <div css={S.container}>
       <div css={S.contentContainer}>
         <Grid container spacing={3}>
           {tracks?.map((track: Track) => (
             <Grid item xs={3} key={track.id} css={S.gridContainer}>
-              <Item css={S.trackContainer}>
+              <Item css={S.trackContainer} onClick={() => handleTrackClick(track.id, track.name)}>
                 <div css={S.trackTitle}>{track.name}</div>
                 <img
                   css={S.leaderProfileImage}
@@ -75,7 +84,8 @@ export default function TrackInfo() {
                       <Button
                         variant="outlined"
                         color="primary"
-                        onClick={() => {
+                        onClick={(event) => {
+                          event.stopPropagation();
                           setSelectedTrackId(track.id);
                           handleOpenTrackUpdateModal();
                         }}
