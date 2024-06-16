@@ -27,6 +27,12 @@ export interface NewDuesData extends DeleteDuesProps {
   memo?: string | null;
 }
 
+export interface SendDuesData {
+  year: number;
+  month: number;
+  explanation: string;
+}
+
 export const getAllDues = ({ year, track }: DuesOptions) => {
   const query = track ? `/dues?year=${year}&track=${track}` : `/dues?year=${year}`;
   return accessClient.get<DuesInfo>(query);
@@ -42,4 +48,12 @@ export const putDues = (data: NewDuesData) => {
 
 export const deleteDues = ({ year, month, memberId }: DeleteDuesProps) => {
   return accessClient.delete(`/dues?year=${year}&month=${month}&memberId=${memberId}`);
+};
+
+export const postSendDues = ({ year, month, explanation }: SendDuesData) => {
+  return accessClient.post('/dues/send/slack/dues/notice-channel', { year, month, explanation });
+};
+
+export const postSendDuesByDM = () => {
+  return accessClient.post('/dues/send/slack/dues/dm');
 };

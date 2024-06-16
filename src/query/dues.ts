@@ -1,7 +1,7 @@
 import { useMutation, useSuspenseQuery } from '@tanstack/react-query';
 import {
   DeleteDuesProps,
-  DuesOptions, NewDuesData, deleteDues, getAllDues, postDues, putDues,
+  DuesOptions, NewDuesData, deleteDues, getAllDues, postDues, postSendDues, postSendDuesByDM, putDues,
 } from 'api/dues';
 import { DuesInfo } from 'model/dues/allDues';
 import { useSnackBar } from 'ts/useSnackBar';
@@ -48,4 +48,28 @@ export const useDeleteDues = () => {
     onSuccess: () => openSnackBar({ type: 'success', message: '회비 내역이 수정되었습니다.' }),
   });
   return deleteDuesMutation;
+};
+
+export const usePostSendDues = () => {
+  const openSnackBar = useSnackBar();
+
+  const postSendDuesMutation = useMutation({
+    mutationKey: ['postSendDues'],
+    mutationFn: (data: { year: number; month: number; explanation: string }) => postSendDues(data),
+    onError: (error) => openSnackBar({ type: 'error', message: error.message }),
+    onSuccess: () => openSnackBar({ type: 'success', message: '회비 공지를 완료했습니다.' }),
+  });
+  return postSendDuesMutation;
+};
+
+export const usePostSendDuesByDM = () => {
+  const openSnackBar = useSnackBar();
+
+  const postSendDuesByDMMutation = useMutation({
+    mutationKey: ['postSendDuesByDM'],
+    mutationFn: () => postSendDuesByDM(),
+    onError: (error) => openSnackBar({ type: 'error', message: error.message }),
+    onSuccess: () => openSnackBar({ type: 'success', message: '회비 내역 메시지를 전송했습니다.' }),
+  });
+  return postSendDuesByDMMutation;
 };
