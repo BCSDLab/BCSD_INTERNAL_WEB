@@ -12,7 +12,7 @@ import {
   ChangeEvent, Suspense, useEffect, useState,
 } from 'react';
 import {
-  useDeleteDues, useGetAllDues, usePostDues, usePutDues,
+  useDeleteDues, useGetAllDues, usePostDues, usePostSendDues, usePostSendDuesByDM, usePutDues,
 } from 'query/dues';
 import useBooleanState from 'util/hooks/useBooleanState.ts';
 import { STATUS_MAPPING } from 'util/constants/status';
@@ -25,9 +25,10 @@ import { useQueryParam } from 'util/hooks/useQueryParam';
 import { useSnackBar } from 'ts/useSnackBar';
 import makeNumberArray from 'util/hooks/makeNumberArray';
 import { NewDuesData } from 'api/dues';
-import { useGetMembers } from 'query/members';
+import { useGetMe, useGetMembers } from 'query/members';
 import YearPagination from 'component/YearPagination';
 import * as S from './style';
+import AlertModal from './components/AlertModal';
 
 type Status = 'PAID' | 'NOT_PAID' | 'SKIP' | 'NONE';
 
@@ -36,12 +37,14 @@ interface SortAnchorEl {
   unpaidCount: null | HTMLElement;
 }
 
+type NoticeType = 'notice' | 'dm';
+
 function DefaultTable() {
   const param = useQueryParam('page');
   const page = Number(param);
   const currentYear = new Date().getFullYear();
   const [duesYear, setDuesYear] = useState(page ? currentYear - page + 1 : currentYear);
-  const [name, setName] = useState('');
+  const [memberName, setMemberName] = useState('');
   const {
     value: isFilterModalOpen,
     setTrue: openFilterModal,
@@ -64,11 +67,18 @@ function DefaultTable() {
     name: null,
     unpaidCount: null,
   });
+  const {
+    value: isNoticeModalOpen,
+    setTrue: openNoticeModal,
+    setFalse: closeNoticeModal,
+  } = useBooleanState(false);
+  const [noticeType, setNoticeType] = useState<NoticeType | undefined>(undefined);
 
   const openSnackBar = useSnackBar();
 
   const { data: allDues, refetch } = useGetAllDues({ year: duesYear });
   const { data: members } = useGetMembers({ pageIndex: 0, pageSize: 1000, trackId: null });
+  const { data: myInfo } = useGetMe();
   const [filteredValue, setFilteredValue] = useState(allDues.dues.filter((row) => members?.content.some((member) => member.memberType === 'REGULAR' && member.id === row.memberId)));
 
   const { data: tracks } = useGetTracks();
@@ -76,6 +86,8 @@ function DefaultTable() {
   const postDuesMutation = usePostDues();
   const putDuesMutation = usePutDues();
   const deleteDuesMutation = useDeleteDues();
+  const postSendDuesMutation = usePostSendDues();
+  const postSendDuesByDMMutation = usePostSendDuesByDM();
 
   const handleNameChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const searchName = e.target.value;
@@ -86,12 +98,12 @@ function DefaultTable() {
         setFilteredValue(allDues.dues.filter((row) => members?.content.some((member) => member.memberType === 'REGULAR' && member.id === row.memberId) && trackFilter[tracks.map((track) => track.name).indexOf(row.track.name)]));
       }
     }
-    setName(searchName);
+    setMemberName(searchName);
   };
 
   const handleNameSearchClick = () => {
-    if (filteredValue.some((row) => row.name.includes(name))) {
-      setFilteredValue(allDues.dues.filter((row) => row.name.includes(name) && members?.content.some((member) => member.memberType === 'REGULAR' && member.id === row.memberId)));
+    if (filteredValue.some((row) => row.name.includes(memberName))) {
+      setFilteredValue(allDues.dues.filter((row) => row.name.includes(memberName) && members?.content.some((member) => member.memberType === 'REGULAR' && member.id === row.memberId)));
     } else {
       openSnackBar({ type: 'error', message: '해당 이름을 가진 회원이 없습니다.' });
     }
@@ -110,7 +122,7 @@ function DefaultTable() {
       const updatedTrack = [...prevTrack];
       updatedTrack[trackIndex] = !updatedTrack[trackIndex];
       setFilteredValue(allDues.dues.filter((row) => updatedTrack[tracks.map((track) => track.name).indexOf(row.track.name)]
-      && members?.content.some((member) => member.memberType === 'REGULAR' && member.id === row.memberId)));
+        && members?.content.some((member) => member.memberType === 'REGULAR' && member.id === row.memberId)));
       return updatedTrack;
     });
   };
@@ -215,6 +227,21 @@ function DefaultTable() {
     setSortAnchorEl((prev) => ({ ...prev, unpaidCount: null }));
   };
 
+  const handleNoticeDues = (explanation: string) => {
+    const prevMonth = new Date().getMonth();
+    postSendDuesMutation.mutate({ year: currentYear, month: prevMonth, explanation });
+  };
+
+  const handleSendDuesByDM = () => {
+    postSendDuesByDMMutation.mutate();
+  };
+
+  const handleOpenNoticeModal = (e: React.MouseEvent<HTMLButtonElement>) => {
+    const { name } = e.target as HTMLButtonElement;
+    setNoticeType(name as NoticeType);
+    openNoticeModal();
+  };
+
   return (
     <>
       <div css={S.searchAndPagination}>
@@ -222,8 +249,27 @@ function DefaultTable() {
           <YearPagination duesYear={duesYear} setDuesYear={setDuesYear} />
         </div>
         <div>
+          {(myInfo.authority === 'ADMIN' || myInfo.authority === 'MANAGER') && (
+            <>
+              <Button css={S.noticeButton} name="notice" onClick={(e) => handleOpenNoticeModal(e)}>
+                회비 공지하기
+              </Button>
+              <Button css={S.unpaidNoticeButton} name="dm" onClick={(e) => handleOpenNoticeModal(e)}>
+                미납자 DM
+              </Button>
+            </>
+          )}
+          {isNoticeModalOpen && (
+            <AlertModal
+              open={isNoticeModalOpen}
+              onClose={closeNoticeModal}
+              handleSend={handleNoticeDues}
+              handleSendByDM={handleSendDuesByDM}
+              type={noticeType}
+            />
+          )}
           <Input
-            value={name}
+            value={memberName}
             id="memberName"
             onKeyDown={handleNameSearchKeyDown}
             onChange={handleNameChange}
