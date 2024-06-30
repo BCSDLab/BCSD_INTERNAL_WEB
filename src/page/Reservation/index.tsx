@@ -39,7 +39,9 @@ function ReservationOutlet() {
       </ButtonGroup>
       {/* 주를 만들자 */}
       {mode === 'week' && <Week currentDate={currentPageDate} setCurrentDate={setDate} />}
-      {mode === 'month' && <Month />}
+      <Suspense fallback={<LoadingSpinner />}>
+        {mode === 'month' && <Month />}
+      </Suspense>
     </div>
   );
 }

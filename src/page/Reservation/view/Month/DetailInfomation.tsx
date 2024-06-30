@@ -1,20 +1,21 @@
 import { Reservations } from 'model/reservations';
 import { Button } from '@mui/material';
-import { useDeleteReservations } from 'query/reservations';
+import { useDeleteEvent } from 'page/Reservation/hook/useDeleteEvent';
 import * as S from './style';
 
 interface DetailInformationProps extends Reservations {
   // eslint-disable-next-line
-  id?: number;
+  eventId?: string | undefined;
   // eslint-disable-next-line
   passed?: boolean;
   memberName: string;
 }
 
 export default function DetailInfomation({
-  detailedReason, startDateTime, endDateTime, memberCount, id, reason, memberName, passed,
+  detailedReason, startDateTime, endDateTime, memberCount, eventId, reason, memberName, passed,
 }: DetailInformationProps) {
-  const { mutate } = useDeleteReservations();
+  const { mutate } = useDeleteEvent();
+
   return (
     <div css={S.Detail}>
       <div css={S.DetailContainer}>
@@ -53,8 +54,8 @@ export default function DetailInfomation({
           </div>
         </div>
         {
-          id && !passed && (
-            <Button variant="outlined" color="error" onClick={() => mutate(id)}>
+          eventId && !passed && (
+            <Button variant="outlined" color="error" onClick={() => mutate(eventId)}>
               취소
             </Button>
           )

@@ -1,8 +1,8 @@
 import {
   Modal, Box, ToggleButtonGroup, ToggleButton,
 } from '@mui/material';
-import { useGetMyReservations } from 'query/reservations';
 import { useState } from 'react';
+import { useGetCalender } from 'page/Reservation/hook/useGetCalender';
 // eslint-disable-next-line
 import { style } from './MonthModal';
 import DetailInfomation from './DetailInfomation';
@@ -23,8 +23,17 @@ export const useToggleButtonGroup = () => {
   return { alignment, handleChange };
 };
 
-export default function MyReservation({ open, handleClose }: { open: boolean, handleClose: () => void }) {
-  const { data } = useGetMyReservations();
+interface Props {
+  open: boolean;
+  handleClose: () => void;
+  currentMonth: number;
+  currentYear: number;
+}
+
+export default function MyReservation({
+  open, handleClose, currentMonth, currentYear,
+}: Props) {
+  const { data: eventList } = useGetCalender({ currentMonth, currentYear });
   const { alignment, handleChange } = useToggleButtonGroup();
 
   return (
@@ -45,7 +54,7 @@ export default function MyReservation({ open, handleClose }: { open: boolean, ha
         </ToggleButtonGroup>
         <div css={S.DetailLayout}>
           {alignment === 'information'
-            && data.filter((item) => (Number(item.endDateTime.slice(5, 7)) > new Date().getMonth() + 1) || (Number(item.endDateTime.slice(5, 7)) === new Date().getMonth() + 1 && Number(item.endDateTime.slice(8, 10)) >= new Date().getDate())).map(
+            && eventList.filter((item) => (Number(item.endDateTime.slice(5, 7)) > new Date().getMonth() + 1) || (Number(item.endDateTime.slice(5, 7)) === new Date().getMonth() + 1 && Number(item.endDateTime.slice(8, 10)) >= new Date().getDate())).map(
               (filtered) => (
                 <DetailInfomation
                   detailedReason={filtered.detailedReason}
@@ -53,13 +62,13 @@ export default function MyReservation({ open, handleClose }: { open: boolean, ha
                   endDateTime={filtered.endDateTime}
                   memberCount={filtered.memberCount}
                   reason={filtered.reason}
-                  id={filtered.id}
+                  eventId={filtered.eventId}
                   memberName={filtered.memberName}
                 />
               ),
             )}
           {alignment === 'passed'
-            && data.filter((item) => (Number(item.endDateTime.slice(5, 7)) < new Date().getMonth() + 1) || (Number(item.endDateTime.slice(5, 7)) === new Date().getMonth() + 1 && (Number(item.endDateTime.slice(8, 10)) < new Date().getDate()))).map(
+            && eventList.filter((item) => (Number(item.endDateTime.slice(5, 7)) < new Date().getMonth() + 1) || (Number(item.endDateTime.slice(5, 7)) === new Date().getMonth() + 1 && (Number(item.endDateTime.slice(8, 10)) < new Date().getDate()))).map(
               (filtered) => (
                 <DetailInfomation
                   detailedReason={filtered.detailedReason}
@@ -67,7 +76,7 @@ export default function MyReservation({ open, handleClose }: { open: boolean, ha
                   endDateTime={filtered.endDateTime}
                   memberCount={filtered.memberCount}
                   reason={filtered.reason}
-                  id={filtered.id}
+                  eventId={filtered.eventId}
                   memberName={filtered.memberName}
                   passed={true}
                 />
