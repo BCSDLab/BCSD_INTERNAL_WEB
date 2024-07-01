@@ -1,9 +1,9 @@
 import {
   Box, Modal, TextField, Button, MenuItem, ToggleButton, ToggleButtonGroup,
 } from '@mui/material';
-import { useCreateReservations } from 'query/reservations';
 import { useState } from 'react';
 import { HOUR_LIST, MINUTE_LIST } from 'util/constants/time';
+import { useCreateEvents } from 'page/Reservation/hook/useCreateEvent';
 import DetailInfomation from './DetailInfomation';
 // eslint-disable-next-line import/no-cycle
 import { CalendarContent } from '../Month';
@@ -44,7 +44,7 @@ export default function MonthModal({
 }: ModalContent) {
   const currentDate = new Date().getDate();
   const nowMonth = new Date().getMonth();
-  const { mutate: reservation, isError } = useCreateReservations();
+  const mutate = useCreateEvents();
   const [reserve, setReserve] = useState(initialState);
   const { alignment, handleChange } = useToggleButtonGroup();
   const canReserve = () => {
@@ -64,14 +64,15 @@ export default function MonthModal({
     if (today
       && reserve.memberCount >= 1
     ) {
-      reservation({
+      mutate.mutate({
         memberCount: reserve.memberCount,
         reason: reserve.reason,
         detailedReason: reserve.detailedReason,
         startDateTime: `${today.slice(0, 4)}-${today.slice(5, 7)}-${today.slice(8, 10)} ${reserve.startHour}:${reserve.startMinute}`,
         endDateTime: `${today.slice(0, 4)}-${today.slice(5, 7)}-${today.slice(8, 10)} ${reserve.endHour}:${reserve.endMinute}`,
+        memberName: '',
       });
-      if (!isError) handleClose();
+      if (mutate.isError) handleClose();
     }
   };
 

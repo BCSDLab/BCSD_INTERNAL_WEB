@@ -18,4 +18,5 @@ export interface Reservation {
   startDateTime: string;
   endDateTime: string;
   memberName: string;
+  eventId?: string;
 }
