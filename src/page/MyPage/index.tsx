@@ -265,6 +265,21 @@ export default function MyPage() {
             <div css={S.textGap}>
               <TextField
                 margin="normal"
+                label="생년월일"
+                name="birthday"
+                type='date'
+                value={member?.birthday || ''}
+                defaultValue="2000-01-01"
+                InputLabelProps={{
+                  shrink: true,
+                }}
+                fullWidth
+                onChange={handleChange}
+              />
+            </div>
+            <div css={S.textGap}>
+              <TextField
+                margin="normal"
                 label="깃허브 이름"
                 name="githubName"
                 value={member?.githubName || ''}
