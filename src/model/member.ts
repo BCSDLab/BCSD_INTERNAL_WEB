@@ -43,6 +43,7 @@ export interface Member {
   isAuthed: boolean;
   isDeleted: boolean;
   deleteReason: string;
+  birthday: string;
 }
 
 export interface AdminMemberUpdate {
@@ -63,6 +64,7 @@ export interface AdminMemberUpdate {
   isDeleted: boolean;
   authority: Authority;
   deleteReason: string;
+  birthday: string;
 }
 
 export interface MemberUpdate {
@@ -79,6 +81,7 @@ export interface MemberUpdate {
   email: string;
   githubName: string;
   profileImageUrl: string;
+  birthday: string;
 }
 
 export interface MemberCreate {
@@ -99,6 +102,7 @@ export interface MemberCreate {
   isAuthed?: boolean;
   isDeleted?: boolean;
   authority?: Authority;
+  birthday?: string;
 }
 
 export interface MemberDelete {
@@ -136,6 +140,7 @@ export const toAdminMemberUpdate = (member: Member): AdminMemberUpdate => {
     isDeleted: member.isDeleted,
     authority: member.authority,
     deleteReason: member.deleteReason,
+    birthday: member.birthday,
   };
 };
 
@@ -159,6 +164,7 @@ export const toMemberCreate = (member: MemberCreate): MemberCreate => {
     isAuthed: true,
     isDeleted: false,
     authority: Authority.NORMAL,
+    birthday: member.birthday,
   };
 };
 
