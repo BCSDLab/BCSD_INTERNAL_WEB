@@ -267,7 +267,7 @@ export default function MyPage() {
                 margin="normal"
                 label="생년월일"
                 name="birthday"
-                type='date'
+                type="date"
                 value={member?.birthday || ''}
                 defaultValue="2000-01-01"
                 InputLabelProps={{
