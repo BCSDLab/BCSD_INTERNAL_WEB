@@ -269,7 +269,6 @@ export default function MyPage() {
                 name="birthday"
                 type="date"
                 value={member?.birthday || ''}
-                defaultValue="2000-01-01"
                 InputLabelProps={{
                   shrink: true,
                 }}
