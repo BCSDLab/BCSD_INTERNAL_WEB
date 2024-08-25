@@ -6,8 +6,6 @@ import { useGetReservations } from 'query/reservations';
 import { Reservation } from 'model/reservations';
 import { useEffect, useState } from 'react';
 import { useSnackBar } from 'ts/useSnackBar';
-import { useGoogleOneTapLogin } from '@react-oauth/google';
-import { GOOGLE_CLIENT_ID } from 'config/constants';
 import * as S from './style';
 // eslint-disable-next-line import/no-cycle
 import MonthModal, { isAuthenticate } from './Month/MonthModal';
@@ -118,10 +116,6 @@ export default function Month() {
     }
     setOpen(true);
   };
-
-  useGoogleOneTapLogin({
-    onSuccess: (res) => console.log(res),
-  });
 
   useEffect(() => {
     // 현재 월의 일 수
