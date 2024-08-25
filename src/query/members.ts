@@ -159,6 +159,8 @@ export const useNotAuthedMember = () => {
 };
 
 export const useGetMe = () => {
+  const navigate = useNavigate();
+  const { deleteMe } = useLoginState();
   const { data, error } = useSuspenseQuery({
     queryKey: ['me'],
     queryFn: () => getMe(),
@@ -167,10 +169,11 @@ export const useGetMe = () => {
   useEffect(() => {
     if (error && axios.isAxiosError(error)) {
       if (error.response && error.response.status === 401) {
-        localStorage.clear();
+        deleteMe();
+        navigate(PATHS.home);
       }
     }
-  }, [error]);
+  }, [deleteMe, error, navigate]);
   return { data };
 };
 
