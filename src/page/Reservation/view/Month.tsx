@@ -5,9 +5,12 @@ import { ArrowBackIosNewOutlined, ArrowForwardIosOutlined } from '@mui/icons-mat
 import { useGetReservations } from 'query/reservations';
 import { Reservation } from 'model/reservations';
 import { useEffect, useState } from 'react';
+import { useSnackBar } from 'ts/useSnackBar';
+import { useGoogleOneTapLogin } from '@react-oauth/google';
+import { GOOGLE_CLIENT_ID } from 'config/constants';
 import * as S from './style';
 // eslint-disable-next-line import/no-cycle
-import MonthModal from './Month/MonthModal';
+import MonthModal, { isAuthenticate } from './Month/MonthModal';
 import MyReservation from './Month/MyReservation';
 import { useGetCalender } from '../hook/useGetCalender';
 import { useDateStore } from '../store/dateStore';
@@ -34,7 +37,6 @@ function CalendarCell({
   const handleOpen = () => setOpen(true);
   const handleClose = () => setOpen(false);
   const filteredData = data.filter((item) => item.startDateTime.slice(0, 10) === today);
-
   return (
     <>
       <TableCell
@@ -87,6 +89,7 @@ export default function Month() {
   const {
     currentMonth, currentYear, setCurrentMonth, setCurrentYear,
   } = useDateStore();
+  const snackbar = useSnackBar();
 
   const [currentCalendar, setCurrentCalendar] = useState<Calendars[]>([]);
   const [open, setOpen] = useState<boolean>(false);
@@ -107,6 +110,18 @@ export default function Month() {
       previousYear();
     }
   };
+
+  const checkAuthenticate = () => {
+    if (!isAuthenticate()) {
+      snackbar({ type: 'warning', message: '권한이 없습니다, 관리자에게 문의하세요!' });
+      return;
+    }
+    setOpen(true);
+  };
+
+  useGoogleOneTapLogin({
+    onSuccess: (res) => console.log(res),
+  });
 
   useEffect(() => {
     // 현재 월의 일 수
@@ -146,7 +161,10 @@ export default function Month() {
         <Button onClick={nextMonth}>
           <ArrowForwardIosOutlined />
         </Button>
-        <Button variant="outlined" onClick={() => setOpen(true)}>
+        <Button
+          variant="outlined"
+          onClick={checkAuthenticate}
+        >
           예약 확인
         </Button>
       </div>
@@ -166,7 +184,7 @@ export default function Month() {
           {eventList && currentCalendar.map((week) => (
             <TableRow sx={{ width: '100%' }}>
               {week.map((day) => (
-                <CalendarCell today={day.today} date={day.date} data={[...(data || []), ...eventList]} currentMonth={currentMonth} />
+                <CalendarCell today={day.today} date={day.date} data={[...(data || []), ...eventList]} currentMonth={currentMonth} key={day.date} />
               ))}
             </TableRow>
           ))}

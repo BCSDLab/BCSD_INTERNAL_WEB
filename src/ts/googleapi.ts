@@ -2,22 +2,27 @@ import { GOOGLE_API_KEY, GOOGLE_CLIENT_ID } from 'config/constants';
 import { Reservation } from 'model/reservations';
 import { gapi } from 'gapi-script';
 
-const DISCOVERY_DOCS = ['https://www.googleapis.com/discovery/v1/apis/calendar/v3/rest'];
+const DISCOVERY_DOCS = [
+  'https://www.googleapis.com/discovery/v1/apis/calendar/v3/rest',
+];
 const SCOPES = 'https://www.googleapis.com/auth/calendar.events https://www.googleapis.com/auth/calendar';
 
 export const initClient = () => {
   return new Promise<void>((resolve, reject) => {
     gapi.load('client:auth2', () => {
-      gapi.client.init({
-        apiKey: GOOGLE_API_KEY,
-        clientId: GOOGLE_CLIENT_ID,
-        discoveryDocs: DISCOVERY_DOCS,
-        scope: SCOPES,
-      }).then(() => {
-        resolve();
-      }).catch((error) => {
-        reject(error);
-      });
+      gapi.client
+        .init({
+          apiKey: GOOGLE_API_KEY,
+          clientId: GOOGLE_CLIENT_ID,
+          discoveryDocs: DISCOVERY_DOCS,
+          scope: SCOPES,
+        })
+        .then(() => {
+          resolve();
+        })
+        .catch((error) => {
+          reject(error);
+        });
     });
   });
 };
@@ -32,16 +37,19 @@ export const signOut = () => {
 
 export const CALENDAR_ID = 'bcsdlab@gmail.com';
 
-export const listUpcomingEvents = async (currentYear: number, currentMonth: number): Promise<gapi.client.calendar.Event[]> => {
+export const listUpcomingEvents = async (
+  currentYear: number,
+  currentMonth: number,
+): Promise<gapi.client.calendar.Event[]> => {
   try {
     const response = await gapi.client.calendar.events.list({
       calendarId: CALENDAR_ID,
-      timeMin: (new Date(currentYear, currentMonth)).toISOString(),
+      timeMin: new Date(currentYear, currentMonth).toISOString(),
       showDeleted: false,
       singleEvents: true,
       maxResults: 100,
       orderBy: 'startTime',
-      timeMax: (new Date(currentYear, currentMonth + 1)).toISOString(),
+      timeMax: new Date(currentYear, currentMonth + 1).toISOString(),
     });
     return response.result.items || [];
   } catch (error) {
@@ -68,7 +76,9 @@ export const createEvent = async (reservation: Reservation) => {
   return response.result;
 };
 
-export const convertEventToReservation = (event: gapi.client.calendar.Event): Reservation => {
+export const convertEventToReservation = (
+  event: gapi.client.calendar.Event,
+): Reservation => {
   return {
     memberCount: event.attendees?.length || 0,
     reason: event.summary || '-',
@@ -80,7 +90,9 @@ export const convertEventToReservation = (event: gapi.client.calendar.Event): Re
   };
 };
 
-export const convertReservationToEvent = (reservation: Reservation): gapi.client.calendar.Event => {
+export const convertReservationToEvent = (
+  reservation: Reservation,
+): gapi.client.calendar.Event => {
   const startDate = new Date(reservation.startDateTime);
   const endDate = new Date(reservation.endDateTime);
   return {
@@ -94,6 +106,8 @@ export const convertReservationToEvent = (reservation: Reservation): gapi.client
       dateTime: endDate.toISOString(),
       timeZone: 'Asia/Seoul',
     },
-    attendees: reservation.memberCount ? [{ email: reservation.memberName }] : [],
+    attendees: reservation.memberCount
+      ? [{ email: reservation.memberName }]
+      : [],
   };
 };

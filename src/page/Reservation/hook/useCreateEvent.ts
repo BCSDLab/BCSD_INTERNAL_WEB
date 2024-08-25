@@ -10,7 +10,9 @@ export const useCreateEvents = () => {
   const { currentMonth, currentYear } = useDateStore();
   const mutate = useMutation({
     mutationFn: (reservation: Reservation) => createEvent(reservation),
-    onError: (e) => snackBar({ type: 'error', message: e.message }),
+    onError: (e) => {
+      snackBar({ type: 'error', message: e.message });
+    },
     onSuccess: () => {
       snackBar({ type: 'success', message: '예약했습니다! 즐겁게 사용해주세요' });
       queryClient.invalidateQueries({ queryKey: ['calender', currentMonth, currentYear] });

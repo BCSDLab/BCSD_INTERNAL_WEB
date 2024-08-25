@@ -3,6 +3,7 @@ import {
 } from '@mui/material';
 import { useState } from 'react';
 import { useGetCalender } from 'page/Reservation/hook/useGetCalender';
+import { useSnackBar } from 'ts/useSnackBar';
 // eslint-disable-next-line
 import { style } from './MonthModal';
 import DetailInfomation from './DetailInfomation';
@@ -12,11 +13,19 @@ type Alignment = 'information' | 'passed' | 'reservation';
 
 export const useToggleButtonGroup = () => {
   const [alignment, setAlignment] = useState<Alignment>('information');
+  const snackBar = useSnackBar();
 
   const handleChange = (
     event: React.MouseEvent<HTMLElement>,
     newAlignment: Alignment,
   ) => {
+    if (newAlignment === 'reservation') {
+      if (!gapi.auth2.getAuthInstance().currentUser.get().getAuthResponse().access_token) {
+        snackBar({ type: 'error', message: '구글 로그인이 필요한 서비스입니다' });
+        setTimeout(() => gapi.auth2.getAuthInstance().signIn(), 500);
+        return;
+      }
+    }
     if (event.target instanceof HTMLElement) setAlignment(newAlignment);
   };
 

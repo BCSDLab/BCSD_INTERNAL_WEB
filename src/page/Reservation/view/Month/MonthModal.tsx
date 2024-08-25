@@ -4,6 +4,7 @@ import {
 import { useState } from 'react';
 import { HOUR_LIST, MINUTE_LIST } from 'util/constants/time';
 import { useCreateEvents } from 'page/Reservation/hook/useCreateEvent';
+import { useSnackBar } from 'ts/useSnackBar';
 import DetailInfomation from './DetailInfomation';
 // eslint-disable-next-line import/no-cycle
 import { CalendarContent } from '../Month';
@@ -39,6 +40,10 @@ const initialState = {
   endMinute: '00',
 };
 
+export const isAuthenticate = () => {
+  return gapi.auth2.getAuthInstance().currentUser.get().hasGrantedScopes('https://www.googleapis.com/auth/calendar.events');
+};
+
 export default function MonthModal({
   date, today, data, open, handleClose, currentMonth,
 }: ModalContent) {
@@ -52,6 +57,7 @@ export default function MonthModal({
     if (date && nowMonth === currentMonth && date >= currentDate) return true;
     return false;
   };
+  const snackBar = useSnackBar();
 
   const changeMemberCount = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
     // if (!e.target.value) setReserve({ ...reserve, memberCount: 0 });
@@ -61,6 +67,10 @@ export default function MonthModal({
   const changeReason = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => setReserve({ ...reserve, reason: e.target.value });
   const changeDetailedReason = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => setReserve({ ...reserve, detailedReason: e.target.value });
   const postReservation = () => {
+    if (!isAuthenticate()) {
+      snackBar({ type: 'warning', message: '권한이 없습니다. 관리자에게 문의해주세요' });
+      return;
+    }
     if (today
       && reserve.memberCount >= 1
     ) {
