@@ -8,11 +8,12 @@ import {
 import {
   AdminMemberUpdate, MemberCreate, MemberDelete, MemberUpdate,
 } from 'model/member';
-import { AxiosError } from 'axios';
+import axios, { AxiosError } from 'axios';
 import { useNavigate } from 'react-router-dom';
 import { useSnackBar } from 'ts/useSnackBar';
 import { useLoginState } from 'store/loginStore';
 import { PATHS } from 'util/constants/path';
+import { useEffect } from 'react';
 
 interface GetMembers {
   pageIndex: number;
@@ -158,11 +159,21 @@ export const useNotAuthedMember = () => {
 };
 
 export const useGetMe = () => {
-  const { data } = useSuspenseQuery({
+  const navigate = useNavigate();
+  const { deleteMe } = useLoginState();
+  const { data, error } = useSuspenseQuery({
     queryKey: ['me'],
     queryFn: () => getMe(),
   });
 
+  useEffect(() => {
+    if (error && axios.isAxiosError(error)) {
+      if (error.response && error.response.status === 401) {
+        deleteMe();
+        navigate(PATHS.home);
+      }
+    }
+  }, [deleteMe, error, navigate]);
   return { data };
 };
 
