@@ -41,6 +41,7 @@ const initialState = {
 };
 
 export const isAuthenticate = () => {
+  // 캘린더 수정 권한이 있는지 판단
   return gapi.auth2.getAuthInstance().currentUser.get().hasGrantedScopes('https://www.googleapis.com/auth/calendar.events');
 };
 

@@ -22,6 +22,7 @@ export const useToggleButtonGroup = () => {
     if (newAlignment === 'reservation') {
       if (!gapi.auth2.getAuthInstance().currentUser.get().getAuthResponse().access_token) {
         snackBar({ type: 'error', message: '구글 로그인이 필요한 서비스입니다' });
+        // 스낵바 노출 후 로그인창 열기
         setTimeout(() => gapi.auth2.getAuthInstance().signIn(), 500);
         return;
       }
