@@ -97,7 +97,7 @@ const initialValue = {
   email: '',
   password: '',
   githubName: '',
-  birthday: '',
+  birthday: null,
   profileImageUrl: null,
 };
 
