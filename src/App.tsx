@@ -39,7 +39,7 @@ function App() {
           </Suspense>
         )}
       />
-      <Route element={<AuthRoute needAuth redirectRoute={PATHS.accept} />}>
+      <Route element={<AuthRoute needAuth redirectRoute={PATHS.home} />}>
         <Route element={<DefaultLayout />}>
           <Route
             path={PATHS.accept}
