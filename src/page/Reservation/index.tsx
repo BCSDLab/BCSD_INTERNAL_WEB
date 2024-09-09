@@ -18,7 +18,6 @@ function ReservationOutlet() {
   const setDate = ({ year, month }: CurrentPageDate) => {
     setCurrentPageDate({ year, month });
   };
-
   return (
     <div css={S.reservation}>
       <h2 css={S.currentTimeTitle}>{`${currentPageDate.year}년 ${currentPageDate.month}월`}</h2>
