@@ -405,9 +405,13 @@ export default function SignUp() {
           }}
           render={({ field }) =>
             <TextField
+              label="생년월일"
               variant="outlined"
               type="date"
               fullWidth
+              InputLabelProps={{
+                shrink: true,
+              }}
               {...field}
               error={!!errors.birthday}
             />
