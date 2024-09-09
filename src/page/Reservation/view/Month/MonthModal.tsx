@@ -54,6 +54,7 @@ export default function MonthModal({
   const [reserve, setReserve] = useState(initialState);
   const { alignment, handleChange } = useToggleButtonGroup();
   const canReserve = () => {
+    // 이미 지난 날짜는 예약 불가능
     if (currentMonth > nowMonth) return true;
     if (date && nowMonth === currentMonth && date >= currentDate) return true;
     return false;
@@ -75,6 +76,7 @@ export default function MonthModal({
     if (today
       && reserve.memberCount >= 1
     ) {
+      // 필요한 값만 할당
       mutate.mutate({
         memberCount: reserve.memberCount,
         reason: reserve.reason,
