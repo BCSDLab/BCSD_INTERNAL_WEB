@@ -73,7 +73,7 @@ type Member = {
   email: string,
   password: string,
   githubName: string,
-  birthday: string,
+  birthday: string | null,
   profileImageUrl: string | null
 };
 
