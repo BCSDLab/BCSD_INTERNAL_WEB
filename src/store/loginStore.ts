@@ -10,6 +10,7 @@ interface LoginState {
 
 export const useLoginState = create<LoginState>((set) => ({
   me: null,
+
   setMe: async () => {
     if (localStorage.getItem('accessToken')) {
       try {
