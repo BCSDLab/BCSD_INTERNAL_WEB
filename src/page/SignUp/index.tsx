@@ -73,6 +73,7 @@ type Member = {
   email: string,
   password: string,
   githubName: string,
+  birthday: string | null,
   profileImageUrl: string | null
 };
 
@@ -96,6 +97,7 @@ const initialValue = {
   email: '',
   password: '',
   githubName: '',
+  birthday: null,
   profileImageUrl: null,
 };
 
@@ -390,6 +392,28 @@ export default function SignUp() {
               fullWidth
               {...field}
               error={!!errors.department}
+            />
+          }
+        />
+      </div>
+      <div css={S.inputSet}>
+        <Controller
+          name='birthday'
+          control={control}
+          rules={{
+            required: true,
+          }}
+          render={({ field }) =>
+            <TextField
+              label="생년월일"
+              variant="outlined"
+              type="date"
+              fullWidth
+              InputLabelProps={{
+                shrink: true,
+              }}
+              {...field}
+              error={!!errors.birthday}
             />
           }
         />
