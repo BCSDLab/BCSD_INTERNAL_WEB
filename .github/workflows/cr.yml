@@ -21,7 +21,7 @@ jobs:
           LANGUAGE: Korean
           OPENAI_API_ENDPOINT: https://api.openai.com/v1
           MODEL: gpt-4o-mini # https://platform.openai.com/docs/models
-          PROMPT: 다음 코드에서 오류가 있는지 검토하고 개선 사항이 있다면 diff 형식으로 제안해줘. 이때 제안하는 코드블록은 전체코드가 아닌 개선이 필요한 부분만 포함해야해. 리뷰를 할 때 주요 사항과 개선 제안 사항을 간단하게 설명하고 코드 오류를 검토해줘. 개선사항이 어떤 형식인지는 알려주지 않아도 좋아.
+          PROMPT: 다음 코드에서 오류가 있는지 검토하고 개선 사항이 있다면 diff 형식으로 제안해줘. 이때 제안하는 코드블록은 전체코드가 아닌 개선이 필요한 부분만 포함해야해. 리뷰를 할 때 주요 사항과 개선 제안 사항을 간단하게 설명하고 코드 오류를 검토해줘. 개선사항이 어떤 형식인지는 알려주지 않아도 좋아. 단순 주석추가, 수정이 필요하지 않은 내용은 제외해줘.
           top_p: 1 # https://platform.openai.com/docs/api-reference/chat/create#chat/create-top_p
           temperature: 1 # https://platform.openai.com/docs/api-reference/chat/create#chat/create-temperature
           max_tokens: 10000
