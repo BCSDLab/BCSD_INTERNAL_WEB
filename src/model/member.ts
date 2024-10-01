@@ -42,6 +42,7 @@ export interface Member {
   updatedAt: string;
   isAuthed: boolean;
   isDeleted: boolean;
+  isFeeExempt: boolean;
   deleteReason: string;
   birthday: string;
 }
