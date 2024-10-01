@@ -27,7 +27,7 @@ export default function PersonalDues() {
   return (
     <div css={S.container}>
       <div css={S.pagination}>
-        <YearPagination duesYear={duesYear} setDuesYear={setDuesYear} />
+        <YearPagination duesYear={duesYear} setDuesYear={setDuesYear} routeParam="dues" />
       </div>
       <div>
         <div>
