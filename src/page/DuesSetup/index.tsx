@@ -9,6 +9,7 @@ import LoadingSpinner from 'layout/LoadingSpinner';
 import * as Excel from 'exceljs';
 import { useGetMe, useGetMembers } from 'query/members';
 import { useGetAllDues, usePostDues, usePutDues } from 'query/dues';
+import { useSnackBar } from 'ts/useSnackBar';
 import { useReadExcelFile } from './hooks/useReadExcelFile';
 import * as S from './style';
 import { MemberDuesInfo, findMemberDuesInfo } from './hooks/findMemberDuesInfo';
@@ -30,6 +31,7 @@ function DefaultTable() {
 
   const putDuesMutation = usePutDues();
   const postDuesMutation = usePostDues();
+  const openSnackBar = useSnackBar();
 
   const readExcelFile = useReadExcelFile(excelFileRef);
 
@@ -43,7 +45,9 @@ function DefaultTable() {
       });
       setTableBody(updateWorksheetWithDuesInfo(worksheet, unpaidMemberDuesInfo));
     } catch (error) {
-      console.error(error);
+      if (error instanceof Error) {
+        openSnackBar({ type: 'error', message: error.message });
+      }
     }
   };
 
