@@ -1,5 +1,6 @@
 export interface PostJob {
-  memberId: number;
+  memberId?: number;
+  email?: string;
   type: string;
   startYear: number;
   startMonth: number;
