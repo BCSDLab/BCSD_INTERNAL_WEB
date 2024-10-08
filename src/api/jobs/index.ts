@@ -18,9 +18,9 @@ export const putJobs = ({
 };
 
 export const postJobs = ({
-  memberId, type, startYear, startMonth, endYear, endMonth,
+  email, type, startYear, startMonth, endYear, endMonth,
 }: PostJob) => {
-  return accessClient.post<PostJob>(`/jobs?memberId=${memberId}&type=${type}&startYear=${startYear}&startMonth=${startMonth}&endYear=${endYear}&endMonth=${endMonth}`);
+  return accessClient.post<PostJob>(`/jobs?email=${email}&type=${type}&startYear=${startYear}&startMonth=${startMonth}&endYear=${endYear}&endMonth=${endMonth}`);
 };
 
 export const deleteJobs = (jobId: number) => {
