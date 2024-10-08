@@ -246,7 +246,7 @@ function DefaultTable() {
     <>
       <div css={S.searchAndPagination}>
         <div css={S.pagination}>
-          <YearPagination duesYear={duesYear} setDuesYear={setDuesYear} />
+          <YearPagination duesYear={duesYear} setDuesYear={setDuesYear} routeParam="edit-dues" />
         </div>
         <div>
           {(myInfo.authority === 'ADMIN' || myInfo.authority === 'MANAGER') && (

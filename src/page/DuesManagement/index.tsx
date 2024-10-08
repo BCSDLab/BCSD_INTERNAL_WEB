@@ -94,7 +94,7 @@ function DefaultTable() {
       const updatedTrack = [...prevTrack];
       updatedTrack[trackIndex] = !updatedTrack[trackIndex];
       setFilteredValue(allDues.dues.filter((row) => updatedTrack[tracks.map((track) => track.name).indexOf(row.track.name)]
-      && members?.content.some((member) => member.memberType === 'REGULAR' && member.id === row.memberId)));
+        && members?.content.some((member) => member.memberType === 'REGULAR' && member.id === row.memberId)));
       return updatedTrack;
     });
   };
@@ -154,7 +154,7 @@ function DefaultTable() {
     <>
       <div css={S.searchAndPagination}>
         <div css={S.pagination}>
-          <YearPagination duesYear={duesYear} setDuesYear={setDuesYear} />
+          <YearPagination duesYear={duesYear} setDuesYear={setDuesYear} routeParam="dues" />
         </div>
         <div>
           <Input
