@@ -6,11 +6,12 @@ import { useQueryParam } from 'util/hooks/useQueryParam';
 import * as S from './style';
 
 interface YearPaginationProps {
+  pageName: string;
   duesYear: number;
   setDuesYear: React.Dispatch<React.SetStateAction<number>>;
 }
 
-export default function YearPagination({ duesYear, setDuesYear }: YearPaginationProps) {
+export default function YearPagination({ pageName, duesYear, setDuesYear }: YearPaginationProps) {
   const navigate = useNavigate();
   const currentYear = new Date().getFullYear();
   const param = useQueryParam('page');
@@ -20,14 +21,14 @@ export default function YearPagination({ duesYear, setDuesYear }: YearPagination
     // 재학생 회비 내역이 2021년부터 시작하므로 2021년 이전으로 이동할 수 없음
     const prevYear = page ? page + 1 : 2;
     if (prevYear <= currentYear - 2020) {
-      navigate(`/dues?page=${prevYear}`);
+      navigate(`/${pageName}?page=${prevYear}`);
       setDuesYear((prev) => prev - 1);
     }
   };
 
   const goToNextYear = () => {
     if (page && page > 1) {
-      navigate(`/dues?page=${page - 1}`);
+      navigate(`/${pageName}?page=${page - 1}`);
       setDuesYear((prev) => prev + 1);
     }
   };

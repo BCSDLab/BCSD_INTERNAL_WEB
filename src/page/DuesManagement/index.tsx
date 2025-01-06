@@ -154,7 +154,7 @@ function DefaultTable() {
     <>
       <div css={S.searchAndPagination}>
         <div css={S.pagination}>
-          <YearPagination duesYear={duesYear} setDuesYear={setDuesYear} />
+          <YearPagination pageName="dues" duesYear={duesYear} setDuesYear={setDuesYear} />
         </div>
         <div>
           <Input
