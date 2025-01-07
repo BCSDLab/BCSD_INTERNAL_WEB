@@ -57,3 +57,7 @@ export const postSendDues = ({ year, month, explanation }: SendDuesData) => {
 export const postSendDuesByDM = () => {
   return accessClient.post('/dues/send/slack/dues/dm');
 };
+
+export const postDuesSheetSync = () => {
+  return accessClient.post('/dues/sheet-sync');
+};

@@ -1,7 +1,7 @@
-import { useMutation, useSuspenseQuery } from '@tanstack/react-query';
+import { QueryClient, useMutation, useSuspenseQuery } from '@tanstack/react-query';
 import {
   DeleteDuesProps,
-  DuesOptions, NewDuesData, deleteDues, getAllDues, postDues, postSendDues, postSendDuesByDM, putDues,
+  DuesOptions, NewDuesData, deleteDues, getAllDues, postDues, postDuesSheetSync, postSendDues, postSendDuesByDM, putDues,
 } from 'api/dues';
 import { DuesInfo } from 'model/dues/allDues';
 import { useSnackBar } from 'ts/useSnackBar';
@@ -72,4 +72,21 @@ export const usePostSendDuesByDM = () => {
     onSuccess: () => openSnackBar({ type: 'success', message: '회비 내역 메시지를 전송했습니다.' }),
   });
   return postSendDuesByDMMutation;
+};
+
+export const usePostDuesSheetSync = () => {
+  const openSnackBar = useSnackBar();
+  const queryClient = new QueryClient();
+
+  return useMutation({
+    mutationKey: ['postDuesSheetSync'],
+    mutationFn: () => postDuesSheetSync(),
+    onError: (error) => openSnackBar({ type: 'error', message: error.message }),
+    onSuccess: () => {
+      queryClient.invalidateQueries({
+        queryKey: ['dues'],
+      });
+      openSnackBar({ type: 'success', message: '회비 시트 동기화를 완료했습니다.' });
+    },
+  });
 };
