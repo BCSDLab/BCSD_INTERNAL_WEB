@@ -9,19 +9,32 @@ interface AlertModalProps {
   onClose: () => void;
   handleSend: (explanation: string) => void;
   handleSendByDM: () => void;
-  type: 'notice' | 'dm' | undefined;
+  handleSheetSync: () => void;
+  type: 'notice' | 'dm' | 'sheet-sync' | undefined;
 }
 
 export default function AlertModal({
-  open, onClose, handleSend, handleSendByDM, type,
+  open, onClose, handleSend, handleSendByDM, handleSheetSync, type,
 }: AlertModalProps) {
   const [explanation, setExplanation] = useState('');
+
   const handleSubmitNotice = () => {
-    if (type === 'notice') {
-      handleSend(explanation);
-      return;
+    switch (type) {
+      case 'notice':
+        handleSend(explanation);
+        onClose();
+        break;
+      case 'dm':
+        handleSendByDM();
+        onClose();
+        break;
+      case 'sheet-sync':
+        handleSheetSync();
+        onClose();
+        break;
+      default:
+        break;
     }
-    handleSendByDM();
   };
   return (
     <Modal
@@ -29,12 +42,16 @@ export default function AlertModal({
       onClose={onClose}
     >
       <div css={S.modal}>
-        <h2>주의해주세요! 슬랙으로 메시지가 전송됩니다.</h2>
+        {type === 'sheet-sync' ? (
+          <h2>회비 납부 문서와 인터널 회비 내역이 동기화됩니다.</h2>
+        ) : (
+          <h2>주의해주세요! 슬랙으로 메시지가 전송됩니다.</h2>
+        )}
         {type === 'notice' && (
           <TextareaAutosize css={S.noticeInput} placeholder="추가 공지를 작성해주세요" value={explanation} onChange={(e) => setExplanation(e.target.value)} />
         )}
         <div>
-          <Button onClick={handleSubmitNotice}>전송</Button>
+          <Button onClick={handleSubmitNotice}>{type === 'sheet-sync' ? '동기화' : '전송'}</Button>
         </div>
       </div>
     </Modal>
