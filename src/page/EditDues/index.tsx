@@ -19,27 +19,23 @@ import {
 import Modal from "@mui/material/Modal";
 import { ChangeEvent, Suspense, useEffect, useState } from "react";
 import {
-  useDeleteDues,
-  useGetAllDues,
-  usePostDues,
-  usePostDuesSheetSync,
-  usePostSendDues,
-  usePostSendDuesByDM,
-  usePutDues,
-} from "query/dues";
-import useBooleanState from "util/hooks/useBooleanState.ts";
-import { STATUS_MAPPING } from "util/constants/status";
-import { useGetTracks } from "query/tracks";
-import LoadingSpinner from "layout/LoadingSpinner";
-import { ArrowDownward, ArrowUpward, Sort } from "@mui/icons-material";
-import { useQueryParam } from "util/hooks/useQueryParam";
-import { useSnackBar } from "ts/useSnackBar";
-import makeNumberArray from "util/hooks/makeNumberArray";
-import { NewDuesData } from "api/dues";
-import { useGetMe, useGetMembers } from "query/members";
-import YearPagination from "component/YearPagination";
-import * as S from "./style";
-import AlertModal from "./components/AlertModal";
+  useDeleteDues, useGetAllDues, usePostDues, usePostDuesSheetSync, usePostSendDues, usePostSendDuesByDM, usePutDues,
+} from 'query/dues';
+import useBooleanState from 'util/hooks/useBooleanState.ts';
+import { STATUS_MAPPING } from 'util/constants/status';
+import { useGetTracks } from 'query/tracks';
+import LoadingSpinner from 'layout/LoadingSpinner';
+import {
+  ArrowDownward, ArrowUpward, Sort,
+} from '@mui/icons-material';
+import { useQueryParam } from 'util/hooks/useQueryParam';
+import { useSnackBar } from 'ts/useSnackBar';
+import makeNumberArray from 'util/hooks/makeNumberArray';
+import { NewDuesData } from 'api/dues';
+import { useGetMe, useGetMembers } from 'query/members';
+import YearPagination from 'component/YearPagination';
+import * as S from './style';
+import AlertModal from './components/AlertModal';
 
 type Status = "PAID" | "NOT_PAID" | "SKIP" | "NONE";
 
@@ -48,7 +44,7 @@ interface SortAnchorEl {
   unpaidCount: null | HTMLElement;
 }
 
-type NoticeType = "notice" | "dm" | "sheet-sync";
+type NoticeType = 'notice' | 'dm' | 'sheet-sync';
 
 function DefaultTable() {
   const param = useQueryParam("page");
@@ -361,27 +357,15 @@ function DefaultTable() {
     <>
       <div css={S.searchAndPagination}>
         <div css={S.pagination}>
-          <YearPagination
-            pageName="edit-dues"
-            duesYear={duesYear}
-            setDuesYear={setDuesYear}
-          />
+          <YearPagination pageName="edit-dues" duesYear={duesYear} setDuesYear={setDuesYear} />
         </div>
         <div>
           {(myInfo.authority === "ADMIN" || myInfo.authority === "MANAGER") && (
             <>
-              <Button
-                css={S.noticeButton}
-                name="sheet-sync"
-                onClick={(e) => handleOpenNoticeModal(e)}
-              >
+              <Button css={S.noticeButton} name="sheet-sync" onClick={(e) => handleOpenNoticeModal(e)}>
                 회비 내역 동기화
               </Button>
-              <Button
-                css={S.noticeButton}
-                name="notice"
-                onClick={(e) => handleOpenNoticeModal(e)}
-              >
+              <Button css={S.noticeButton} name="notice" onClick={(e) => handleOpenNoticeModal(e)}>
                 회비 공지하기
               </Button>
               <Button
