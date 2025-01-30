@@ -7,43 +7,31 @@ import {
 } from 'react';
 import LoadingSpinner from 'layout/LoadingSpinner';
 import * as Excel from 'exceljs';
-import { useGetMe, useGetMembers } from 'query/members';
-import { useGetAllDues, usePostDues, usePutDues } from 'query/dues';
+import { useGetMe } from 'query/members';
 import { useSnackBar } from 'ts/useSnackBar';
 import { useReadExcelFile } from './hooks/useReadExcelFile';
 import * as S from './style';
-import { MemberDuesInfo, findMemberDuesInfo } from './hooks/findMemberDuesInfo';
-import { updateWorksheetWithDuesInfo } from './hooks/updateWorksheetwithDuesInfo';
-import { updateDues } from './hooks/updateDues';
+import { useWorkflowPipeline } from './hooks/useWorkflowPipeline';
+
+const tableHead = ['No', '거래 일시', '입금액', '출금액', '이름', '잔액', '비고'];
 
 function DefaultTable() {
-  const currentYear = new Date().getFullYear();
-  const excelFileRef = useRef<HTMLInputElement>(null);
-  const tableHead = ['No', '거래 일시', '입금액', '출금액', '이름', '잔액', '비고', '현재 미납한 날짜'];
   const [tableBody, setTableBody] = useState<Excel.CellValue[][]>(Array.from({ length: tableHead.length }).map(() => []));
   const [buttonDisabled, setButtonDisabled] = useState(true);
-  let unpaidMemberDuesInfo: MemberDuesInfo[] = [];
+  const excelFileRef = useRef<HTMLInputElement>(null);
 
   const { data: getMe } = useGetMe();
-  const { data: members } = useGetMembers({ pageIndex: 0, pageSize: 1000, trackId: null });
-  const { data: prevYearDues } = useGetAllDues({ year: currentYear - 1 });
-  const { data: currentYearDues } = useGetAllDues({ year: currentYear });
 
-  const putDuesMutation = usePutDues();
-  const postDuesMutation = usePostDues();
   const openSnackBar = useSnackBar();
-
   const readExcelFile = useReadExcelFile(excelFileRef);
+  const { runWorkflow } = useWorkflowPipeline({ excelFileRef });
 
   const handleFileUpload = async () => {
     try {
       const worksheet = await readExcelFile();
       if (worksheet === null) return;
       setButtonDisabled(false);
-      unpaidMemberDuesInfo = findMemberDuesInfo({
-        worksheet, members, prevYearDues, currentYearDues,
-      });
-      setTableBody(updateWorksheetWithDuesInfo(worksheet, unpaidMemberDuesInfo));
+      setTableBody(worksheet.filter((_, index) => index > 0));
     } catch (error) {
       if (error instanceof Error) {
         openSnackBar({ type: 'error', message: error.message });
@@ -53,9 +41,7 @@ function DefaultTable() {
 
   const handleCreateDues = () => {
     if (getMe.authority === 'MANAGER') {
-      updateDues({
-        worksheet: tableBody, members, unpaidMemberDuesInfo, currentYearDues, putDuesMutation, postDuesMutation,
-      });
+      runWorkflow();
     }
   };
 
