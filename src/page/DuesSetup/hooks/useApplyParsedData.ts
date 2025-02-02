@@ -1,5 +1,5 @@
 import { DuesInfo } from 'model/dues/allDues';
-import { useGetAllDues, usePostDues } from 'query/dues';
+import { useGetAllDues, usePostDues, usePutDues } from 'query/dues';
 import { useGetMembers } from 'query/members';
 
 interface ParseExcelData {
@@ -79,6 +79,7 @@ export function useApplyParsedData() {
   const { data: currentYearDues } = useGetAllDues({ year: currentYear });
   const { data: members } = useGetMembers({ pageIndex: 0, pageSize: 1000, trackId: null });
   const duesMutation = usePostDues();
+  const duesChangeMutation = usePutDues();
 
   const applyFeeStatus = (parseExcelData: ParseExcelData[]) => {
     const parseExcelDataWithUnpaidMonth = findUnpaidMonth({ prevYearDues, currentYearDues, parseExcelData });
@@ -89,7 +90,7 @@ export function useApplyParsedData() {
         Array.from({ length: member.duesCount }).forEach((_, index) => {
           const month = ((member.unpaidMonth - 1 + index) % 12) + 1;
           const year = member.unpaidMonth + index >= 12 ? member.unpaidYear + 1 : member.unpaidYear;
-          duesMutation.mutate({
+          duesChangeMutation.mutate({
             memberId: member.memberId,
             year,
             month,
