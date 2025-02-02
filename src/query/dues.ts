@@ -16,12 +16,18 @@ export const useGetAllDues = ({ year, track }: DuesOptions) => {
 
 export const usePostDues = () => {
   const openSnackBar = useSnackBar();
+  const queryClient = new QueryClient();
 
   const postDuesMutation = useMutation({
     mutationKey: ['postDues'],
     mutationFn: (data: NewDuesData) => postDues(data),
     onError: (error) => openSnackBar({ type: 'error', message: error.message }),
-    onSuccess: () => openSnackBar({ type: 'success', message: '회비 내역이 수정되었습니다.' }),
+    onSuccess: () => {
+      queryClient.invalidateQueries({
+        queryKey: ['dues'],
+      });
+      openSnackBar({ type: 'success', message: '회비 내역이 수정되었습니다.' });
+    },
   });
   return postDuesMutation;
 };

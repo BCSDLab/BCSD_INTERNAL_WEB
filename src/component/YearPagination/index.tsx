@@ -1,4 +1,7 @@
-import { ArrowBackIosNewOutlined, ArrowForwardIosOutlined } from '@mui/icons-material';
+import {
+  ArrowBackIosNewOutlined,
+  ArrowForwardIosOutlined,
+} from '@mui/icons-material';
 import { Button } from '@mui/material';
 import { useNavigate } from 'react-router-dom';
 import { LAST_DUES_YEAR } from 'util/constants/status';
