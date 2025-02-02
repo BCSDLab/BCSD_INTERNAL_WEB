@@ -1,9 +1,9 @@
-import Table from "@mui/material/Table";
-import TableBody from "@mui/material/TableBody";
-import TableCell from "@mui/material/TableCell";
-import TableContainer from "@mui/material/TableContainer";
-import TableHead from "@mui/material/TableHead";
-import TableRow from "@mui/material/TableRow";
+import Table from '@mui/material/Table';
+import TableBody from '@mui/material/TableBody';
+import TableCell from '@mui/material/TableCell';
+import TableContainer from '@mui/material/TableContainer';
+import TableHead from '@mui/material/TableHead';
+import TableRow from '@mui/material/TableRow';
 import {
   Button,
   Checkbox,
@@ -15,9 +15,11 @@ import {
   Popover,
   Radio,
   RadioGroup,
-} from "@mui/material";
-import Modal from "@mui/material/Modal";
-import { ChangeEvent, Suspense, useEffect, useState } from "react";
+} from '@mui/material';
+import Modal from '@mui/material/Modal';
+import {
+  ChangeEvent, Suspense, useEffect, useState,
+} from 'react';
 import {
   useDeleteDues, useGetAllDues, usePostDues, usePostDuesSheetSync, usePostSendDues, usePostSendDuesByDM, usePutDues,
 } from 'query/dues';
@@ -37,7 +39,7 @@ import YearPagination from 'component/YearPagination';
 import * as S from './style';
 import AlertModal from './components/AlertModal';
 
-type Status = "PAID" | "NOT_PAID" | "SKIP" | "NONE";
+type Status = 'PAID' | 'NOT_PAID' | 'SKIP' | 'NONE';
 
 interface SortAnchorEl {
   name: null | HTMLElement;
@@ -47,13 +49,13 @@ interface SortAnchorEl {
 type NoticeType = 'notice' | 'dm' | 'sheet-sync';
 
 function DefaultTable() {
-  const param = useQueryParam("page");
+  const param = useQueryParam('page');
   const page = Number(param);
   const currentYear = new Date().getFullYear();
   const [duesYear, setDuesYear] = useState(
-    page ? currentYear - page + 1 : currentYear
+    page ? currentYear - page + 1 : currentYear,
   );
-  const [memberName, setMemberName] = useState("");
+  const [memberName, setMemberName] = useState('');
   const {
     value: isFilterModalOpen,
     setTrue: openFilterModal,
@@ -69,9 +71,9 @@ function DefaultTable() {
     memberId: 0,
     month: 0,
     status: null,
-    memo: "",
+    memo: '',
   });
-  const [status, setStatus] = useState<Status>("PAID");
+  const [status, setStatus] = useState<Status>('PAID');
   const [sortAnchorEl, setSortAnchorEl] = useState<SortAnchorEl>({
     name: null,
     unpaidCount: null,
@@ -82,7 +84,7 @@ function DefaultTable() {
     setFalse: closeNoticeModal,
   } = useBooleanState(false);
   const [noticeType, setNoticeType] = useState<NoticeType | undefined>(
-    undefined
+    undefined,
   );
 
   const openSnackBar = useSnackBar();
@@ -95,12 +97,9 @@ function DefaultTable() {
   });
   const { data: myInfo } = useGetMe();
   const [filteredValue, setFilteredValue] = useState(
-    allDues.dues.filter((row) =>
-      members?.content.some(
-        (member) =>
-          member.memberType === "REGULAR" && member.id === row.memberId
-      )
-    )
+    allDues.dues.filter((row) => members?.content.some(
+      (member) => member.memberType === 'REGULAR' && member.id === row.memberId,
+    )),
   );
 
   const { data: tracks } = useGetTracks();
@@ -114,28 +113,23 @@ function DefaultTable() {
 
   const handleNameChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const searchName = e.target.value;
-    if (searchName === "") {
+    if (searchName === '') {
       if (trackFilter.every((value) => value)) {
         setFilteredValue(
-          allDues.dues.filter((row) =>
-            members?.content.some(
-              (member) =>
-                member.memberType === "REGULAR" && member.id === row.memberId
-            )
-          )
+          allDues.dues.filter((row) => members?.content.some(
+            (member) => member.memberType === 'REGULAR' && member.id === row.memberId,
+          )),
         );
       } else {
         setFilteredValue(
           allDues.dues.filter(
-            (row) =>
-              members?.content.some(
-                (member) =>
-                  member.memberType === "REGULAR" && member.id === row.memberId
-              ) &&
-              trackFilter[
+            (row) => members?.content.some(
+              (member) => member.memberType === 'REGULAR' && member.id === row.memberId,
+            )
+              && trackFilter[
                 tracks.map((track) => track.name).indexOf(row.track.name)
-              ]
-          )
+              ],
+          ),
         );
       }
     }
@@ -146,48 +140,43 @@ function DefaultTable() {
     if (filteredValue.some((row) => row.name.includes(memberName))) {
       setFilteredValue(
         allDues.dues.filter(
-          (row) =>
-            row.name.includes(memberName) &&
-            members?.content.some(
-              (member) =>
-                member.memberType === "REGULAR" && member.id === row.memberId
-            )
-        )
+          (row) => row.name.includes(memberName)
+            && members?.content.some(
+              (member) => member.memberType === 'REGULAR' && member.id === row.memberId,
+            ),
+        ),
       );
     } else {
       openSnackBar({
-        type: "error",
-        message: "해당 이름을 가진 회원이 없습니다.",
+        type: 'error',
+        message: '해당 이름을 가진 회원이 없습니다.',
       });
     }
   };
 
   const handleNameSearchKeyDown = (
-    e: React.KeyboardEvent<HTMLInputElement>
+    e: React.KeyboardEvent<HTMLInputElement>,
   ) => {
-    if (e.key === "Enter") {
+    if (e.key === 'Enter') {
       handleNameSearchClick();
     }
   };
 
   const handleTrackFilterChange = (e: ChangeEvent<HTMLInputElement>) => {
     const selectedTrack = e.target.name;
-    const trackIndex =
-      tracks.filter((track) => track.name === selectedTrack)[0].id - 1;
+    const trackIndex = tracks.filter((track) => track.name === selectedTrack)[0].id - 1;
     setTrackFilter((prevTrack) => {
       const updatedTrack = [...prevTrack];
       updatedTrack[trackIndex] = !updatedTrack[trackIndex];
       setFilteredValue(
         allDues.dues.filter(
-          (row) =>
-            updatedTrack[
-              tracks.map((track) => track.name).indexOf(row.track.name)
-            ] &&
-            members?.content.some(
-              (member) =>
-                member.memberType === "REGULAR" && member.id === row.memberId
-            )
-        )
+          (row) => updatedTrack[
+            tracks.map((track) => track.name).indexOf(row.track.name)
+          ]
+            && members?.content.some(
+              (member) => member.memberType === 'REGULAR' && member.id === row.memberId,
+            ),
+        ),
       );
       return updatedTrack;
     });
@@ -210,18 +199,18 @@ function DefaultTable() {
       .find((row) => row.memberId === requiredData.memberId)
       ?.detail.find((detail) => detail.month === requiredData.month)?.status;
     if (
-      prevStatus !== status ||
-      (prevStatus === status && requiredData.memo !== "")
+      prevStatus !== status
+      || (prevStatus === status && requiredData.memo !== '')
     ) {
       if (prevStatus === null) {
         postDuesMutation.mutate({
           year: requiredData.year,
           memberId: requiredData.memberId,
           month: requiredData.month,
-          status: status === "NONE" ? null : status,
+          status: status === 'NONE' ? null : status,
           memo: requiredData.memo,
         });
-      } else if (status !== "NONE") {
+      } else if (status !== 'NONE') {
         putDuesMutation.mutate({
           year: requiredData.year,
           memberId: requiredData.memberId,
@@ -230,7 +219,7 @@ function DefaultTable() {
           memo: requiredData.memo,
         });
       }
-      if (status === "NONE") {
+      if (status === 'NONE') {
         deleteDuesMutation.mutate({
           year: requiredData.year,
           memberId: requiredData.memberId,
@@ -238,10 +227,10 @@ function DefaultTable() {
         });
       }
     }
-    if (prevStatus === status && requiredData.memo === "") {
+    if (prevStatus === status && requiredData.memo === '') {
       openSnackBar({
-        type: "info",
-        message: "이전 상태와 같은 상태로 변경할 수 없습니다.",
+        type: 'info',
+        message: '이전 상태와 같은 상태로 변경할 수 없습니다.',
       });
     } else {
       closeEditStatusModal();
@@ -252,12 +241,9 @@ function DefaultTable() {
   useEffect(() => {
     if (allDues.dues) {
       setFilteredValue(
-        allDues.dues.filter((row) =>
-          members?.content.some(
-            (member) =>
-              member.memberType === "REGULAR" && member.id === row.memberId
-          )
-        )
+        allDues.dues.filter((row) => members?.content.some(
+          (member) => member.memberType === 'REGULAR' && member.id === row.memberId,
+        )),
       );
     }
   }, [allDues.dues, members?.content]);
@@ -265,18 +251,15 @@ function DefaultTable() {
   // API 호출 성공 시, 데이터를 다시 불러옴
   useEffect(() => {
     if (
-      postDuesMutation.isSuccess ||
-      putDuesMutation.isSuccess ||
-      deleteDuesMutation.isSuccess
+      postDuesMutation.isSuccess
+      || putDuesMutation.isSuccess
+      || deleteDuesMutation.isSuccess
     ) {
       refetch();
       setFilteredValue(
-        allDues.dues.filter((row) =>
-          members?.content.some(
-            (member) =>
-              member.memberType === "REGULAR" && member.id === row.memberId
-          )
-        )
+        allDues.dues.filter((row) => members?.content.some(
+          (member) => member.memberType === 'REGULAR' && member.id === row.memberId,
+        )),
       );
     }
   }, [
@@ -303,30 +286,26 @@ function DefaultTable() {
   };
 
   const sortInAscendingOrderByUnpaidCount = () => {
-    setFilteredValue((prevValue) =>
-      prevValue.sort((a, b) => {
-        if (a.unpaidCount > b.unpaidCount) return 1;
-        if (a.unpaidCount < b.unpaidCount) return -1;
+    setFilteredValue((prevValue) => prevValue.sort((a, b) => {
+      if (a.unpaidCount > b.unpaidCount) return 1;
+      if (a.unpaidCount < b.unpaidCount) return -1;
 
-        if (a.name.localeCompare(b.name) > 0) return 1;
-        if (a.name.localeCompare(b.name) < 0) return -1;
-        return 0;
-      })
-    );
+      if (a.name.localeCompare(b.name) > 0) return 1;
+      if (a.name.localeCompare(b.name) < 0) return -1;
+      return 0;
+    }));
     setSortAnchorEl((prev) => ({ ...prev, unpaidCount: null }));
   };
 
   const sortInDescendingOrderByUnpaidCount = () => {
-    setFilteredValue((prevValue) =>
-      prevValue.sort((a, b) => {
-        if (a.unpaidCount < b.unpaidCount) return 1;
-        if (a.unpaidCount > b.unpaidCount) return -1;
+    setFilteredValue((prevValue) => prevValue.sort((a, b) => {
+      if (a.unpaidCount < b.unpaidCount) return 1;
+      if (a.unpaidCount > b.unpaidCount) return -1;
 
-        if (a.name.localeCompare(b.name) > 0) return 1;
-        if (a.name.localeCompare(b.name) < 0) return -1;
-        return 0;
-      })
-    );
+      if (a.name.localeCompare(b.name) > 0) return 1;
+      if (a.name.localeCompare(b.name) < 0) return -1;
+      return 0;
+    }));
     setSortAnchorEl((prev) => ({ ...prev, unpaidCount: null }));
   };
 
@@ -360,7 +339,7 @@ function DefaultTable() {
           <YearPagination pageName="edit-dues" duesYear={duesYear} setDuesYear={setDuesYear} />
         </div>
         <div>
-          {(myInfo.authority === "ADMIN" || myInfo.authority === "MANAGER") && (
+          {(myInfo.authority === 'ADMIN' || myInfo.authority === 'MANAGER') && (
             <>
               <Button css={S.noticeButton} name="sheet-sync" onClick={(e) => handleOpenNoticeModal(e)}>
                 회비 내역 동기화
@@ -428,13 +407,13 @@ function DefaultTable() {
                               {tracks.map((track, index) => (
                                 <FormControlLabel
                                   key={track.id}
-                                  control={
+                                  control={(
                                     <Checkbox
                                       checked={trackFilter[index]}
                                       onChange={handleTrackFilterChange}
                                       name={track.name}
                                     />
-                                  }
+                                  )}
                                   label={track.name}
                                 />
                               ))}
@@ -449,12 +428,10 @@ function DefaultTable() {
                   <span>미납 횟수</span>
                   <Button
                     type="button"
-                    onClick={(e) =>
-                      setSortAnchorEl((prev) => ({
-                        ...prev,
-                        unpaidCount: e.currentTarget,
-                      }))
-                    }
+                    onClick={(e) => setSortAnchorEl((prev) => ({
+                      ...prev,
+                      unpaidCount: e.currentTarget,
+                    }))}
                     css={S.filterModalButton}
                   >
                     <Sort css={S.sortLogo} />
@@ -463,15 +440,13 @@ function DefaultTable() {
                     id="simple-popover"
                     open={Boolean(sortAnchorEl.unpaidCount)}
                     anchorEl={sortAnchorEl.unpaidCount}
-                    onClose={() =>
-                      setSortAnchorEl((prev) => ({
-                        ...prev,
-                        unpaidCount: null,
-                      }))
-                    }
+                    onClose={() => setSortAnchorEl((prev) => ({
+                      ...prev,
+                      unpaidCount: null,
+                    }))}
                     anchorOrigin={{
-                      vertical: "bottom",
-                      horizontal: "left",
+                      vertical: 'bottom',
+                      horizontal: 'left',
                     }}
                   >
                     <div css={S.sortPopover}>
@@ -502,12 +477,10 @@ function DefaultTable() {
                     <span>이름</span>
                     <Button
                       type="button"
-                      onClick={(e) =>
-                        setSortAnchorEl((prev) => ({
-                          ...prev,
-                          name: e.currentTarget,
-                        }))
-                      }
+                      onClick={(e) => setSortAnchorEl((prev) => ({
+                        ...prev,
+                        name: e.currentTarget,
+                      }))}
                       css={S.filterModalButton}
                     >
                       <Sort css={S.sortLogo} />
@@ -516,12 +489,10 @@ function DefaultTable() {
                       id="simple-popover"
                       open={Boolean(sortAnchorEl.name)}
                       anchorEl={sortAnchorEl.name}
-                      onClose={() =>
-                        setSortAnchorEl((prev) => ({ ...prev, name: null }))
-                      }
+                      onClose={() => setSortAnchorEl((prev) => ({ ...prev, name: null }))}
                       anchorOrigin={{
-                        vertical: "bottom",
-                        horizontal: "left",
+                        vertical: 'bottom',
+                        horizontal: 'left',
                       }}
                     >
                       <div css={S.sortPopover}>
@@ -550,7 +521,8 @@ function DefaultTable() {
                 </TableCell>
                 {makeNumberArray(12, { start: 1 }).map((month) => (
                   <TableCell key={month} css={S.tableHeader}>
-                    {month}월
+                    {month}
+                    월
                   </TableCell>
                 ))}
               </TableRow>
@@ -564,14 +536,12 @@ function DefaultTable() {
                   {row.detail.map((dueDetail) => (
                     <TableCell
                       css={S.memoTableCell(dueDetail)}
-                      onClick={() =>
-                        handleEditStatusModalOpen(dueDetail.month, row.memberId)
-                      }
+                      onClick={() => handleEditStatusModalOpen(dueDetail.month, row.memberId)}
                       key={dueDetail.month}
                     >
                       {dueDetail.status !== null
                         ? STATUS_MAPPING[dueDetail.status]
-                        : "-"}
+                        : '-'}
                     </TableCell>
                   ))}
                 </TableRow>
@@ -617,16 +587,14 @@ function DefaultTable() {
                             control={<Radio />}
                             label="상태 없음"
                           />
-                          {(status === "NOT_PAID" || status === "SKIP") && (
+                          {(status === 'NOT_PAID' || status === 'SKIP') && (
                             <Input
                               css={S.memoInput}
                               value={requiredData.memo}
-                              onChange={(e) =>
-                                setRequiredData((prev) => ({
-                                  ...prev,
-                                  memo: e.target.value,
-                                }))
-                              }
+                              onChange={(e) => setRequiredData((prev) => ({
+                                ...prev,
+                                memo: e.target.value,
+                              }))}
                               placeholder="면제 혹은 미납의 사유를 입력하세요(공백 가능)"
                             />
                           )}

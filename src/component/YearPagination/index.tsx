@@ -1,12 +1,12 @@
 import {
   ArrowBackIosNewOutlined,
   ArrowForwardIosOutlined,
-} from "@mui/icons-material";
-import { Button } from "@mui/material";
-import { useNavigate } from "react-router-dom";
-import { LAST_DUES_YEAR } from "util/constants/status";
-import { useQueryParam } from "util/hooks/useQueryParam";
-import * as S from "./style";
+} from '@mui/icons-material';
+import { Button } from '@mui/material';
+import { useNavigate } from 'react-router-dom';
+import { LAST_DUES_YEAR } from 'util/constants/status';
+import { useQueryParam } from 'util/hooks/useQueryParam';
+import * as S from './style';
 
 interface YearPaginationProps {
   pageName: string;
@@ -17,7 +17,7 @@ interface YearPaginationProps {
 export default function YearPagination({ pageName, duesYear, setDuesYear }: YearPaginationProps) {
   const navigate = useNavigate();
   const currentYear = new Date().getFullYear();
-  const param = useQueryParam("page");
+  const param = useQueryParam('page');
   const page = Number(param);
 
   const goToPrevYear = () => {
