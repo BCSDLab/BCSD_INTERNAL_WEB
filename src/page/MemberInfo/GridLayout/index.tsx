@@ -22,9 +22,10 @@ export const Item = styled(Paper)(({ theme }) => ({
 
 interface ListLayoutProps {
   deleteMemberChecked: boolean;
+  inactiveMemberChecked: boolean;
 }
 
-export default function GridLayout({ deleteMemberChecked }: ListLayoutProps) {
+export default function GridLayout({ deleteMemberChecked, inactiveMemberChecked }: ListLayoutProps) {
   const { id } = useTrackStore();
   const { data: members } = useGetMembers({ pageIndex: 0, pageSize: 1000, trackId: id });
   const [modalOpen, setModalOpen] = useState(false);
@@ -115,72 +116,74 @@ export default function GridLayout({ deleteMemberChecked }: ListLayoutProps) {
                 </Item>
               </Grid>
             ))
-            : members?.content.map((member: Member) => (
-              <Grid item xs={3} key={member.id}>
-                <Item
-                  css={S.memberContainer}
-                  onClick={() => {
-                    setMemberInfo(member);
-                    handleOpenModal();
-                  }}
-                >
-                  <div css={S.memberWrapper}>
-                    <div css={S.imageNameWrapper}>
-                      <img css={S.image} src={member.profileImageUrl || URLS.defaultProfile} alt="profile" />
-                      <div css={S.name}>{member.name}</div>
-                    </div>
-                    <div>
-                      <div css={S.memberInfoLabel}>
-                        상태
+            : members?.content
+              .filter((member: Member) => (inactiveMemberChecked ? !member.isActive : member.isActive))
+              .map((member: Member) => (
+                <Grid item xs={3} key={member.id}>
+                  <Item
+                    css={S.memberContainer}
+                    onClick={() => {
+                      setMemberInfo(member);
+                      handleOpenModal();
+                    }}
+                  >
+                    <div css={S.memberWrapper}>
+                      <div css={S.imageNameWrapper}>
+                        <img css={S.image} src={member.profileImageUrl || URLS.defaultProfile} alt="profile" />
+                        <div css={S.name}>{member.name}</div>
                       </div>
-                      {STATUS_LABEL[member.status as keyof typeof STATUS_LABEL]}
-                    </div>
-                    <div>
-                      <div css={S.memberInfoLabel}>
-                        직위
+                      <div>
+                        <div css={S.memberInfoLabel}>
+                          상태
+                        </div>
+                        {STATUS_LABEL[member.status as keyof typeof STATUS_LABEL]}
                       </div>
-                      {member.memberType}
-                    </div>
-                    <div>
-                      <div css={S.memberInfoLabel}>
-                        트랙
+                      <div>
+                        <div css={S.memberInfoLabel}>
+                          직위
+                        </div>
+                        {member.memberType}
                       </div>
-                      {member.track.name}
-                    </div>
-                    <div>
-                      <div css={S.memberInfoLabel}>
-                        학번
+                      <div>
+                        <div css={S.memberInfoLabel}>
+                          트랙
+                        </div>
+                        {member.track.name}
                       </div>
-                      {member.studentNumber}
-                    </div>
-                    <div>
-                      <div css={S.memberInfoLabel}>
-                        소속
+                      <div>
+                        <div css={S.memberInfoLabel}>
+                          학번
+                        </div>
+                        {member.studentNumber}
                       </div>
-                      {member.company}
-                    </div>
-                    <div>
-                      <div css={S.memberInfoLabel}>
-                        학부
+                      <div>
+                        <div css={S.memberInfoLabel}>
+                          소속
+                        </div>
+                        {member.company}
                       </div>
-                      {member.department}
-                    </div>
-                    <div>
-                      <div css={S.memberInfoLabel}>
-                        전화번호
+                      <div>
+                        <div css={S.memberInfoLabel}>
+                          학부
+                        </div>
+                        {member.department}
                       </div>
-                      {member.phoneNumber}
-                    </div>
-                    <div>
-                      <div css={S.memberInfoLabel}>
-                        이메일
+                      <div>
+                        <div css={S.memberInfoLabel}>
+                          전화번호
+                        </div>
+                        {member.phoneNumber}
                       </div>
-                      <div css={S.memberInfoLabelSmall}>{member.email}</div>
+                      <div>
+                        <div css={S.memberInfoLabel}>
+                          이메일
+                        </div>
+                        <div css={S.memberInfoLabelSmall}>{member.email}</div>
+                      </div>
                     </div>
-                  </div>
-                </Item>
-              </Grid>
-            ))}
+                  </Item>
+                </Grid>
+              ))}
         </Grid>
       </div>
       <MemberInfoModal

@@ -2,21 +2,24 @@ import { useState } from 'react';
 import { DataGrid, GridColDef } from '@mui/x-data-grid';
 import { useGetMe, useGetMembers, useGetMembersDeleted } from 'query/members';
 import { useTrackStore } from 'store/trackStore';
-import { Button } from '@mui/material';
+import { Button, Switch } from '@mui/material';
 import MemberInfoModal from 'component/modal/memberInfoModal';
 import { Member, STATUS_LABEL } from 'model/member';
+import { useUpdateMemberActive } from 'query/admin';
 
 interface ListLayoutProps {
   deleteMemberChecked: boolean;
+  inactiveMemberChecked: boolean;
 }
 
-export default function ListLayout({ deleteMemberChecked }: ListLayoutProps) {
+export default function ListLayout({ deleteMemberChecked, inactiveMemberChecked }: ListLayoutProps) {
   const { id } = useTrackStore();
   const { data: members } = useGetMembers({ pageIndex: 0, pageSize: 1000, trackId: id });
   const { data: membersDeleted } = useGetMembersDeleted({
     pageIndex: 0, pageSize: 1000, trackId: id,
   });
   const { data: getMe } = useGetMe();
+  const { mutate: updateMemberActive } = useUpdateMemberActive();
   const [modalOpen, setModalOpen] = useState(false);
   const [memberInfo, setMemberInfo] = useState<Member | null>(null);
   const memberAuthority = getMe.authority;
@@ -61,6 +64,21 @@ export default function ListLayout({ deleteMemberChecked }: ListLayoutProps) {
         ) : data.row.deleteReason
       ),
     },
+    ...((memberAuthority === 'ADMIN') || (memberAuthority === 'MANAGER') ? [{
+      field: 'isActive',
+      headerName: '활동 여부',
+      width: 100,
+      renderCell: (data: { row: Member }) => (
+        <Switch
+          checked={data.row.isActive}
+          onChange={(event) => {
+            event.stopPropagation();
+            updateMemberActive({ memberId: data.row.id, isActive: !data.row.isActive });
+          }}
+          size="small"
+        />
+      ),
+    }] : []),
   ];
 
   return (
@@ -74,12 +92,14 @@ export default function ListLayout({ deleteMemberChecked }: ListLayoutProps) {
                 trackName: member.track.name,
                 track: member.track,
               }))
-              : members.content.map((member) => ({
-                ...member,
-                status: STATUS_LABEL[member.status as keyof typeof STATUS_LABEL],
-                trackName: member.track.name,
-                track: member.track,
-              }))
+              : members.content
+                .filter((member) => (inactiveMemberChecked ? !member.isActive : member.isActive))
+                .map((member) => ({
+                  ...member,
+                  status: STATUS_LABEL[member.status as keyof typeof STATUS_LABEL],
+                  trackName: member.track.name,
+                  track: member.track,
+                }))
           }
         columns={columns}
         initialState={{

@@ -16,12 +16,17 @@ import TrackFilter from './TrackFilter';
 export default function MemberInfo() {
   const [layout, setLayout] = useState('list');
   const [deleteMemberChecked, setDeleteMemberChecked] = useState(false);
+  const [inactiveMemberChecked, setInactiveMemberChecked] = useState(false);
   const [memberCreateModalOpen, setMemberCreateModalOpen] = useState(false);
   const { data: getMe } = useGetMe();
   const memberAuthority = getMe.authority;
 
   const handleChangedDeleteMember = (event: React.ChangeEvent<HTMLInputElement>) => {
     setDeleteMemberChecked(event.target.checked);
+  };
+
+  const handleChangedInactiveMember = (event: React.ChangeEvent<HTMLInputElement>) => {
+    setInactiveMemberChecked(event.target.checked);
   };
 
   const handleOpenMemberCreateModal = () => {
@@ -58,10 +63,11 @@ export default function MemberInfo() {
         </div>
         <div css={S.viewContent}>
           <Suspense fallback={<div />}>
-            {layout === 'list' ? <ListLayout deleteMemberChecked={deleteMemberChecked} /> : <GridLayout deleteMemberChecked={deleteMemberChecked} />}
+            {layout === 'list' ? <ListLayout deleteMemberChecked={deleteMemberChecked} inactiveMemberChecked={inactiveMemberChecked} /> : <GridLayout deleteMemberChecked={deleteMemberChecked} inactiveMemberChecked={inactiveMemberChecked} />}
           </Suspense>
           <div css={S.createButtonContainer}>
             <FormControlLabel control={<Switch checked={deleteMemberChecked} onChange={handleChangedDeleteMember} />} label="탈퇴 회원" />
+            <FormControlLabel control={<Switch checked={inactiveMemberChecked} onChange={handleChangedInactiveMember} />} label="비활동 회원" />
             {memberAuthority === 'ADMIN' || memberAuthority === 'MANAGER' ? (
               <div css={S.createButton}>
                 <Button

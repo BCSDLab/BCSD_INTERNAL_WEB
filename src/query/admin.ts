@@ -1,5 +1,5 @@
 import { useMutation, useQueryClient } from '@tanstack/react-query';
-import { acceptMember, slackSync } from 'api/admin';
+import { acceptMember, slackSync, updateMemberActive } from 'api/admin';
 import axios from 'axios';
 import { SlackSyncResponse } from 'model/admin';
 import { useSnackBar } from 'ts/useSnackBar';
@@ -12,6 +12,25 @@ export const useAcceptMember = () => {
     onSuccess: () => {
       queryClinet.invalidateQueries({ queryKey: ['notAuthed'] });
       openSnackBar({ type: 'success', message: '승인했습니다.' });
+    },
+    onError: (e) => {
+      if (axios.isAxiosError(e) && e.response && 'message' in e.response.data) {
+        openSnackBar({ type: 'error', message: e.response.data.message });
+      }
+    },
+  });
+
+  return { mutate };
+};
+
+export const useUpdateMemberActive = () => {
+  const openSnackBar = useSnackBar();
+  const queryClient = useQueryClient();
+  const { mutate } = useMutation({
+    mutationFn: ({ memberId, isActive }: { memberId: number; isActive: boolean }) => updateMemberActive(memberId, isActive),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['members'] });
+      openSnackBar({ type: 'success', message: '활동 상태를 변경했습니다.' });
     },
     onError: (e) => {
       if (axios.isAxiosError(e) && e.response && 'message' in e.response.data) {

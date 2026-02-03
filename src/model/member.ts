@@ -42,6 +42,7 @@ export interface Member {
   updatedAt: string;
   isAuthed: boolean;
   isDeleted: boolean;
+  isActive: boolean;
   isFeeExempt: boolean;
   deleteReason: string;
   birthday: string;
@@ -63,6 +64,7 @@ export interface AdminMemberUpdate {
   profileImageUrl: string;
   isAuthed: boolean;
   isDeleted: boolean;
+  isActive: boolean;
   authority: Authority;
   deleteReason: string;
   birthday: string;
@@ -102,6 +104,7 @@ export interface MemberCreate {
   profileImageUrl?: string;
   isAuthed?: boolean;
   isDeleted?: boolean;
+  isActive?: boolean;
   authority?: Authority;
   birthday?: string;
 }
@@ -139,6 +142,7 @@ export const toAdminMemberUpdate = (member: Member): AdminMemberUpdate => {
     joinedMonth: member.joinedMonth,
     isAuthed: member.isAuthed,
     isDeleted: member.isDeleted,
+    isActive: member.isActive,
     authority: member.authority,
     deleteReason: member.deleteReason,
     birthday: member.birthday,
@@ -164,6 +168,7 @@ export const toMemberCreate = (member: MemberCreate): MemberCreate => {
     password: member.password,
     isAuthed: true,
     isDeleted: false,
+    isActive: true,
     authority: Authority.NORMAL,
     birthday: member.birthday,
   };
