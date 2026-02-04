@@ -89,10 +89,7 @@ export default function MemberInfoModal({
       }
     } else
       if (initialMember) {
-        setMember({
-          ...initialMember,
-          status: STATUS_LABEL[initialMember.status as keyof typeof STATUS_LABEL],
-        });
+        setMember(initialMember);
         setDeleteReason(initialMember.deleteReason || '');
       }
   }, [initialMember, isList]);
@@ -257,7 +254,7 @@ export default function MemberInfoModal({
                 select
               >
                 {STATUS_LIST.map((statusType) => (
-                  <MenuItem key={statusType} value={STATUS_LABEL[statusType]}>
+                  <MenuItem key={statusType} value={statusType}>
                     {STATUS_LABEL[statusType]}
                   </MenuItem>
                 ))}

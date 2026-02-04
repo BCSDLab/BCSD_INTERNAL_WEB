@@ -28,7 +28,7 @@ export interface Member {
   joinedMonth: number;
   track: Track;
   memberType: MemberType;
-  status: Status;
+  status: StatusType;
   name: string;
   company: string;
   department: string;
@@ -53,7 +53,7 @@ export interface AdminMemberUpdate {
   joinedMonth: number;
   trackId: number;
   memberType: MemberType;
-  status: Status;
+  status: StatusType;
   name: string;
   company: string;
   department: string;
@@ -75,7 +75,7 @@ export interface MemberUpdate {
   joinedMonth: number;
   trackId: number;
   memberType: MemberType;
-  status: Status;
+  status: StatusType;
   name: string;
   company: string;
   department: string;
@@ -124,13 +124,11 @@ const getReverseStatus = (label: string): StatusType => {
 };
 
 export const toAdminMemberUpdate = (member: Member): AdminMemberUpdate => {
-  const reverseStatus = getReverseStatus(member.status);
-
   return {
     name: member.name,
     trackId: member.track.id,
     memberType: member.memberType,
-    status: reverseStatus,
+    status: member.status,
     company: member.company,
     department: member.department,
     studentNumber: member.studentNumber,

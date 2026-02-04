@@ -36,7 +36,7 @@ export default function ListLayout({ deleteMemberChecked, inactiveMemberChecked 
     { field: 'name', headerName: '이름', width: 95 },
     { field: 'trackName', headerName: '트랙', width: 120 },
     { field: 'memberType', headerName: '직위', width: 120 },
-    { field: 'status', headerName: '상태', width: 100 },
+    { field: 'statusLabel', headerName: '상태', width: 100 },
     { field: 'company', headerName: '소속', width: 170 },
     { field: 'department', headerName: '학부', width: 140 },
     { field: 'studentNumber', headerName: '학번', width: 130 },
@@ -88,7 +88,7 @@ export default function ListLayout({ deleteMemberChecked, inactiveMemberChecked 
             deleteMemberChecked
               ? membersDeleted.content.map((member) => ({
                 ...member,
-                status: STATUS_LABEL[member.status as keyof typeof STATUS_LABEL],
+                statusLabel: STATUS_LABEL[member.status],
                 trackName: member.track.name,
                 track: member.track,
               }))
@@ -96,7 +96,7 @@ export default function ListLayout({ deleteMemberChecked, inactiveMemberChecked 
                 .filter((member) => (inactiveMemberChecked ? !member.isActive : member.isActive))
                 .map((member) => ({
                   ...member,
-                  status: STATUS_LABEL[member.status as keyof typeof STATUS_LABEL],
+                  statusLabel: STATUS_LABEL[member.status],
                   trackName: member.track.name,
                   track: member.track,
                 }))
