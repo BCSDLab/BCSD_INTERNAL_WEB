@@ -31,6 +31,13 @@ const MEMBER_TYPE_LIST = ['BEGINNER', 'REGULAR', 'MENTOR'] as const;
 
 const STATUS_LIST = ['ATTEND', 'OFF', 'IPP', 'ARMY', 'COMPLETION', 'GRADUATE'] as const;
 
+const IS_ACTIVE = {
+  true: '활동',
+  false: '비활동',
+} as const;
+
+const isActiveList = [true, false] as const;
+
 const IS_DELETED = {
   true: '탈퇴 회원',
   false: '활성 회원',
@@ -82,10 +89,7 @@ export default function MemberInfoModal({
       }
     } else
       if (initialMember) {
-        setMember({
-          ...initialMember,
-          status: STATUS_LABEL[initialMember.status as keyof typeof STATUS_LABEL],
-        });
+        setMember(initialMember);
         setDeleteReason(initialMember.deleteReason || '');
       }
   }, [initialMember, isList]);
@@ -250,7 +254,7 @@ export default function MemberInfoModal({
                 select
               >
                 {STATUS_LIST.map((statusType) => (
-                  <MenuItem key={statusType} value={STATUS_LABEL[statusType]}>
+                  <MenuItem key={statusType} value={statusType}>
                     {STATUS_LABEL[statusType]}
                   </MenuItem>
                 ))}
@@ -365,6 +369,23 @@ export default function MemberInfoModal({
                 {isDeletedList.map((isDeleted) => (
                   <MenuItem key={isDeleted.toString()} value={isDeleted.toString()}>
                     {isDeleted ? IS_DELETED.true : IS_DELETED.false}
+                  </MenuItem>
+                ))}
+              </TextField>
+            </div>
+            <div css={S.textGap}>
+              <TextField
+                margin="normal"
+                label="활동 여부"
+                name="isActive"
+                value={member?.isActive?.toString() || 'true'}
+                fullWidth
+                onChange={handleChange}
+                select
+              >
+                {isActiveList.map((isActive) => (
+                  <MenuItem key={isActive.toString()} value={isActive.toString()}>
+                    {isActive ? IS_ACTIVE.true : IS_ACTIVE.false}
                   </MenuItem>
                 ))}
               </TextField>

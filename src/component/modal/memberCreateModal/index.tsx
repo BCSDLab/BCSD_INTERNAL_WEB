@@ -48,6 +48,13 @@ const STATUS_LABEL = {
 
 const statusList = ['ATTEND', 'OFF', 'IPP', 'ARMY', 'COMPLETION', 'GRADUATE'] as const;
 
+const IS_ACTIVE = {
+  true: '활동',
+  false: '비활동',
+} as const;
+
+const isActiveList = [true, false] as const;
+
 const VisuallyHiddenInput = styled('input')({
   clip: 'rect(0 0 0 0)',
   clipPath: 'inset(50%)',
@@ -295,6 +302,23 @@ export default function MemberCreateModal({ open, onClose }: MemberInfoModalProp
               프로필 이미지
               <VisuallyHiddenInput type="file" accept="image/jpeg, image/png" onChange={(e) => handleImageChange(e)} />
             </Button>
+          </div>
+          <div css={S.textGap}>
+            <TextField
+              margin="normal"
+              label="활동 여부"
+              name="isActive"
+              value={member?.isActive?.toString() || 'true'}
+              fullWidth
+              onChange={handleChange}
+              select
+            >
+              {isActiveList.map((isActive) => (
+                <MenuItem key={isActive.toString()} value={isActive.toString()}>
+                  {isActive ? IS_ACTIVE.true : IS_ACTIVE.false}
+                </MenuItem>
+              ))}
+            </TextField>
           </div>
           <div css={S.buttonContainer}>
             <div css={S.buttonWrapper}>

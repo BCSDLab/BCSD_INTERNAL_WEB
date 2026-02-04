@@ -28,7 +28,7 @@ export interface Member {
   joinedMonth: number;
   track: Track;
   memberType: MemberType;
-  status: Status;
+  status: StatusType;
   name: string;
   company: string;
   department: string;
@@ -42,6 +42,7 @@ export interface Member {
   updatedAt: string;
   isAuthed: boolean;
   isDeleted: boolean;
+  isActive: boolean;
   isFeeExempt: boolean;
   deleteReason: string;
   birthday: string;
@@ -52,7 +53,7 @@ export interface AdminMemberUpdate {
   joinedMonth: number;
   trackId: number;
   memberType: MemberType;
-  status: Status;
+  status: StatusType;
   name: string;
   company: string;
   department: string;
@@ -63,6 +64,7 @@ export interface AdminMemberUpdate {
   profileImageUrl: string;
   isAuthed: boolean;
   isDeleted: boolean;
+  isActive: boolean;
   authority: Authority;
   deleteReason: string;
   birthday: string;
@@ -73,7 +75,7 @@ export interface MemberUpdate {
   joinedMonth: number;
   trackId: number;
   memberType: MemberType;
-  status: Status;
+  status: StatusType;
   name: string;
   company: string;
   department: string;
@@ -102,6 +104,7 @@ export interface MemberCreate {
   profileImageUrl?: string;
   isAuthed?: boolean;
   isDeleted?: boolean;
+  isActive?: boolean;
   authority?: Authority;
   birthday?: string;
 }
@@ -121,13 +124,11 @@ const getReverseStatus = (label: string): StatusType => {
 };
 
 export const toAdminMemberUpdate = (member: Member): AdminMemberUpdate => {
-  const reverseStatus = getReverseStatus(member.status);
-
   return {
     name: member.name,
     trackId: member.track.id,
     memberType: member.memberType,
-    status: reverseStatus,
+    status: member.status,
     company: member.company,
     department: member.department,
     studentNumber: member.studentNumber,
@@ -139,6 +140,7 @@ export const toAdminMemberUpdate = (member: Member): AdminMemberUpdate => {
     joinedMonth: member.joinedMonth,
     isAuthed: member.isAuthed,
     isDeleted: member.isDeleted,
+    isActive: member.isActive,
     authority: member.authority,
     deleteReason: member.deleteReason,
     birthday: member.birthday,
@@ -164,6 +166,7 @@ export const toMemberCreate = (member: MemberCreate): MemberCreate => {
     password: member.password,
     isAuthed: true,
     isDeleted: false,
+    isActive: true,
     authority: Authority.NORMAL,
     birthday: member.birthday,
   };

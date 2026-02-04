@@ -22,15 +22,42 @@ export const Item = styled(Paper)(({ theme }) => ({
 
 interface ListLayoutProps {
   deleteMemberChecked: boolean;
+  inactiveMemberChecked: boolean;
 }
 
-export default function GridLayout({ deleteMemberChecked }: ListLayoutProps) {
+interface MemberInfoField {
+  label: string;
+  getValue: (member: Member) => string;
+  small?: boolean;
+}
+
+const MEMBER_FIELDS: MemberInfoField[] = [
+  { label: '상태', getValue: (member) => STATUS_LABEL[member.status] },
+  { label: '직책', getValue: (member) => member.memberType },
+  { label: '트랙', getValue: (member) => member.track.name },
+  { label: '학번', getValue: (member) => member.studentNumber },
+  { label: '소속', getValue: (member) => member.company },
+  { label: '학부', getValue: (member) => member.department },
+  { label: '전화번호', getValue: (member) => member.phoneNumber },
+  { label: '이메일', getValue: (member) => member.email, small: true },
+];
+
+export default function GridLayout({
+  deleteMemberChecked,
+  inactiveMemberChecked,
+}: ListLayoutProps) {
   const { id } = useTrackStore();
-  const { data: members } = useGetMembers({ pageIndex: 0, pageSize: 1000, trackId: id });
+  const { data: members } = useGetMembers({
+    pageIndex: 0,
+    pageSize: 1000,
+    trackId: id,
+  });
   const [modalOpen, setModalOpen] = useState(false);
   const [memberInfo, setMemberInfo] = useState<Member | null>(null);
   const { data: membersDeleted } = useGetMembersDeleted({
-    pageIndex: 0, pageSize: 1000, trackId: id,
+    pageIndex: 0,
+    pageSize: 1000,
+    trackId: id,
   });
   const { data: getMe } = useGetMe();
 
@@ -48,139 +75,43 @@ export default function GridLayout({ deleteMemberChecked }: ListLayoutProps) {
     <div css={S.container}>
       <div css={S.memberContainer}>
         <Grid container spacing={3}>
-          { deleteMemberChecked
-            ? membersDeleted?.content.map((member: Member) => (
-              <Grid item xs={3} key={member.id}>
-                <Item
-                  css={S.memberContainer}
-                  onClick={() => {
-                    setMemberInfo(member);
-                    handleOpenModal();
-                  }}
-                >
-                  <div css={S.memberWrapper}>
-                    <div css={S.imageNameWrapper}>
-                      <img css={S.image} src={member.profileImageUrl || URLS.defaultProfile} alt="profile" />
-                      <div css={S.name}>{member.name}</div>
-                    </div>
-                    <div>
-                      <div css={S.memberInfoLabel}>
-                        상태
-                      </div>
-                      {STATUS_LABEL[member.status as keyof typeof STATUS_LABEL]}
-                    </div>
-                    <div>
-                      <div css={S.memberInfoLabel}>
-                        직책
-                      </div>
-                      {member.memberType}
-                    </div>
-                    <div>
-                      <div css={S.memberInfoLabel}>
-                        트랙
-                      </div>
-                      {member.track.name}
-                    </div>
-                    <div>
-                      <div css={S.memberInfoLabel}>
-                        학번
-                      </div>
-                      {member.studentNumber}
-                    </div>
-                    <div>
-                      <div css={S.memberInfoLabel}>
-                        소속
-                      </div>
-                      {member.company}
-                    </div>
-                    <div>
-                      <div css={S.memberInfoLabel}>
-                        학부
-                      </div>
-                      {member.department}
-                    </div>
-                    <div>
-                      <div css={S.memberInfoLabel}>
-                        전화번호
-                      </div>
-                      {member.phoneNumber}
-                    </div>
-                    <div>
-                      <div css={S.memberInfoLabel}>
-                        이메일
-                      </div>
-                      {member.email}
-                    </div>
+          {(deleteMemberChecked
+            ? membersDeleted?.content
+            : members?.content.filter((member: Member) => (inactiveMemberChecked ? !member.isActive : member.isActive))
+          )?.map((member: Member) => (
+            <Grid item xs={3} key={member.id}>
+              <Item
+                css={S.memberContainer}
+                onClick={() => {
+                  setMemberInfo(member);
+                  handleOpenModal();
+                }}
+              >
+                <div css={S.memberWrapper}>
+                  <div css={S.imageNameWrapper}>
+                    <img
+                      css={S.image}
+                      src={member.profileImageUrl || URLS.defaultProfile}
+                      alt="profile"
+                    />
+                    <div css={S.name}>{member.name}</div>
                   </div>
-                </Item>
-              </Grid>
-            ))
-            : members?.content.map((member: Member) => (
-              <Grid item xs={3} key={member.id}>
-                <Item
-                  css={S.memberContainer}
-                  onClick={() => {
-                    setMemberInfo(member);
-                    handleOpenModal();
-                  }}
-                >
-                  <div css={S.memberWrapper}>
-                    <div css={S.imageNameWrapper}>
-                      <img css={S.image} src={member.profileImageUrl || URLS.defaultProfile} alt="profile" />
-                      <div css={S.name}>{member.name}</div>
+                  {MEMBER_FIELDS.map(({ label, getValue, small }) => (
+                    <div key={label}>
+                      <div css={S.memberInfoLabel}>{label}</div>
+                      {small ? (
+                        <div css={S.memberInfoLabelSmall}>
+                          {getValue(member)}
+                        </div>
+                      ) : (
+                        getValue(member)
+                      )}
                     </div>
-                    <div>
-                      <div css={S.memberInfoLabel}>
-                        상태
-                      </div>
-                      {STATUS_LABEL[member.status as keyof typeof STATUS_LABEL]}
-                    </div>
-                    <div>
-                      <div css={S.memberInfoLabel}>
-                        직위
-                      </div>
-                      {member.memberType}
-                    </div>
-                    <div>
-                      <div css={S.memberInfoLabel}>
-                        트랙
-                      </div>
-                      {member.track.name}
-                    </div>
-                    <div>
-                      <div css={S.memberInfoLabel}>
-                        학번
-                      </div>
-                      {member.studentNumber}
-                    </div>
-                    <div>
-                      <div css={S.memberInfoLabel}>
-                        소속
-                      </div>
-                      {member.company}
-                    </div>
-                    <div>
-                      <div css={S.memberInfoLabel}>
-                        학부
-                      </div>
-                      {member.department}
-                    </div>
-                    <div>
-                      <div css={S.memberInfoLabel}>
-                        전화번호
-                      </div>
-                      {member.phoneNumber}
-                    </div>
-                    <div>
-                      <div css={S.memberInfoLabel}>
-                        이메일
-                      </div>
-                      <div css={S.memberInfoLabelSmall}>{member.email}</div>
-                    </div>
-                  </div>
-                </Item>
-              </Grid>
-            ))}
+                  ))}
+                </div>
+              </Item>
+            </Grid>
+          ))}
         </Grid>
       </div>
       <MemberInfoModal
@@ -190,6 +121,5 @@ export default function GridLayout({ deleteMemberChecked }: ListLayoutProps) {
         isList={false}
       />
     </div>
-
   );
 }
