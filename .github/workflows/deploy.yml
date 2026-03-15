@@ -1,0 +1,125 @@
+name: Deploy
+
+on:
+  push:
+    branches:
+      - main
+  workflow_dispatch:
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref_name }}
+  cancel-in-progress: false
+
+jobs:
+  lint:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: "18"
+          cache: "yarn"
+
+      - name: Install dependencies
+        run: yarn install --immutable
+
+      - name: Run lint
+        run: yarn lint
+
+      - name: Type check
+        run: yarn typecheck
+
+  build-and-deploy:
+    needs: [lint]
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: "18"
+          cache: "yarn"
+
+      - name: Create .env
+        env:
+          VITE_REACT_APP_API_PATH: ${{ vars.VITE_REACT_APP_API_PATH }}
+          VITE_REACT_APP_GOOGLE_CLIENT_ID: ${{ vars.VITE_REACT_APP_GOOGLE_CLIENT_ID }}
+          VITE_REACT_APP_GOOGLE_API_KEY: ${{ vars.VITE_REACT_APP_GOOGLE_API_KEY }}
+          VITE_REACT_APP_CALENDAR_ID: ${{ vars.VITE_REACT_APP_CALENDAR_ID }}
+        run: |
+          echo "VITE_REACT_APP_API_PATH=$VITE_REACT_APP_API_PATH" >> .env
+          echo "VITE_REACT_APP_GOOGLE_CLIENT_ID=$VITE_REACT_APP_GOOGLE_CLIENT_ID" >> .env
+          echo "VITE_REACT_APP_GOOGLE_API_KEY=$VITE_REACT_APP_GOOGLE_API_KEY" >> .env
+          echo "VITE_REACT_APP_CALENDAR_ID=$VITE_REACT_APP_CALENDAR_ID" >> .env
+
+      - name: Install dependencies
+        run: yarn install --immutable
+
+      - name: Build
+        run: yarn build
+
+      - name: Create deploy package
+        run: cd dist && tar -czf ../dist.tar.gz *
+
+      - name: Setup SSH agent
+        uses: webfactory/ssh-agent@v0.9.0
+        with:
+          ssh-private-key: ${{ secrets.SSH_PRIVATE_KEY }}
+
+      - name: Add SSH known hosts
+        run: |
+          mkdir -p ~/.ssh
+          ssh-keyscan -p ${{ secrets.SSH_PORT }} ${{ secrets.DEPLOY_HOST }} >> ~/.ssh/known_hosts
+
+      - name: Deploy
+        run: |
+          scp -o ConnectTimeout=30 -P ${{ secrets.SSH_PORT }} dist.tar.gz ${{ secrets.DEPLOY_USER }}@${{ secrets.DEPLOY_HOST }}:/usr/local/bcsdlab/web/
+          ssh -o ConnectTimeout=30 -p ${{ secrets.SSH_PORT }} ${{ secrets.DEPLOY_USER }}@${{ secrets.DEPLOY_HOST }} "tar -xvzf /usr/local/bcsdlab/web/dist.tar.gz -C /usr/local/bcsdlab/web"
+
+  notify:
+    needs: [build-and-deploy]
+    if: always()
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Resolve actor name
+        id: resolve_actor
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const fs = require('fs');
+            const developers = JSON.parse(fs.readFileSync(`${{ github.workspace }}/.github/workflows/reviewer.json`));
+            const matched = developers.reviewers.find(p => p.githubName === '${{ github.actor }}');
+            core.setOutput('actorName', JSON.stringify(matched?.name ?? '${{ github.actor }}'));
+
+      - name: Send Slack notification
+        run: |
+          STATUS="${{ needs.build-and-deploy.result }}"
+          COMMIT_MSG=$(echo "${{ github.event.head_commit.message }}" | head -1)
+          RUN_URL="${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}"
+          ACTOR=${{ steps.resolve_actor.outputs.actorName }}
+
+          BODY=$(jq -n \
+            --arg status "$STATUS" \
+            --arg environment "Production" \
+            --arg repository "${{ github.repository }}" \
+            --arg branch "${{ github.ref_name }}" \
+            --arg actor "$ACTOR" \
+            --arg commitMessage "$COMMIT_MSG" \
+            --arg runUrl "$RUN_URL" \
+            '{status: $status, environment: $environment, repository: $repository, branch: $branch, actor: $actor, commitMessage: $commitMessage, runUrl: $runUrl}')
+
+          curl -X POST https://api-slack.internal.bcsdlab.com/api/deploy/frontend \
+            -H 'Content-Type: application/json' \
+            -d "$BODY"
